@@ -1,0 +1,148 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Parameters:
+  DBMasterUserName:
+    Type: String
+    Default: admin
+    Description: Database admin user name
+  DBInstanceClass:
+    Type: String
+    Default: db.t3.micro
+    Description: Size of the server for the app database
+  DBName:
+    Type: String
+    Default: cckvolunteer
+    Description: App database name
+  AppId:
+    Type: String
+    Default: cckvolunteer
+    Description: App id (for resource tagging)
+  Environment:
+    Type: String
+    Default: dev
+    Description: App database name
+  VPC:
+    Type: String
+    Default: vpc-0a7a12df50c8389a5
+    Description: The VPC into which the database should be deployed
+
+Resources:
+  DBMasterAdmin:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Description: The db master user's login info
+      Tags: 
+        - Key: "cck:appid"
+          Value: !Ref AppId
+        - Key: "cck:env"
+          Value: !Ref Environment
+      GenerateSecretString:
+        SecretStringTemplate: !Join [ '', [ '{"username": "', !Ref DBMasterUserName, '"}' ] ]
+        GenerateStringKey: password
+        PasswordLength: 32
+        ExcludeCharacters: >-
+          '"@/\%_$
+
+  DBSecurityGroup:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      GroupDescription: "Database instances security group"
+      Tags: 
+        - Key: "cck:appid"
+          Value: !Ref AppId
+        - Key: "cck:env"
+          Value: !Ref Environment
+      VpcId : !Ref VPC
+      SecurityGroupIngress: 
+        - 
+          CidrIp: "0.0.0.0/0"
+          FromPort: 3306
+          IpProtocol: "tcp"
+          ToPort: 3306
+      SecurityGroupEgress: 
+        - 
+          CidrIp: "0.0.0.0/0"
+          IpProtocol: "-1"
+
+  DBParamGroup:
+    Type: AWS::RDS::DBParameterGroup
+    Properties:
+      Description: MySQL instance parameters 
+      Family: mysql8.0
+      Parameters:
+        require_secure_transport: ON
+
+  DBInstance:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      Tags: 
+        - Key: "cck:appid"
+          Value: !Ref AppId
+        - Key: "cck:env"
+          Value: !Ref Environment
+      DBInstanceClass: !Ref DBInstanceClass
+      DBName: !Ref DBName
+      Engine: "MySQL"
+      VPCSecurityGroups: 
+        - !Ref DBSecurityGroup
+      EngineVersion: "8.0.28"
+      PubliclyAccessible : True
+      MasterUsername: !Sub '{{resolve:secretsmanager:${DBMasterAdmin}::username}}'
+      MasterUserPassword: !Sub '{{resolve:secretsmanager:${DBMasterAdmin}::password}}'
+      StorageType: gp2
+      StorageEncrypted: true
+      AllocatedStorage: 10
+      MultiAZ: False
+      DBParameterGroupName: !Ref 'DBParamGroup'
+  
+  SecretRDSInstanceAttachment:
+    Type: 'AWS::SecretsManager::SecretTargetAttachment'
+    Properties:
+      SecretId: !Ref DBMasterAdmin
+      TargetId: !Ref DBInstance
+      TargetType: 'AWS::RDS::DBInstance'
+
+  AppUser:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: !Join [ '-', [ !Ref AWS::StackName, 'app-user' ] ]
+  
+  AppUserPermissions:
+    Type: AWS::IAM::Policy
+    Properties: 
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'ses:SendEmail'
+            Resource: '*'
+            Condition:
+              StringEquals:
+                'ses:FromAddress': 'admin@cckitchen-app.uk'
+      PolicyName: !Join [ '-', [ !Ref AWS::StackName, 'app-user-permissions' ] ]
+      Users: 
+        - !Ref AppUser
+  
+  AppUserCredentials:
+    Type: AWS::IAM::AccessKey
+    Properties:
+      Status: Active
+      UserName: !Ref AppUser
+  
+  AppCredentialsStored:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Description: The application's AWS access key (e.g., for sending emails)
+      SecretString: !Sub '{"ACCESS_KEY":"${AppUserCredentials}","SECRET_KEY":"${AppUserCredentials.SecretAccessKey}"}'
+
+Outputs:
+  DBMasterSecretARN:
+    Description: The resource id of the secret containing the db master user's login info
+    Value: !Ref DBMasterAdmin
+  AWSAppSecretARN:
+    Description: The resource id of the secret containing the application's AWS access key
+    Value: !Ref AppCredentialsStored
+  DBInstanceEndpoint:
+    Description: The resource id of the launched database instance
+    Value: !GetAtt DBInstance.Endpoint.Address

@@ -1,0 +1,544 @@
+{
+	"id_ref": "cckmealdelivery-03-02-2022",
+	"id_organization_ref": "cck",
+	"id_event_category_ref": "meal-prep-delivery",
+	"name": "Meal prep & delivery 03/02/2022",
+	"start_date": "2022-02-03T07:15:25.641Z",
+	"roles": {
+		"meal-delivery": {
+			"name": "Delivery",
+			"description": "Delivery volunteers use their personal vehicle (typically a car or bicycle) to deliver meals to those in need.",
+			"positions": {
+				"cckmealdelivery-03-02-2022-delivery-arbury": {
+					"name": "Arbury",
+					"route": {
+						"passcode": "ZHZW",
+						"distance": {
+							"bicycling": "8.0km",
+							"driving": "8.9km"
+						},
+						"deliveries": [{
+								"portions": 3,
+								"name": "?",
+								"phone": "0738260709",
+								"address": "17 Cockerell Rd, Arbury, Cambridge CB4 3RT",
+								"plusCode": "64f9+gcj",
+								"allergies": "",
+								"notes": "",
+								"whenNotHome": "leave food on step, thanks"
+							},
+							{
+								"portions": 1,
+								"name": "De Giannoni",
+								"phone": "0749139250",
+								"address": "54 Hurrell Rd, Arbury, Cambridge CB4 3RH",
+								"plusCode": "64g7+693",
+								"allergies": "",
+								"notes": "I am disabled and might take a while to get to the door, please be patient.",
+								"whenNotHome": "please do NOT leave food"
+							},
+							{
+								"portions": 1,
+								"name": "Sadye Ramlot",
+								"phone": "0779842261",
+								"address": "18 Windsor Rd, Cambridge CB4 3JW",
+								"plusCode": "64c5+6rq",
+								"allergies": "",
+								"notes": "",
+								"whenNotHome": "please leave food in a safe place"
+							}
+						]
+					}
+				},
+				"cckmealdelivery-03-02-2022-delivery-barnwell": {
+					"name": "Barnwell",
+					"route": {
+						"passcode": "CWMS",
+						"distance": {
+							"bicycling": "8.3km",
+							"driving": "9.5km"
+						},
+						"deliveries": [{
+								"portions": 2,
+								"name": "Jania Rijkeseis",
+								"phone": "0771062960",
+								"address": "140 Ditton Walk, Cambridge CB5 8QE",
+								"plusCode": "6585+hg",
+								"allergies": "",
+								"notes": "",
+								"whenNotHome": "please do NOT leave food"
+							},
+							{
+								"portions": 2,
+								"name": "Jude Tennewell",
+								"phone": "0794323792",
+								"address": "54 Keynes Rd, Cambridge CB5 8PR",
+								"plusCode": "6578+vjq",
+								"allergies": "",
+								"notes": "PLEASE PHONE 10 MINUTES BEFORE ARRIVING.",
+								"whenNotHome": "put it on the gas meter box, tahnks"
+							},
+							{
+								"portions": 2,
+								"name": "",
+								"phone": "0762266082",
+								"address": "7 Hadleigh Ct, Cambridge CB5 8UF",
+								"plusCode": "657c+rv8",
+								"allergies": "1 no carbs please",
+								"notes": "",
+								"whenNotHome": ""
+							},
+							{
+								"portions": 2,
+								"name": "Shell Meriel",
+								"phone": "0754686403",
+								"address": "9 Dunsmore Cl, Cambridge CB5 8QY",
+								"plusCode": "6599+2r",
+								"allergies": "",
+								"notes": "",
+								"whenNotHome": "please leave food in a safe place"
+							}
+						]
+					}
+				},
+				"cckmealdelivery-03-02-2022-delivery-cambridge-north": {
+					"name": "Cambridge North",
+					"route": {
+						"passcode": "HFYR",
+						"distance": {
+							"bicycling": "8.2km",
+							"driving": "12.1km"
+						},
+						"deliveries": [{
+								"portions": 2,
+								"name": "Ebony Orrin",
+								"phone": "0756156998",
+								"address": "43 Bourne Rd, Cambridge CB4 1UF",
+								"plusCode": "65f3+7wh",
+								"allergies": "",
+								"notes": "",
+								"whenNotHome": "please do NOT leave food"
+							},
+							{
+								"portions": 2,
+								"name": "",
+								"phone": "0717251578",
+								"address": "2 Nuffield Cl, Cambridge CB4 1SS",
+								"plusCode": "65h2+4m3",
+								"allergies": "",
+								"notes": "",
+								"whenNotHome": "please leave food in a safe place"
+							},
+							{
+								"portions": 2,
+								"name": "Creight Pumphreys",
+								"phone": "0718343357",
+								"address": "15 Green Park, Cambridge CB4 1SX",
+								"plusCode": "64gx+q3q",
+								"allergies": "",
+								"notes": "",
+								"whenNotHome": "please do NOT leave food"
+							}
+						]
+					}
+				},
+				"cckmealdelivery-03-02-2022-delivery-cherry-hinton": {
+					"name": "Cherry Hinton",
+					"route": {
+						"passcode": "VXMW",
+						"distance": {
+							"bicycling": "10.4km",
+							"driving": "12.7km"
+						},
+						"deliveries": [{
+								"portions": 2,
+								"name": "Gabriellia Drake",
+								"phone": "0708869226",
+								"address": "11 Forest Rd, Cambridge CB1 9JA",
+								"plusCode": "55pc+46j",
+								"allergies": "",
+								"notes": "",
+								"whenNotHome": "please do NOT leave food"
+							},
+							{
+								"portions": 5,
+								"name": "Morty Clemenza",
+								"phone": "0719198972",
+								"address": "7 Greystoke Rd, Cambridge CB1 8DT",
+								"plusCode": "55m8+jjv",
+								"allergies": "",
+								"notes": "",
+								"whenNotHome": "please do NOT leave food"
+							},
+							{
+								"portions": 2,
+								"name": "Valentine Vasiliev",
+								"phone": "0704202988",
+								"address": "83 Walpole Rd, Cambridge CB1 3TH",
+								"plusCode": "55q7+c46",
+								"allergies": "",
+								"notes": "",
+								"whenNotHome": "please leave food in a safe place"
+							},
+							{
+								"portions": 2,
+								"name": "Brendin Glascott",
+								"phone": "0739786332",
+								"address": "90f Birdwood Rd, Cambridge CB1 3TE",
+								"plusCode": "55r6+259",
+								"allergies": "",
+								"notes": "",
+								"whenNotHome": ""
+							},
+							{
+								"portions": 3,
+								"name": "Simone Shave",
+								"phone": "0722219398",
+								"address": "23A Gray Rd, Cambridge CB1 3TA",
+								"plusCode": "55q4+vv",
+								"allergies": "1x intolerant to wheat (but other sources of gluten are OK), + 2x non-spicy",
+								"notes": "",
+								"whenNotHome": ""
+							}
+						]
+					}
+				},
+				"cckmealdelivery-03-02-2022-delivery-chesterton": {
+					"name": "Chesterton",
+					"route": {
+						"passcode": "RTBD",
+						"distance": {
+							"bicycling": "8.6km",
+							"driving": "10.7km"
+						},
+						"deliveries": [{
+								"portions": 1,
+								"name": "Jeff",
+								"phone": "07111222333",
+								"address": "houseboat \"Dunfloatin\", between Jesus Green play area and Victoria bridge",
+								"plusCode": "647g+826",
+								"allergies": "",
+								"notes": "please bring cutlery for us if you can, thanks",
+								"whenNotHome": "do NOT leave food if I'm not home"
+							},
+							{
+								"portions": 2,
+								"name": "Fanya Kerner",
+								"phone": "0797322852",
+								"address": "13 Swanns Rd, Cambridge CB5 8JZ",
+								"plusCode": "6572+pg6",
+								"allergies": "",
+								"notes": "",
+								"whenNotHome": ""
+							},
+							{
+								"portions": 2,
+								"name": "Ania Runacres",
+								"phone": "0769081923",
+								"address": "107 Fallowfield, Cambridge CB4 1PG",
+								"plusCode": "64cx+5m",
+								"allergies": "",
+								"notes": "",
+								"whenNotHome": "please leave food in a safe place"
+							},
+							{
+								"portions": 1,
+								"name": "Vinnie Kernan",
+								"phone": "0788767999",
+								"address": "4 Scotland Cl, Chesterton, Cambridge CB4 1QH",
+								"plusCode": "649v+j9",
+								"allergies": "",
+								"notes": "I am disabled, please be patient at the door",
+								"whenNotHome": "please leave food in a safe place"
+							},
+							{
+								"portions": 3,
+								"name": "Courtnay Stubs",
+								"phone": "0763910121",
+								"address": "10 Kinross Rd, Cambridge CB4 1QX",
+								"plusCode": "649q+mq8",
+								"allergies": "Intolerance - 1 gluten free",
+								"notes": "",
+								"whenNotHome": "please do NOT leave food"
+							},
+							{
+								"portions": 1,
+								"name": "Irwin Hornung",
+								"phone": "0757199491",
+								"address": "7 Scholars Walk, Chesterton, Cambridge CB4 1DW",
+								"plusCode": "648r+89",
+								"allergies": "",
+								"notes": "please call or text 10 minutes before you arrive",
+								"whenNotHome": "please leave food in a safe place"
+							}
+						]
+					}
+				},
+				"cckmealdelivery-03-02-2022-delivery-kings-hedges": {
+					"name": "Kings Hedges",
+					"route": {
+						"passcode": "SGCL",
+						"distance": {
+							"bicycling": "10.8km",
+							"driving": "11.9km"
+						},
+						"deliveries": [{
+								"portions": 4,
+								"name": "Leone Dressel",
+								"phone": "0776024406",
+								"address": "25 Chariot Way, Cambridge CB4 2GY",
+								"plusCode": "64j9+x9",
+								"allergies": "Intolerance: 4 non-spicy & no carb please",
+								"notes": "",
+								"whenNotHome": ""
+							},
+							{
+								"portions": 2,
+								"name": "Reta Aves",
+								"phone": "0771933504",
+								"address": "59 Chariot Way, Cambridge CB4 2GY",
+								"plusCode": "64m8+5x5",
+								"allergies": "2x not too spicy",
+								"notes": "",
+								"whenNotHome": "please leave food in a safe place"
+							},
+							{
+								"portions": 3,
+								"name": "Temp Urien",
+								"phone": "0757540451",
+								"address": "10 Sweetpea Way, Cambridge CB4 2GT",
+								"plusCode": "64m9+2r",
+								"allergies": "",
+								"notes": "",
+								"whenNotHome": "please leave food in a safe place"
+							},
+							{
+								"portions": 2,
+								"name": "Ely Stickney",
+								"phone": "0751524851",
+								"address": "8 Bassett Cl, Cambridge CB4 2UQ",
+								"plusCode": "64mj+rw",
+								"allergies": "",
+								"notes": "",
+								"whenNotHome": ""
+							},
+							{
+								"portions": 2,
+								"name": "Karney Gretton",
+								"phone": "",
+								"address": "14A Amwell Rd, Cambridge CB4 2UH",
+								"plusCode": "64mj+8x",
+								"allergies": "2 no carbs, ie rice,potatoe, cooked carrots. To avoid triggering insuline",
+								"notes": "",
+								"whenNotHome": "please do NOT leave food"
+							},
+							{
+								"portions": 1,
+								"name": "Willy Eckh",
+								"phone": "0753336461",
+								"address": "100 Minerva Way, Cambridge CB4 2UA",
+								"plusCode": "64mg+hr",
+								"allergies": "",
+								"notes": "",
+								"whenNotHome": "please do NOT leave food"
+							},
+							{
+								"portions": 1,
+								"name": "Pamela Tomasik",
+								"phone": "0739293310",
+								"address": "3 Consul Ct, Cambridge CB4 2TH",
+								"plusCode": "64jh+v8",
+								"allergies": "",
+								"notes": "",
+								"whenNotHome": "please leave food in a safe place"
+							}
+						]
+					}
+				},
+				"cckmealdelivery-03-02-2022-delivery-mill-road": {
+					"name": "Mill Road",
+					"route": {
+						"passcode": "JYZH",
+						"distance": {
+							"bicycling": "5.6km",
+							"driving": "7.8km"
+						},
+						"deliveries": [{
+								"portions": 1,
+								"name": "Arvy Van Haeften",
+								"phone": "0798266593",
+								"address": "17 Willis Rd, Petersfield, Cambridge CB1 2AQ",
+								"plusCode": "642m+xf",
+								"allergies": "",
+								"notes": "",
+								"whenNotHome": ""
+							},
+							{
+								"portions": 2,
+								"name": "Tomasina Quimby",
+								"phone": "0786630194",
+								"address": "14 Perowne St, Cambridge CB1 2AY",
+								"plusCode": "642p+gqc",
+								"allergies": "Intolerance: 2 gluten free",
+								"notes": "",
+								"whenNotHome": "please do NOT leave food"
+							},
+							{
+								"portions": 1,
+								"name": "Michele Keysel",
+								"phone": "0755625536",
+								"address": "2c Covent Garden, Petersfield, Cambridge CB1 2HR",
+								"plusCode": "642m+8q",
+								"allergies": "",
+								"notes": "",
+								"whenNotHome": "please do NOT leave food"
+							},
+							{
+								"portions": 1,
+								"name": "Jacqueline Paybody",
+								"phone": "0737638469",
+								"address": "Salisbury Arms, 76 Tenison Rd, Cambridge CB1 2DW",
+								"plusCode": "54xp+85",
+								"allergies": "1 no tomatoes",
+								"notes": "",
+								"whenNotHome": "please leave food in a safe place"
+							},
+							{
+								"portions": 1,
+								"name": "Devonne Sidden",
+								"phone": "0706570422",
+								"address": "35 Tenison Rd, Cambridge CB1 2DG",
+								"plusCode": "54xp+mgx",
+								"allergies": "Preference - 1 no pasta",
+								"notes": "",
+								"whenNotHome": ""
+							},
+							{
+								"portions": 2,
+								"name": "Tildy Witz",
+								"phone": "0729868913",
+								"address": "26 Thoday St, Cambridge CB1 3BN",
+								"plusCode": "54xw+6j",
+								"allergies": "",
+								"notes": "",
+								"whenNotHome": "please do NOT leave food"
+							},
+							{
+								"portions": 1,
+								"name": "Genovera Stille",
+								"phone": "0739942127",
+								"address": "51 Warkworth Terrace, Cambridge CB1 1EE",
+								"plusCode": "643h+fx",
+								"allergies": "",
+								"notes": "",
+								"whenNotHome": "please leave food in a safe place"
+							}
+						]
+					}
+				},
+				"cckmealdelivery-03-02-2022-delivery-queen-edith": {
+					"name": "Queen Edith",
+					"route": {
+						"passcode": "BDLL",
+						"distance": {
+							"bicycling": "9.4km",
+							"driving": "12.0km"
+						},
+						"deliveries": [{
+								"portions": 1,
+								"name": "Lynnelle Ehrat",
+								"phone": "0735526911",
+								"address": "41 Queen Edith's Way, Cambridge CB1 8PJ",
+								"plusCode": "55h2+r6",
+								"allergies": "Allergy - 1 avoid mushrooms",
+								"notes": "",
+								"whenNotHome": "please do NOT leave food"
+							},
+							{
+								"portions": 1,
+								"name": "Tallie Learmont",
+								"phone": "0701219120",
+								"address": "92 Queen Edith's Way, Cambridge CB1 8PW",
+								"plusCode": "55h3+rx",
+								"allergies": "",
+								"notes": "",
+								"whenNotHome": "please leave food in a safe place"
+							},
+							{
+								"portions": 2,
+								"name": "Isa Couvert",
+								"phone": "0727232510",
+								"address": "35 Hulatt Road, Cambridge CB1 7XD",
+								"plusCode": "55m2+6r6",
+								"allergies": "",
+								"notes": "",
+								"whenNotHome": ""
+							},
+							{
+								"portions": 2,
+								"name": "Ashlen McTeer",
+								"phone": "0789892481",
+								"address": "22 Gunhild Way, Cambridge CB1 8RB",
+								"plusCode": "55m4+m2q",
+								"allergies": "",
+								"notes": "",
+								"whenNotHome": ""
+							}
+						]
+					}
+				},
+				"cckmealdelivery-03-02-2022-delivery-trumpington": {
+					"name": "Trumpington",
+					"route": {
+						"passcode": "FSVX",
+						"distance": {
+							"bicycling": "12.9km",
+							"driving": "15.1km"
+						},
+						"deliveries": [{
+								"portions": 1,
+								"name": "Bing Crowdy",
+								"phone": "0702265818",
+								"address": "1 Rialto Cl, Trumpington, Cambridge CB2 9AH",
+								"plusCode": "54c6+66",
+								"allergies": "Allergy - 1 avoid chickpeas",
+								"notes": "",
+								"whenNotHome": ""
+							},
+							{
+								"portions": 2,
+								"name": "Tania O'Donohue",
+								"phone": "0762329340",
+								"address": "20 Scotsdowne Rd, Trumpington, Cambridge CB2 9HU",
+								"plusCode": "54g7+7h",
+								"allergies": "",
+								"notes": "",
+								"whenNotHome": ""
+							},
+							{
+								"portions": 2,
+								"name": "Shaun Caban",
+								"phone": "0788715569",
+								"address": "14 Winchmore Dr, Trumpington, Cambridge CB2 9LW",
+								"plusCode": "54g6+fv",
+								"allergies": "",
+								"notes": "",
+								"whenNotHome": ""
+							},
+							{
+								"portions": 1,
+								"name": "Hew Han",
+								"phone": "0774401899",
+								"address": "41 High St, Trumpington, Cambridge CB2 9HR",
+								"plusCode": "54h7+2c",
+								"allergies": "",
+								"notes": "",
+								"whenNotHome": "please do NOT leave food"
+							}
+						]
+					}
+				}
+			}
+		}
+	}
+}

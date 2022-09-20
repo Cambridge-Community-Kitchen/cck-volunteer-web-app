@@ -1,0 +1,57 @@
+$def-vert-padding: 20px;
+
+.fullScreen {
+    height: 100%;
+    min-height: -webkit-fill-available;
+    overflow: scroll;
+}
+
+.fullScreenPage {
+  @extend .fullScreen;
+  z-index: 0.9;
+  background-color: rgb(250, 232, 217);
+  //background-color: red;
+}
+
+.logoHeader {
+  width: 200px;
+  max-width: 40vw;
+  min-width: 100px;
+  margin: auto;
+}
+
+.form {
+  padding: 30px;
+  background-color: white;
+  label, button, >div {
+    margin-top: $def-vert-padding;
+  }
+}
+
+.formElement {
+	
+}
+
+.button {
+  	@extend .formElement;
+  	margin-top: $def-vert-padding;
+}
+
+.centerColumn {
+  margin: auto;
+  padding: 20px 0px;
+  max-width: 90vw;
+  min-width: 300px;
+  width: 640px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  >div, >button {
+    margin-top: $def-vert-padding;
+  }
+}
+
+.centerColumn Form {
+  display: flex;
+  flex-direction: column;
+}

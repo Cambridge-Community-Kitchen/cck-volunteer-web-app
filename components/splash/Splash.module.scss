@@ -1,0 +1,24 @@
+@use "styles/globals";
+
+@mixin transition($x...){
+  -webkit-transition: $x;
+  -moz-transition: $x;
+  -ms-transition: $x;
+  -o-transition: $x;
+  transition: $x;
+}
+
+.splash {
+	@extend .fullScreen;
+  overflow: hidden;
+  background-color: var(--chakra-colors-red-50);
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+}
+
+.logoFade {
+	@include transition(transform 400ms ease-out);
+}

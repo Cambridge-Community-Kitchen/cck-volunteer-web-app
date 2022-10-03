@@ -1,7 +1,14 @@
 import prisma from '@/components/db-connection-prisma';
 import { Prisma } from '@prisma/client';
+import { copyProps } from './DBHelpers';
 
-export interface RouteInsert {
+
+export interface BaseRoute {
+	name: string;
+	distance?: Prisma.JsonValue;
+}
+
+export interface RouteInsert extends BaseRoute {
     id_ref?: string;
 	id_event_position: number;
     name: string;
@@ -11,6 +18,18 @@ export interface RouteInsert {
 
 export interface Route extends RouteInsert {
 	id: number;
+}
+
+/**
+ * A route delivery appropriate for return to a consuming application
+ */
+ export class RouteResponse implements BaseRoute{
+	name = "";
+	distance?: Prisma.JsonValue = null;
+
+	constructor(route: Route) {
+		copyProps(this, route);
+	}
 }
 
 /**

@@ -18,20 +18,20 @@ model organization {
 }
 
 model event {
-  id                Int             @id @default(autoincrement())
+  id                Int              @id @default(autoincrement())
   id_organization   Int
   id_event_category Int?
-  id_ref            String?         @db.VarChar(255)
-  start_date        DateTime        @db.Timestamp(0)
-  end_date          DateTime?       @db.Timestamp(0)
-  all_day           Boolean         @default(true)
-  name              String          @db.VarChar(255)
-  description       String?         @db.VarChar(255)
+  id_ref            String?          @db.VarChar(255)
+  start_date        DateTime         @db.Timestamp(0)
+  end_date          DateTime?        @db.Timestamp(0)
+  all_day           Boolean          @default(true)
+  name              String           @db.VarChar(255)
+  description       String?          @db.VarChar(255)
   addl_info         Json?
-  event_category    event_category? @relation(fields: [id_event_category], references: [id], onUpdate: NoAction, map: "fk_organization_event_category")
-  organization      organization    @relation(fields: [id_organization], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_organization_id")
-  event_role        event_role[]
+  event_category    event_category?  @relation(fields: [id_event_category], references: [id], onUpdate: NoAction, map: "fk_organization_event_category")
+  organization      organization     @relation(fields: [id_organization], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_organization_id")
   event_position    event_position[]
+  event_role        event_role[]
 
   @@index([id_event_category], map: "fk_organization_event_category_idx")
   @@index([id_organization], map: "fk_organization_idx")
@@ -50,58 +50,61 @@ model event_category {
 }
 
 model event_role {
-  id                        Int     @id @default(autoincrement())
+  id                        Int              @id @default(autoincrement())
   id_event                  Int
-  general_volunteers_needed Int     @default(0)
-  id_ref                    String? @db.VarChar(255)
-  name                      String  @db.VarChar(45)
-  description               String? @db.VarChar(255)
-  event                     event?  @relation(fields: [id_event], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_event")
+  general_volunteers_needed Int              @default(0)
+  id_ref                    String?          @db.VarChar(255)
+  name                      String           @db.VarChar(45)
+  description               String?          @db.VarChar(255)
+  event                     event            @relation(fields: [id_event], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_event")
   event_position            event_position[]
 
   @@index([id_event], map: "fk_event")
 }
 
 model event_position {
-  id                  Int         @id @default(autoincrement())
-  id_event            Int
-  id_event_role       Int?
-  id_ref              String?     @db.VarChar(255)
-  name                String?     @db.VarChar(255)
-  description         String?     @db.VarChar(255)
-  event               event       @relation(fields: [id_event], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_event_event_role_idx")  
-  // Deleting an event_role should NOT delete any associated positions
-  event_role          event_role? @relation(fields: [id_event_role], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "fk_event_position_event_role_idx")  
-  route               route[]
+  id            Int         @id @default(autoincrement())
+  id_event      Int
+  id_event_role Int?
+  id_ref        String?     @db.VarChar(255)
+  name          String?     @db.VarChar(255)
+  description   String?     @db.VarChar(255)
+  event         event       @relation(fields: [id_event], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_event_event_role_idx")
+  event_role    event_role? @relation(fields: [id_event_role], references: [id], onUpdate: NoAction, map: "fk_event_position_event_role_idx")
+  route         route[]
 
   @@index([id_event], map: "fk_event_event_role_idx")
   @@index([id_event_role], map: "fk_event_position_event_role_idx")
 }
 
 model route {
-  id                  Int         @id @default(autoincrement())
-  id_ref              String?     @db.VarChar(255)
-  id_event_position   Int
-  name                String      @db.VarChar(255)
-  passcode            String?      @db.VarChar(10)
-  distance            Json?
-  route_delivery      route_delivery[]
-  event_position      event_position @relation(fields: [id_event_position], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "id_event_position") 
+  id                Int              @id @default(autoincrement())
+  id_ref            String?          @db.VarChar(255)
+  id_event_position Int
+  name              String           @db.VarChar(255)
+  passcode          String?          @db.VarChar(10)
+  distance          Json?
+  event_position    event_position   @relation(fields: [id_event_position], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "id_event_position")
+  route_delivery    route_delivery[]
+
+  @@index([id_event_position], map: "id_event_position")
 }
 
 model route_delivery {
-  id                  Int         @id @default(autoincrement())
-  id_route            Int
-  portions            Int
-  name                String?
-  phone               String?
-  address             String
-  plus_code           String
-  allergies           String?
-  notes               String?
-  when_not_home       String?
-  sequence            Int
-  route     route @relation(fields: [id_route], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "id_route") 
+  id            Int     @id @default(autoincrement())
+  id_route      Int
+  portions      Int
+  name          String?
+  phone         String?
+  address       String
+  plus_code     String
+  allergies     String?
+  notes         String?
+  when_not_home String?
+  sequence      Int
+  route         route   @relation(fields: [id_route], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "id_route")
+
+  @@index([id_route], map: "id_route")
 }
 
 model person {
@@ -113,7 +116,7 @@ model person {
 }
 
 model organization_person {
-  id              Int           @id @default(autoincrement())
+  id              Int @id @default(autoincrement())
   id_person       Int
   id_organization Int
 }
@@ -127,10 +130,10 @@ model person_system_role {
   person          person        @relation(fields: [id_person], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "id_person")
   system_role     system_role   @relation(fields: [id_role], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "id_role")
 
+  @@unique([id_person, id_role, id_organization], name: "personsystemrole")
   @@index([id_organization], map: "id_organization_idx")
   @@index([id_person], map: "id_person_idx")
   @@index([id_role], map: "id_role_idx")
-  @@unique([id_person, id_role, id_organization], name: "personsystemrole")  
 }
 
 model system_role {

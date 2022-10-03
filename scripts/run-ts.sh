@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-ts-node -P ./scripts.tsconfig.json $1 "${@:2}"
+ts-node -r tsconfig-paths/register -P scripts.tsconfig.json $1 "${@:2}"

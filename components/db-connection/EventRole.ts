@@ -1,8 +1,11 @@
 import type { RecordIdentifier } from './DBHelpers';
 import prisma from '@/components/db-connection-prisma';
-import * as Event from './Event';
-import * as Organization from './Organization';
+import { Event, EventPosition } from '.';
+import { getReference } from './DBHelpers';
 
+/**
+ * The data necessary to uniquely identify an event role
+ */
 export interface EventRoleIdentifier extends RecordIdentifier {
 	id_organization?: number;
 	id_organization_ref?: string;
@@ -10,37 +13,130 @@ export interface EventRoleIdentifier extends RecordIdentifier {
 	id_event_ref?: string;
 }
 
-export interface EventRoleInsert {
-    id_event: number;
-    general_volunteers_needed?: number;
-    id_ref?: string;
-    name: string;
-    description?: string;
+/**
+ * Optional fields in the database
+ */
+export interface EventRoleOptionalCoreData {
+	id_ref?: string;
+	description?: string;
+	general_volunteers_needed?: number
 }
 
-export interface EventRole extends EventRoleInsert {
-	id: number;
+/**
+ * Required data, suitable for inserts only
+ */
+export interface EventRoleCoreData extends EventRoleOptionalCoreData {
+	name: string;
 }
+
+/**
+ * Data needed to insert a new record in the database
+ */
+export interface EventRoleInsert extends EventRoleCoreData {
+	
+	// To insert an event role, you MUST provide the unique event to which this position belongs
+	event: Event.EventIdentifier
+
+	// When inserting an event role, you MAY provide a list of positions associated with that role
+	event_position?: EventPosition.EventPositionCoreData[]
+}
+
+/**
+ * Data needed to update a new record in the database
+ */
+ export interface EventRoleUpdate extends EventRoleCoreData {
+	
+	// To update an event role, you MAY provide the unique event to which this position belongs
+	event: Event.EventIdentifier
+}
+
+/**
+ * The data as returned from the database. Full references to linked records are optionally included
+ */
+ export interface EventRole extends EventRoleCoreData {
+	id: number;
+	id_event: number;
+	event?: Event.Event;
+ }
 
 /**
  * Creates an event role in the database
  */
 export async function create(eventRole: EventRoleInsert): Promise<EventRole> {
-	return await prisma.event_role.create({
-		data: eventRole,
+	
+	const event = await Event.get({eventId: eventRole.event});
+	
+	const createdEventRole = await prisma.event_role.create({
+		data: {
+			...eventRoleData(eventRole),
+			event: {
+				connect: {
+					id: event.id
+				}
+			}
+		}
 	});
+
+	if(eventRole.event_position) {
+		const updatedPositions: EventPosition.EventPositionInsert[] = eventRole.event_position.map( position => {
+			return {
+				...position,
+				event: {id: event.id},
+				event_role: {id: createdEventRole.id}
+			};
+		});
+
+		await upsertPositions(event, updatedPositions);
+	}
+
+	return createdEventRole;
+}
+
+/**
+ * Inserts one or more positions for a given event
+ */
+async function upsertPositions(event: Event.EventIdentifier, roles: EventPosition.EventPositionCoreData[]) {
+	for (const idx in roles) {
+
+		const eventPositionId = {
+			id_event: event.id,
+			id_organization: event.id_organization,
+			id_ref: roles[idx].id_ref
+		};
+
+		await EventPosition.upsert(eventPositionId, {
+			...roles[idx],
+			event: {
+				id: event.id
+			}
+		});
+	}
+}
+
+/**
+ * Upserts an event role in the database
+ */
+export async function upsert(eventRoleId: EventRoleIdentifier, eventRole: EventRoleInsert) {
+	const theEventRole = await get(eventRoleId);
+
+	if(theEventRole) {
+		update(eventRoleId, eventRole);
+	} else {
+		create(eventRole);
+	}
 }
 
 /**
  * Updates an event role in the database
  */
- export async function update(eventRole: EventRole) {
+ export async function update(roleId: EventRoleIdentifier, eventRole: EventRoleUpdate ) {
 	
-	const eventRoleReplaced = await replaceRefs(eventRole);
-	const where = await getUniqueEventRoleWhereClause(eventRoleReplaced);
+	const where = await getUniqueEventRoleWhereClause(roleId);
 	
 	return await prisma.event_role.updateMany({
-		data: eventRoleReplaced,
+		data: {
+			...eventRoleData(eventRole),
+		},
 		where: where
 	});
 }
@@ -49,21 +145,43 @@ export async function create(eventRole: EventRoleInsert): Promise<EventRole> {
  * Builds a where clause for selecting a specific record; uses the record id
  * if available, and the unique reference string as a fallback
  */
- async function getUniqueEventRoleWhereClause(eventRole: EventRoleIdentifier) {
+ async function getUniqueEventRoleWhereClause(roleId: EventRoleIdentifier) {
 	
-	const where = {};
-	if (eventRole.id) {
-		where['id'] = eventRole.id;
+	const whereClause = {};
+	if (roleId.id) {
+		whereClause['id'] = roleId.id;
 	} else {
-		const eventRoleReplaced = await replaceRefs(eventRole);
-		where['id_event'] = eventRoleReplaced.id_event;
-		where['id_ref'] = eventRole.id_ref;
+		whereClause['id_ref'] = roleId.id_ref;
+		if (roleId.id_event) {
+			whereClause['id_event'] = roleId.id_event;
+		} else {
+			const orgId = getReference({
+				id: roleId.id_organization,
+				id_ref: roleId.id_organization_ref
+			});
+			whereClause['event'] = {
+				id_ref: roleId.id_event_ref,
+				organization: {
+					[orgId[0]]: orgId[1]
+				}
+			};
+		}
 	}
 
-	return where;
+	return whereClause;
 }
 
-
+/**
+ * Gets core data from more complex interfaces
+ */
+export function eventRoleData(eventRole: EventRoleInsert | EventRole): EventRoleCoreData {
+	return {
+		id_ref: eventRole.id_ref,
+		name: eventRole.name,
+		description: eventRole.description,
+		general_volunteers_needed: eventRole.general_volunteers_needed
+	};
+}
 
 /**
  * Confirms whether or not the minimum information to identify a unique event role has been provided
@@ -87,47 +205,10 @@ export async function deleteRolesNotInRefs(event: Event.EventIdentifier, refs: s
 }
 
 /**
- * Replaces object references to database identifiers
- */
- async function replaceRefs(eventRole) {
-	
-	// Don't modify the passed object
-	const eventRoleCopy = {...{}, ...eventRole};
-
-	if (eventRoleCopy.id_organization_ref) {
-		const organization = await Organization.get({id_ref: eventRoleCopy.id_organization_ref});
-		eventRoleCopy.id_organization = organization.id;
-	}
-
-	// Find the matching event, if necessary
-	if (eventRoleCopy.id_event_ref) {
-		const event = await Event.get({id_organization: eventRoleCopy.id_organization, id_ref: eventRoleCopy.id_event_ref});
-		if(!event) {
-			throw new Error('The event referenced does not exist');
-		}
-		eventRoleCopy.id_event = event.id;
-		delete eventRoleCopy.id_event_ref;
-	}
-	
-	return eventRoleCopy;
-}
-
-
-/**
  * Gets an event role from the database
  */
 export async function get(eventRole: EventRoleIdentifier): Promise<EventRole> {
-	
-	if (!isValidEventRoleIdentifier(eventRole)) {
-		if (process.env.DEBUG === "true") {
-			console.log(eventRole);
-		}
-		throw new Error('Identifier does not contain the required fields');
-	}
-
-
-	const eventRoleReplaced = await replaceRefs(eventRole);
-	const where = await getUniqueEventRoleWhereClause(eventRoleReplaced);
+	const where = await getUniqueEventRoleWhereClause(eventRole);
 
 	return await prisma.event_role.findFirst({
 		where: where

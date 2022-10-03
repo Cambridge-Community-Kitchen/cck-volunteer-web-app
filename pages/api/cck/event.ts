@@ -26,13 +26,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             return;
         }
 
+        event.organization = {
+            id_ref: event.id_organization_ref
+        };
+        delete event.id_organization_ref;
+
+        event.event_category = {
+            id_ref: event.id_event_category_ref
+        };
+        delete event.id_event_category_ref;
+
         // Update the event
-        let gottenEvent = await Event.get(event);
+        let gottenEvent = await Event.get({eventId:{
+            id_ref: event.id_ref,
+            id_organization_ref: event.organization.id_ref
+        }});
+        
         if(gottenEvent) {
             // Event found, perform an update
             const eventForUpdate = JSON.parse(JSON.stringify(event));
+            
             delete eventForUpdate.roles;
-            await Event.update(eventForUpdate);
+            delete eventForUpdate.organization;
+            delete eventForUpdate.event_category;
+            await Event.update({id: gottenEvent.id}, eventForUpdate);
             gottenEvent = {...gottenEvent, ...eventForUpdate};
         } else {
             // Event not found, perform an insert
@@ -40,7 +57,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             delete eventForCreate.roles;
             gottenEvent = await Event.create(eventForCreate);
         }
-        
+
         // Update event roles
         // If no roles exist, insert them all.
         // If roles DO exist, we don't want to delete the event role... UNLESS that event role no longer exists in the upload
@@ -58,21 +75,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 };
 
                 let gottenEventRole = await EventRole.get(eventRoleId);
+
                 if (gottenEventRole) {
-                    const eventRoleForUpdate = {...gottenEventRole, ...eventRole};
+                    const eventRoleForUpdate = {
+                        ...eventRole,
+                        id_ref: eventRoleKey,
+                        id_event: gottenEvent.id
+                    };
                     delete eventRoleForUpdate.positions;
-                    await EventRole.update(eventRoleForUpdate);
-                    gottenEventRole = {...gottenEventRole, ...eventRoleForUpdate};
+                    
+                    await EventRole.update({ id:gottenEventRole.id }, eventRoleForUpdate);
                 } else {
-                    const insertEventRole = {...eventRoleId, ...eventRole};
+                    const insertEventRole = {
+                        ...eventRole,
+                        id_ref: eventRoleKey,
+                        event: {
+                            id: gottenEvent.id
+                        }
+                    };
                     delete insertEventRole.positions;
                     gottenEventRole = await EventRole.create(insertEventRole);
                 }
-
+                
                 if (eventRole['positions']) {
 
                     EventPosition.deletePositionsNotInRefs(gottenEvent, Object.keys(eventRole['positions']));
-                    
                     for (const [positionKey, position] of  ObjectEntries(eventRole['positions'])) {
                         
                         const eventPositionId = {
@@ -81,19 +108,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         };
                         
                         let gottenEventPosition = await EventPosition.get(eventPositionId);
-
+                        
                         if(gottenEventPosition) {
-                            const eventPositionForUpdate = {...gottenEventPosition, ...position};
+                            const eventPositionForUpdate = {
+                                ...position,
+                                id_ref: positionKey,
+                                id_event: gottenEventPosition.id
+                            };
                             delete eventPositionForUpdate.route;
-                            await EventPosition.update(eventPositionForUpdate);
-                            gottenEventPosition = {...gottenEventPosition, ...eventPositionForUpdate};
-
+                            
+                            await EventPosition.update({id: gottenEventPosition.id}, eventPositionForUpdate);
+                            
                             await Route.removeForPosition(gottenEventPosition.id);
 
                         } else {
-                            const insertEventPosition = {...eventPositionId, ...position};
-                            insertEventPosition.id_event_role = gottenEventRole.id;
-                            delete insertEventPosition.route;
+                            const insertEventPosition = {
+                                ...position,
+                                id_ref: positionKey,
+                                event: {
+                                    id: gottenEvent.id
+                                },
+                                event_role: {
+                                    id: gottenEventRole.id
+                                }
+                            };
                             gottenEventPosition = await EventPosition.create(insertEventPosition);
                         }
 

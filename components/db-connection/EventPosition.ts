@@ -2,96 +2,137 @@ import type { RecordIdentifier } from './DBHelpers';
 import prisma from '@/components/db-connection-prisma';
 import * as Event from './Event';
 import * as EventRole from './EventRole';
-import * as Organization from './Organization';
+import { getReference } from './DBHelpers';
 
+/**
+ * The data needed to uniquely identify an event position
+ */
 export interface EventPositionIdentifier extends RecordIdentifier {
 	id_organization?: number;
 	id_organization_ref?: string;
 	id_event?: number;
 	id_event_ref?: string;
+	id_event_role?: number;
+	id_event_role_ref?: string;
 }
 
-export interface EventPositionInsert {
-    id_event: number;
-    id_event_role?: number;
-    id_ref?: string;
-    name: string;
-    description?: string;
+/**
+ * Optional data, suitable for both inserts and updates
+ */
+export interface EventPositionOptionalCoreData {
+	id_ref?: string;
+	description?: string;
 }
 
-export interface EventPosition extends EventPositionInsert {
+/**
+ * Required data, suitable for inserts only
+ */
+ export interface EventPositionCoreData extends EventPositionOptionalCoreData {
+	name: string;
+}
+
+/**
+ * Data needed to insert a new record in the database
+ */
+export interface EventPositionInsert extends EventPositionCoreData {
+	
+	// To insert an event position, you MUST provide the unique event to which this position belongs
+	event: Event.EventIdentifier
+
+	// When inserting an event position, you MAY provide the unique event role to which this position belongs
+	event_role?: EventRole.EventRoleIdentifier
+}
+
+/**
+ * Data needed to update a new record in the database
+ */
+ export interface EventPositionUpdate extends EventPositionCoreData {
+	
+	// To update an event position, you MAY provide the unique event to which this position belongs
+	event: Event.EventIdentifier
+
+	// When updating an event position, you MAY provide the unique event role to which this position belongs
+	event_role?: EventRole.EventRoleIdentifier
+}
+
+/**
+ * The event position as returned from the database. References to the full event and event role objects are optionally included
+ */
+export interface EventPosition extends EventPositionCoreData {
 	id: number;
+	id_event: number;
+	id_event_role?: number;
+	event?: Event.Event;
+	event_role?: EventRole.EventRole;
+}
+
+/**
+ * Gets core event data from more complex event interfaces
+ */
+ export function eventPositionData(eventPosition: EventPositionInsert | EventPosition): EventPositionCoreData {
+	return {
+		id_ref: eventPosition.id_ref,
+		name: eventPosition.name,
+		description: eventPosition.description
+	};
 }
 
 /**
  * Creates an event position in the database
  */
 export async function create(eventPosition: EventPositionInsert): Promise<EventPosition> {
-	//TODO: Ensure we don't end up with a duplicate combo of position.id_ref and id_event; or should this be in the schema?
+	
+	const event = await Event.get({eventId: eventPosition.event});
+	
+	const eventRole = {};
+	if (eventPosition.event_role) {
+		const gottenRole = await EventRole.get(eventPosition.event_role);
+		eventRole['event_role'] = {
+			connect: {
+				id: gottenRole.id
+			}
+		};
+	}
+
 	return await prisma.event_position.create({
-		data: eventPosition,
+		data: {
+			...eventPositionData(eventPosition),
+			event: {
+				connect: {
+					id: event.id
+				}
+			},
+			...eventRole
+		}
 	});
 }
 
 /**
- * Updates an event position in the database
+ * Upserts an event position in the database
  */
- export async function update(eventPosition: EventPosition) {
+export async function upsert(eventPositionId: EventPositionIdentifier, eventPosition: EventPositionInsert) {
+	const theEventPosition = await get(eventPositionId);
+
+	if(theEventPosition) {
+		update(eventPositionId, eventPosition);
+	} else {
+		create(eventPosition);
+	}
+}
+
+/**
+ * Updates an event role in the database
+ */
+ export async function update(positionId: EventPositionIdentifier, eventPosition: EventPositionUpdate) {
 	
-	const eventPositionReplaced = await replaceRefs(eventPosition);
-	const where = await getUniqueEventPositionWhereClause(eventPositionReplaced);
+	const where = await getUniqueEventPositionWhereClause(positionId);
 	
 	return await prisma.event_position.updateMany({
-		data: eventPositionReplaced,
+		data: {
+			...eventPositionData(eventPosition),
+		},
 		where: where
 	});
-}
-
-/**
- * Replaces object references to database identifiers
- */
- async function replaceRefs(eventPosition) {
-	
-	// Don't modify the passed object
-	const eventPositionCopy = {...{}, ...eventPosition};
-
-	// Find the matching organization, if necessary
-	if (eventPositionCopy.id_organization_ref) {
-		const organization = await Organization.get({id_ref: eventPositionCopy.id_organization_ref});
-		eventPositionCopy.id_organization = organization.id;
-		delete eventPositionCopy.id_organization_ref;
-	}
-
-	// Find the matching event, if necessary
-	if (eventPositionCopy.id_event_ref) {
-		const event = await Event.get({id_organization: eventPositionCopy.id_organization, id_ref: eventPositionCopy.id_event_ref});
-		if(!event) {
-			throw new Error('The event referenced does not exist');
-		}
-		eventPositionCopy.id_event = event.id;
-		delete eventPositionCopy.id_event_ref;
-	}
-
-	// Find the matching event role, if necessary
-	if (eventPosition.id_event_role_ref) {
-		const eventRole = await EventRole.get({id_event: eventPositionCopy.id_event, id_ref: eventPositionCopy.id_event_role_ref});
-		if(!eventRole) {
-			throw new Error('The event role referenced does not exist');
-		}
-		eventPositionCopy.id_event_role = eventRole.id;
-		delete eventPositionCopy.id_event_role_ref;
-	}
-	
-	return eventPositionCopy;
-}
-
-/**
- * Confirms whether or not the minimum information to identify a unique event position has been provided
- * If using refs, we need to know the organization, the event, and the event position. No two positions
- * should have the same ref for all three.
- */
-export function isValidEventPositionIdentifier(positionId: EventPositionIdentifier) {
-	return positionId.id || (positionId.id_ref && (positionId.id_event || (positionId.id_event_ref && (positionId.id_organization || positionId.id_organization_ref))));
 }
 
 /**
@@ -101,16 +142,29 @@ export function isValidEventPositionIdentifier(positionId: EventPositionIdentifi
 async function getUniqueEventPositionWhereClause(eventPosition: EventPositionIdentifier) {
 	
 	const where = {};
+	// If we have event position id, that's all we need
 	if (eventPosition.id) {
 		where['id'] = eventPosition.id;
 	} else {
-		if (eventPosition.id_event_ref) {
-			const eventPositionReplaced = await replaceRefs(eventPosition);
-			eventPosition.id_event = eventPositionReplaced.id_event;
-			delete eventPosition.id_event_ref;
-		}		
-		where['id_event'] = eventPosition.id_event;
+		// Otherwise, look up for a matching reference
 		where['id_ref'] = eventPosition.id_ref;
+		
+		// Limiting it to the specific event
+		// Position identifiers should be unique within a given event
+		if (eventPosition.id_event) {
+			where['id_event'] = eventPosition.id_event;
+		} else {
+			const orgId = getReference({
+				id: eventPosition.id_organization,
+				id_ref: eventPosition.id_organization_ref
+			});
+			where['event'] = {
+				id_ref: eventPosition.id_event_ref,
+				organization: {
+					[orgId[0]]: orgId[1]
+				}
+			};
+		}
 	}
 	return where;
 }
@@ -133,16 +187,8 @@ async function getUniqueEventPositionWhereClause(eventPosition: EventPositionIde
  * Gets an event position from the database
  */
 export async function get(eventPosition: EventPositionIdentifier): Promise<EventPosition> {
-	
-	if (!isValidEventPositionIdentifier(eventPosition)) {
-		if (process.env.DEBUG === "true") {
-			console.log(eventPosition);
-		}
-		throw new Error('Identifier does not contain the required fields');
-	}
 
-	const eventPositionReplaced = await replaceRefs(eventPosition);
-	const where = await getUniqueEventPositionWhereClause(eventPositionReplaced);
+	const where = await getUniqueEventPositionWhereClause(eventPosition);
 
 	return await prisma.event_position.findFirst({
 		where: where

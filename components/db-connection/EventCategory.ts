@@ -1,29 +1,55 @@
 import type { RecordIdentifier } from './DBHelpers';
 import prisma from '@/components/db-connection-prisma';
 import * as Organization from './Organization';
+import { getReference } from './DBHelpers';
 
 export interface EventCategoryIdentifier extends RecordIdentifier {
 	id_organization?: number;
 	id_organization_ref?: string;
 }
 
-export interface EventCategoryInsert {
+export interface EventCategoryData {
     id_ref?: string;
     name: string;
-    id_organization: number;
     description?: string;
 }
 
-export interface EventCategory extends EventCategoryInsert {
-	id: number;
+export interface EventCategoryInsert extends EventCategoryData {
+	organization: RecordIdentifier
 }
 
 /**
- * Creates an event category in the database
+ * Gets core event category data from more complex interfaces
  */
-export async function create(category: EventCategoryInsert) {
+function eventCategoryData(eventCategory: EventCategoryInsert): EventCategoryData {
+	return {
+		id_ref: eventCategory.id_ref,
+		name: eventCategory.name,
+		description: eventCategory.description
+	};
+}
+
+export interface EventCategory extends EventCategoryData {
+	id: number;
+	id_organization: number;
+}
+
+/**
+ * Creates an event category in the database, optionally linking it to one or more organizations
+ */
+ export async function create(eventCategory: EventCategoryInsert): Promise<EventCategory> {
+
+	const orgRef = getReference(eventCategory.organization);
+
 	return await prisma.event_category.create({
-		data: category,
+		data: {
+			...eventCategoryData(eventCategory),
+			organization: {
+				connect: {
+					[orgRef[0]]: orgRef[1]
+				}
+			}
+		}
 	});
 }
 

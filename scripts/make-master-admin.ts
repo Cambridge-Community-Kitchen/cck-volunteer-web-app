@@ -2,8 +2,8 @@
 
 import { PrismaClient } from '@prisma/client'
 import * as dotenv from 'dotenv';
-import { setDatabaseUrl } from '../components/db-connection/DBHelpers';
-import Roles from '../components/constants/Roles';
+import { setDatabaseUrl } from '@/components/db-connection/DBHelpers';
+import Roles from '@/components/seed-data/Roles';
 
 const prisma = new PrismaClient()
 dotenv.config({ path: '.env.local' });
@@ -53,4 +53,3 @@ main()
     await prisma.$disconnect()
     process.exit(1)
   })
-

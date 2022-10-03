@@ -3,7 +3,8 @@
 import { PrismaClient } from '@prisma/client'
 import * as dotenv from 'dotenv';
 import { setDatabaseUrl } from '../components/db-connection/DBHelpers';
-import Roles from '../components/constants/Roles'
+import events from '../components/seed-data/Events';
+import * as Event from '../components/db-connection/Event'
 
 const prisma = new PrismaClient()
 dotenv.config({ path: '.env.local' });
@@ -12,7 +13,7 @@ async function main() {
     
     setDatabaseUrl();
     
-    const organization = {
+    /*const organization = {
       id_ref: 'cck',
       name: 'Cambridge Community Kitchen',
       description: 'Cambridge Community Kitchen is a food solidarity collective dedicated to tackling food poverty in Cambridge.',
@@ -37,6 +38,16 @@ async function main() {
         update: {},
         create: Roles[key],
       })
+    }*/
+
+    for (const idx in events) {
+      const eventId: Event.EventIdentifier = {
+        id_ref: events[idx].id_ref,
+        id_organization: events[idx].organization.id,
+        id_organization_ref: events[idx].organization.id_ref
+      }
+      
+      await Event.upsert(eventId, events[idx]);
     }
     
     console.log("Database successfully seeded with cck data.")

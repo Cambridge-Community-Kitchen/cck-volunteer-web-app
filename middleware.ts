@@ -33,6 +33,7 @@ export async function middleware(request: NextRequest) {
     /^\/_next\//,
     /\.(png|ico|json)$/,
     /^\/api\/auth\//,
+    /^\/api\/cck\/auth\//,
     /^\/api\/cck\/route/
   ];
 

@@ -17,7 +17,7 @@ const Hero = (props) => {
 	const flexDisp = useBreakpointValue({ base: 'none', md: 'flex' });
 	const blobColor = useColorModeValue('red.50', 'red.400');
 
-	if (props.user) {
+	if (props.user.organization['cck']) {
 		return (
 			<Container maxW={'7xl'}>
 				<Stack
@@ -32,7 +32,7 @@ const Hero = (props) => {
 							fontWeight={600}
 							fontSize={{ base: '4xl', lg: '6xl' }}
 						>
-							<Text as={'span'}>Hi, {props.user.nickname}!</Text>
+							<Text as={'span'}>Hi, {props.user.organization['cck'].addl_info.nickname}!</Text>
 						</Heading>
 						<Text color={'gray.500'}>
 							Congratulations, you&#39;ve successfully signed in! Sign up for a new volunteer shift today.

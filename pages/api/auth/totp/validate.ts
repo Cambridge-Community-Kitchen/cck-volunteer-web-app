@@ -1,9 +1,8 @@
 import { totp } from 'otplib';
-import { DBConnection } from '@/components/db-connection';
 import { SignJWT } from 'jose';
 import { nanoid } from 'nanoid';
 import type { NextApiRequest, NextApiResponse } from 'next';
-
+import { Person } from '@/components/db-connection';
 
 interface EmailRequestBody {
 	email?: string;
@@ -19,37 +18,39 @@ interface EmailRequestBody {
  export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 
 	const body: EmailRequestBody = req.body;
-	const data = await DBConnection.getUserByEmail(body.email);
-	if (data.length == 1) {
-		const person = data[0];
 
-		totp.options = { window: 5 };
-		const isValid = totp.check(body.totp, person.totpsecret);
-		
-		if (isValid) {
-			const {...personn} = person;
-			delete personn.totpsecret;
+	const person = await Person.get({ person: {
+		email: body.email
+	}, includeRoles: true });
 
-			const roles = await DBConnection.getUserRoles(person.id);
-			const wholePerson = {...personn, ...roles};
-			
-			const token = await new SignJWT(wholePerson)
-				.setProtectedHeader({ alg: 'HS256' })
-				.setJti(nanoid())
-				.setIssuedAt()
-				.setExpirationTime('4h')
-				.sign(new TextEncoder().encode(process.env.JWT_SS));
-
-			const responseBody = { result: "User successfully authenticated", jwt: token, user: wholePerson };
-			if (process.env.DEBUG === "true") {
-				console.log(responseBody);
-			}
-
-			res.status(200).json(responseBody);
-		} else {
-			res.status(401).json({ result: "Invalid email or totp code" });
-		}
-	} else {
+	// We need to find a matching user to continue
+	if (!person) {
 		res.status(401).json({ result: "Invalid email or totp code" });
+		return;
 	}
+
+	totp.options = { window: 5 };
+	const isValid = totp.check(body.totp, person.totpsecret);
+
+	// OTP must be valid
+	if (!isValid) {
+		res.status(401).json({ result: "Invalid email or totp code" });
+		return;
+	}
+
+	const personResponse = {...Person.makeAPIFriendly(person)};
+	
+	const token = await new SignJWT(personResponse)
+		.setProtectedHeader({ alg: 'HS256' })
+		.setJti(nanoid())
+		.setIssuedAt()
+		.setExpirationTime('6h')
+		.sign(new TextEncoder().encode(process.env.JWT_SS));
+
+	const responseBody = { result: "User successfully authenticated", jwt: token, user: person };
+	if (process.env.DEBUG === "true") {
+		console.log(responseBody);
+	}
+
+	res.status(200).json(responseBody);
 }

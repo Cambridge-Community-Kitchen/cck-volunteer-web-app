@@ -10,7 +10,7 @@
     "lint": "next lint",
     "test": "jest --watch",
     "update-schema": "./scripts/update-schema.sh",
-    "seed-db": "npm run update-schema && ./scripts/run-ts.sh ./prisma/seed.ts",
+    "seed-db": "npm run update-schema && ./scripts/run-ts.sh ./scripts/seed.ts",
     "publish": "vercel"
   },
   "dependencies": {
@@ -60,6 +60,7 @@
     "jest-environment-jsdom": "^29.0.3",
     "prisma": "^4.3.1",
     "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.1.0",
     "typescript": "^4.8.3"
   }
 }

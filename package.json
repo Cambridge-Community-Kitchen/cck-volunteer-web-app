@@ -12,7 +12,7 @@
     "update-schema": "./scripts/update-schema.sh",
     "seed-db": "npm run update-schema && ./scripts/run-ts.sh ./prisma/seed.ts",
     "publish": "vercel",
-    "vercel-build": "prisma generate && prisma migrate deploy && next build"
+    "vercel-build": "./scripts/vercel-build.sh"
   },
   "dependencies": {
     "@aws-sdk/client-ses": "^3.154.0",

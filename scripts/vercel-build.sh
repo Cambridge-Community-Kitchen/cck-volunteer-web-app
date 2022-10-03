@@ -2,7 +2,10 @@
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 ENV_FILE="$SCRIPT_DIR/../.env.local"
+
+if test -f "$ENV_FILE"; then
 source $ENV_FILE
+fi
 
 urlencode() {
     # urlencode <string>

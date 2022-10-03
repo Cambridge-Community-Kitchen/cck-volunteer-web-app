@@ -8,13 +8,14 @@ datasource db {
 }
 
 model organization {
-  id                 Int                  @id @default(autoincrement())
-  id_ref             String               @unique(map: "id_ref_UNIQUE") @db.VarChar(255)
-  name               String               @db.VarChar(255)
-  description        String?              @db.VarChar(255)
-  event              event[]
-  event_category     event_category[]
-  person_system_role person_system_role[]
+  id                  Int                  @id @default(autoincrement())
+  id_ref              String               @unique(map: "id_ref_UNIQUE") @db.VarChar(255)
+  name                String               @db.VarChar(255)
+  description         String?              @db.VarChar(255)
+  event               event[]
+  event_category      event_category[]
+  person_system_role  person_system_role[]
+  organization_person organization_person[]
 }
 
 model event {
@@ -113,12 +114,20 @@ model person {
   totpsecret         String               @unique(map: "totpsecret_UNIQUE") @db.VarChar(255)
   nickname           String               @unique(map: "nickname_UNIQUE") @db.VarChar(255)
   person_system_role person_system_role[]
+  organization_person organization_person[]
 }
 
 model organization_person {
   id              Int @id @default(autoincrement())
   id_person       Int
   id_organization Int
+  addl_info       Json?
+  person          person        @relation(fields: [id_person], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "id_po_person")
+  organization    organization? @relation(fields: [id_organization], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "id_po_organization")
+  
+  @@index([id_person], map: "id_person_idx")
+  @@index([id_organization], map: "id_organization_idx")
+  @@unique([id_person, id_organization], name: "organization_person")  
 }
 
 model person_system_role {

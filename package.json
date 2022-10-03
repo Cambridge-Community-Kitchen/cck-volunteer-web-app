@@ -9,8 +9,8 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest --watch",
-    "update-schema": "./scripts/update-schema.sh",
-    "seed-db": "npm run update-schema && ./scripts/run-ts.sh ./prisma/seed.ts",
+    "create-schema-migration": "./scripts/create-schema-migration.sh",
+    "seed-db": "./scripts/run-ts.sh ./prisma/seed.ts",
     "publish": "vercel",
     "vercel-build": "./scripts/vercel-build.sh"
   },

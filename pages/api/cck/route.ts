@@ -30,19 +30,14 @@ const errorResponses: { [key: string]: VolunteerApiResponse; } = Object.freeze({
  * Parses a date string into multiple date formats
  */
 function getDateFormats(dateString: string): [string, string] {
-    let dateDDMMYYYY: string;
-    let dateYYYYMMDD: string;
-    const c = dateString.charAt(2);
-    if (c >= '0' && c <= '9') {
-        const delimiter = dateString.charAt(4);
-        dateYYYYMMDD = dateString;
-        dateDDMMYYYY = [dateString.substring(8,10), dateString.substring(5,7), dateString.substring(0,4)].join(delimiter);
-    } else {
-        dateDDMMYYYY = dateString;
-        dateYYYYMMDD = [dateString.substring(6,10), dateString.substring(3,5), dateString.substring(0,2)].join(c);
-    }
-
-    return [dateDDMMYYYY, dateYYYYMMDD];
+    
+    const datePieces = dateString.split('-');
+    
+    if (datePieces.length != 3) { return [ dateString, dateString] }
+    const date1 = [datePieces[0], datePieces[1], datePieces[2]].join('-')
+    let date2 = [datePieces[2], datePieces[1], datePieces[0]].join('-')
+    
+    return [date1, date2];
 }
 
 /**

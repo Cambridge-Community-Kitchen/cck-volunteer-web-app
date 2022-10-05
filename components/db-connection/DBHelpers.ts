@@ -34,3 +34,13 @@ export function setDatabaseUrl() {
 		process.env.DATABASE_URL += `&sslaccept=strict&sslcert=${encodeURIComponent(pemPath)}`;
 	}
 }
+
+/**
+ * Copies properties from one object to another IFF the property is present on both objects
+ */
+ export function copyProps(to: unknown, from: unknown) {
+	const properties: string[] = Object.getOwnPropertyNames(to);
+	for (const idx in properties) {
+		to[properties[idx]] = from[properties[idx]];
+	}
+}

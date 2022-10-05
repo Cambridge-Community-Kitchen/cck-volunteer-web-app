@@ -12,6 +12,18 @@ export enum UserRole {
     EVENT_ADMIN = 'event-admin'
 }
 
+export interface VolunteerApiResponse {
+    code: number;
+    message?: string;    
+}
+
+/**
+ * Returns a basic API response with code and message
+ */
+export function makeResponse(volResponse: VolunteerApiResponse, res: NextApiResponse) {
+    return res.status(volResponse.code).json({ result: volResponse.message });
+}
+
 /**
  * Validates the JWT and retrieves the logged in user information
  */

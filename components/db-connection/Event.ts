@@ -2,24 +2,47 @@ import type { RecordIdentifier } from './DBHelpers';
 import prisma from '@/components/db-connection-prisma';
 import * as Organization from './Organization';
 import * as EventCategory from './EventCategory';
+import { Prisma } from '@prisma/client';
+import { copyProps } from './DBHelpers';
 
 export interface EventIdentifier extends RecordIdentifier {
 	id_organization?: number;
 	id_organization_ref?: string;
 }
 
-export interface EventInsert {
+export interface BaseEvent {
+	start_date: Date;
+    end_date?: Date;
+    all_day: boolean;
+	name: string;
+    description?: string;
+	addl_info?: Prisma.JsonValue;
+}
+
+export interface EventInsert extends BaseEvent {
     id_organization: number;
     id_event_category?: number;
     id_ref?: string;
-    start_date: Date;
-    end_date?: Date;
-    name: string;
-    description?: string;
 }
 
 export interface Event extends EventInsert {
 	id: number;
+}
+
+/**
+ * An event appropriate for return to a consuming application
+ */
+export class EventResponse implements BaseEvent{
+	start_date: Date = new Date();
+    end_date?: Date = null;
+    all_day = true;
+	name = "";
+    description?: string = null;
+	addl_info?: Prisma.JsonValue = null;
+
+	constructor(event: Event) {
+		copyProps(this, event);
+	}
 }
 
 /**

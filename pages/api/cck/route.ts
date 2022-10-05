@@ -1,5 +1,44 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '@/components/db-connection-prisma';
+import type { VolunteerApiResponse } from '@/components/api-helpers';
+import { makeResponse } from '@/components/api-helpers';
+import { RouteDeliveryResponse } from '@/components/db-connection/RouteDelivery';
+import { EventCategoryResponse } from '@/components/db-connection/EventCategory';
+import { EventResponse } from '@/components/db-connection/Event';
+import { RouteResponse } from '@/components/db-connection/Route';
+
+const eventCategoryRef = 'meal-prep-delivery';
+
+const eventRoleRef = 'delivery';
+
+const errorResponses: { [key: string]: VolunteerApiResponse; } = Object.freeze({
+    notFound: {
+        code: 404,
+        message: "Route not found"
+    },
+    invalidPasscode: {
+        code: 403,
+        message: "Passcode is invalid"
+    },
+    noPasscode: {
+        code: 403,
+        message: "For now, you MUST provide a passcode to access a route."
+    }
+});
+
+/**
+ * Parses a date string into multiple date formats
+ */
+function getDateFormats(dateString: string): [string, string] {
+    
+    const datePieces = dateString.split('-');
+    
+    if (datePieces.length != 3) { return [ dateString, dateString]; }
+    const date1 = [datePieces[0], datePieces[1], datePieces[2]].join('-');
+    const date2 = [datePieces[2], datePieces[1], datePieces[0]].join('-');
+    
+    return [date1, date2];
+}
 
 /**
  * Gets route information
@@ -18,7 +57,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // The combination of cck, event category, and date should be unique for an event. If the database says that we're
     // doing multiple meal preps and deliveries in one day, we messed up.
      
-    // Do we need to include event, role, or position information? Probably in the future, but not right now.
+    // Do we need to include role, or position information? Probably in the future, but not right now.
     // All that matters right now is that we can return route details based on date and route name
     
     // Example path: /route?date=03-02-2022&ref=arbury&passcode=ZHZW
@@ -27,11 +66,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { date, ref, passcode } = query;
 
     if(passcode) {
-        const routeRef = `meal-prep-delivery-${date}-delivery-${ref}`;
-
         const gottenRoute = await prisma.route.findFirst({
             where: {
-                id_ref: routeRef,
+                OR: getDateFormats(date as string).map(dateFormat => {
+                    return {
+                        id_ref: [eventCategoryRef, dateFormat, eventRoleRef, ref].join('-')
+                    };
+                })
             },
             include: {
                 route_delivery: {
@@ -52,20 +93,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         });
 
         if(!gottenRoute) {
-            res.status(404).json({ result: "route not found" });
-            return;
+            return makeResponse(errorResponses.notFound, res);
         }
 
         if(gottenRoute.passcode !== passcode) {
-            res.status(403).json({ result: "Passcode is invalid" });
-            return;
+            return makeResponse(errorResponses.invalidPasscode, res);
         }
 
-        cleanupRoute(gottenRoute);
-        
-        res.status(200).json(gottenRoute);
+        return res.status(200).json(cleanupRoute(gottenRoute));
     } else {
-        res.status(403).json({ result: "For now, you MUST provide a passcode to access a route." });
+        return makeResponse(errorResponses.noPasscode, res);
     }
 }
 
@@ -73,33 +110,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
  * Removes unneeded fields and changes field names to make the response more user-friendly
  */
 function cleanupRoute(gottenRoute) {
-    gottenRoute['deliveries'] = gottenRoute.route_delivery.map( route => {
-        delete route.sequence;
-        delete route.id;
-        delete route.id_route;
-        return route;
+
+    const response = new RouteResponse(gottenRoute);
+    response['deliveries'] = gottenRoute.route_delivery.map( route => {
+        return new RouteDeliveryResponse(route);
     });
-    
-    delete gottenRoute.route_delivery;
-    delete gottenRoute.id;
-    delete gottenRoute.id_ref;
-    delete gottenRoute.id_event_position;
-    delete gottenRoute.passcode;
+    response['event'] = new EventResponse(gottenRoute.event_position.event);
+    response['event']['category'] = new EventCategoryResponse(gottenRoute.event_position.event.event_category);
 
-    const eventCategory = gottenRoute.event_position.event.event_category;
-    delete eventCategory.id;
-    delete eventCategory.id_organization;
-    delete eventCategory.id_ref;
-
-    gottenRoute.event_position.event['category'] = eventCategory;
-
-    delete gottenRoute.event_position.event.event_category;
-
-    gottenRoute['event'] = gottenRoute.event_position.event;
-    delete gottenRoute['event'].id;
-    delete gottenRoute['event'].id_organization;
-    delete gottenRoute['event'].id_event_category;
-    delete gottenRoute['event'].id_ref;
-
-    delete gottenRoute.event_position;
+    return response;
 }

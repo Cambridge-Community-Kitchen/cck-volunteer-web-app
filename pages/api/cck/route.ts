@@ -33,9 +33,9 @@ function getDateFormats(dateString: string): [string, string] {
     
     const datePieces = dateString.split('-');
     
-    if (datePieces.length != 3) { return [ dateString, dateString] }
-    const date1 = [datePieces[0], datePieces[1], datePieces[2]].join('-')
-    let date2 = [datePieces[2], datePieces[1], datePieces[0]].join('-')
+    if (datePieces.length != 3) { return [ dateString, dateString]; }
+    const date1 = [datePieces[0], datePieces[1], datePieces[2]].join('-');
+    const date2 = [datePieces[2], datePieces[1], datePieces[0]].join('-');
     
     return [date1, date2];
 }

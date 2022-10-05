@@ -9,6 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest --watch",
+    "deploy-schema-locally": "./scripts/deploy-schema-locally.sh",
     "create-schema-migration": "./scripts/create-schema-migration.sh",
     "seed-db": "./scripts/run-ts.sh ./prisma/seed.ts",
     "publish": "vercel",

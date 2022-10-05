@@ -1,11 +1,56 @@
 import '@testing-library/jest-dom'
-import { Organization, EventCategory, Event, EventRole, EventPosition } from '@/components/db-connection';
+import { Organization, EventCategory, Event, EventRole, EventPosition, Person, OrganizationPerson, CCKPerson} from '@/components/db-connection';
 
-const testOrg1 = Object.freeze({name: "The Human Fund", description: "We collect funds for humans"});
+const testOrg1 = Object.freeze({id_ref: "thf", name: "The Human Fund", description: "We collect funds for humans"});
 const testEventCategory1 = Object.freeze({id_ref: "cckmealdelivery", name: "Meal prep & delivery", description: "Several times a week, CCK prepares and delivers free, hot, plant-based meals to those who need them."});
 const testEvent1 = Object.freeze({id_ref: "cckmealdelivery-03-02-2022", name: "Meal prep & delivery Feb 03", start_date: new Date()});
 const testEventRole1 = Object.freeze({id_ref: "cckmealdelivery-03-02-2022-delivery", name: "Meal delivery", description: "Delivery volunteers deliver meals using their personal vehicle (typically a bicycle or car)."})
 const testEventPosition1 = Object.freeze({id_ref: "cckmealdelivery-03-02-2022-Mill-Rd", name: "Mill Rd."});
+const testPerson1: Person.PersonInsert = {
+  email: "myfakeemail@test.com",
+  totpsecret: "abcdefg",
+  organization: {
+    [testOrg1.id_ref]: {
+      addl_info: { nickname: "MFU" }
+    }
+  }
+}
+
+interface seedDataParams {
+  orgs?: Organization.OrganizationInsert[];
+  people?: Person.PersonInsert[];
+  afterSeed: (orgs: Organization.Organization[], people: Person.Person[]) => Promise<void>
+}
+
+async function seedTestData({orgs = [testOrg1], people = [testPerson1], afterSeed}: seedDataParams) {
+  
+  // Create test orgs first
+  const createdOrgs: Organization.Organization[] =  await Promise.all(orgs.map(async org =>  {
+    
+    const crOrg = await Organization.create({...org});
+    
+    return crOrg;
+  }));
+
+  // Then people
+  const createdPeople: Person.Person[] =  await Promise.all(people.map(async person =>  {
+    return await Person.create({...person});
+  }));
+  
+  try {
+    await afterSeed(createdOrgs, createdPeople);
+  } catch (e) {
+    throw e;
+  } finally {
+    for (const idx in createdOrgs) {
+      await Organization.remove({id: createdOrgs[idx].id});
+    }
+
+    for (const idx in createdPeople) {
+      await Person.remove({id: createdPeople[idx].id});
+    }
+  }
+}
 
 function getRandomString() {
   return (Math.random() + 1).toString(36);
@@ -223,6 +268,33 @@ async function createEventPosition(eventPosition, eventId, eventRoleId) {
       expect(gottenEventPosition.id_ref).toMatch(testEventPosition1.id_ref);
       expect(gottenEventPosition.name).toMatch(testEventPosition1.name);
     });
+  });
+
+  it('creates a user for the organization', async () => {
+    await seedTestData({afterSeed: async (orgs, people) => {
+      
+      const gottenPersonOrg = await OrganizationPerson.get({ person: {id:people[0].id}, organization: {id:orgs[0].id}});
+      expect(people[0].id).toEqual(gottenPersonOrg.id_person);
+      expect(orgs[0].id).toEqual(gottenPersonOrg.id_organization);
+      expect(JSON.stringify(testPerson1.organization[testOrg1.id_ref].addl_info)).toMatch(JSON.stringify(gottenPersonOrg.addl_info));
+  
+      const addlInfo = testPerson1.organization[testOrg1.id_ref].addl_info as unknown as CCKPerson.CCKPersonOrgData;
+      const gottenAddlInfo = gottenPersonOrg.addl_info as unknown as CCKPerson.CCKPersonOrgData;
+      
+      expect(addlInfo.nickname).toEqual(gottenAddlInfo.nickname);
+    }});
+  });
+
+  it('gets person org detail', async () => {
+    await seedTestData({afterSeed: async (orgs, people) => {
+    
+      const orgDetails = await Person.getPersonOrgDetail(people[0]);
+  
+      const fetchedNickname = orgDetails[testOrg1.id_ref].addl_info['nickname'];
+      const actualNickname = testPerson1.organization[testOrg1.id_ref].addl_info['nickname']
+      
+      expect(fetchedNickname).toEqual(actualNickname);
+    }});
   });
 
 

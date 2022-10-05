@@ -8,6 +8,7 @@ export async function middleware(request: NextRequest) {
 
   const rateLimited = [
     /^\/api\/auth\/totp\/request/,
+    /^\/api\/cck\/auth\/register/,
     /^\/api\/auth\/register/
   ];
   
@@ -33,6 +34,7 @@ export async function middleware(request: NextRequest) {
     /^\/_next\//,
     /\.(png|ico|json)$/,
     /^\/api\/auth\//,
+    /^\/api\/cck\/auth\//,
     /^\/api\/cck\/route/
   ];
 

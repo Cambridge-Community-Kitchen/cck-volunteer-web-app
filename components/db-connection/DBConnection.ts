@@ -68,19 +68,3 @@ export async function getUserByEmail(email) {
 	const qString = SQL`SELECT * FROM person WHERE email = ${email}`; 
 	return await asyncQuery(qString);
 }
-
-/**
- * Gets a unique user from the database by email address or nickname
- */
- export async function getUserByEmailorNickname(email, nickname) {
-	const qString = SQL`SELECT * FROM person WHERE (email = ${email} OR nickname = ${nickname} )`; 
-	return await asyncQuery(qString);
-}
-
-/**
- * Creates a user in the database
- */
- export async function createUser({email, totpsecret, nickname}) {
-	const qString = SQL`INSERT INTO person(email, totpsecret, nickname) VALUES(${email}, ${totpsecret}, ${nickname})`; 
-	return await asyncQuery(qString);
-}

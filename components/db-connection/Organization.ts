@@ -39,6 +39,27 @@ export async function create(org: OrganizationInsert): Promise<Organization> {
 	});
 }
 
+/**
+ * Returns whether or not an organization has an associated person with the given prop name and value
+ * Use for things like cck where we don't want multiple people to have the same nickname
+ */
+ export async function hasPersonWithInfoProp(org: RecordIdentifier, propName: string, propValue: string): Promise<boolean> {
+	const orgId = getReference(org);
+
+	const where = {};
+	where[orgId[0]] = orgId[1];
+
+	const gottenOrg = await prisma.organization.findUnique({
+		where: where,
+		include: {
+			organization_person: true
+		}
+	});
+
+	const matchingOrgPersons = gottenOrg.organization_person.filter(orgPerson => orgPerson.addl_info[propName] === propValue);
+
+	return matchingOrgPersons.length > 0;
+}
 
 /**
  * Gets an organization from the database using database ids or refs

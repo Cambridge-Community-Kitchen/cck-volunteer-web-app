@@ -112,7 +112,6 @@ model person {
   id                 Int                  @id @default(autoincrement())
   email              String               @unique(map: "email_UNIQUE") @db.VarChar(255)
   totpsecret         String               @unique(map: "totpsecret_UNIQUE") @db.VarChar(255)
-  nickname           String               @unique(map: "nickname_UNIQUE") @db.VarChar(255)
   person_system_role person_system_role[]
   organization_person organization_person[]
 }

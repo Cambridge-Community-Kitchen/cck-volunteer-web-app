@@ -22,7 +22,7 @@ import { Formik, Form, Field } from 'formik';
 import { useRouter } from 'next/router';
 import React from 'react';
 
-import { registerUser } from '@/components/api';
+import { registerUserCCK } from '@/components/api';
 
 /**
  * Displays a full-page registration screen
@@ -47,7 +47,7 @@ export default function Registration(): React.ReactElement {
 		setIsLoading(true);
 		setErrorMessage('');
 		try {
-			const res = await registerUser({baseURL: router.basePath, email: values.email, nickname: values.nickname}) ;
+			const res = await registerUserCCK({baseURL: router.basePath, email: values.email, nickname: values.nickname}) ;
 			if (res.status == 400) {
 				setErrorMessage(RegistrationErrorMessage.duplicate);
 			} else if (res.status == 200) {

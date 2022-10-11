@@ -1,4 +1,57 @@
-# Developer Quickstart
+# Developer QuickStart - Short Version
+
+These commands should work cross-platform and represent the minimum needed to get the app running.
+
+## Setting up the Database pt.1
+
+The easiest way to set up a database is using Docker. You can follow the installation commands here https://docs.docker.com/get-started/
+
+Docker will allow you to set up your database and tear it down much easier than installing it directly to your system.
+
+You can use the following command to get MySQL running with Docker, just make a note of the usernames and passwords you used.
+`docker run --name cck-mysql -e MYSQL_ROOT_PASSWORD=mysqlroot -e MYSQL_PASSWORD=mysqldev -e MYSQL_USER=cckdev -e MYSQL_DATABASE=cckdev -p 3306:3306 -d mysql:latest`
+
+If you don't want to install Docker you can follow the instructions for installing MySQL directly further down the page.
+
+## Environment Variables
+
+The following items should be set as environment variables from whichever console you run your commands:
+```
+DATABASE_URL=mysql://root:<ROOT_PASSWORD>@localhost:3306/<DATABASE_NAME>?schema=public
+
+# Helpful debugging to console
+DEBUG=true
+
+# Ensures that the connection to localhost is done without SSL
+NO_DB_SSL=true
+```
+
+In bash/cmd/mac you can set these like `export DEBUG=true`
+
+## Setting up the Database pt.2
+
+You are now ready to run the database migrations! Database migrations are instructions for the database to prepare the structure of the data we are going to use.
+They should be run every time you pull down additional migrations from Git in order to keep the format of the data in sync.
+
+Run them like so: `npx prisma migrate dev`
+
+## Running the dev server
+
+You're now ready to run the development server! This will allow you to explore the app and test your changes.
+
+Run the server like so: `yarn dev`
+
+
+## Making changes to Database Objects
+
+If you have made changes to objects that live in the database such as Person or Organisation in the code you must then generate a migration for that change.
+
+You can make new migrations like so: `npx prisma migrate dev --name <HUMAN READABLE NAME>`
+
+
+
+
+# Developer README - Long Version
 
 The console commands below assume you are developing on a Debian-based Linux system and were tested with Ubuntu 22.04.1; modify to suit your particular setup.
 

@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '@/components/db-connection-prisma';
+import { daysSince, parseDashedDate } from '@/components/api-helpers';
 
 /**
  * Gets route information
@@ -26,7 +27,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const query = req.query;
     const { date, ref, passcode } = query;
 
-    if(passcode) {
+    let parsedDate: Date;
+    try {
+        parsedDate = parseDashedDate(date as string);
+    } catch(error) {
+        res.status(400).json({ result: "invalid date" });
+        return;
+    }
+    const daysDiff = daysSince(parsedDate);
+    
+    // Do not return route data if the delivery date is more than a day ago
+    if(daysDiff > 1) {
+        res.status(404).json({ result: "route not found" });
+        return;
+    } else if(passcode) {
         const routeRef = `meal-prep-delivery-${date}-delivery-${ref}`;
 
         const gottenRoute = await prisma.route.findFirst({
@@ -64,8 +78,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         cleanupRoute(gottenRoute);
         
         res.status(200).json(gottenRoute);
+        return;
     } else {
         res.status(403).json({ result: "For now, you MUST provide a passcode to access a route." });
+        return;
     }
 }
 

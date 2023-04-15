@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '@/components/db-connection-prisma';
 import { findLocation } from '@/components/google-maps-api';
 import polyUtil from 'polyline-encoded';
-
+import { daysSince, parseDashedDate } from '@/components/api-helpers';
 
 /**
  * Generates a gpx from route data
@@ -18,7 +18,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     mode = mode ? mode : "bicycling";
 
-    if(passcode) {
+    let parsedDate: Date;
+    try {
+        parsedDate = parseDashedDate(date as string);
+    } catch(error) {
+        res.status(400).json({ result: "invalid date" });
+        return;
+    }
+    const daysDiff = daysSince(parsedDate);
+
+    // Do not return route data if the delivery date is more than a day ago
+    if(daysDiff > 1) {
+        res.status(404).json({ result: "route not found" });
+        return;
+    } else if(passcode) {
         const routeRef = `meal-prep-delivery-${date}-delivery-${ref}`;
 
         const gottenRoute = await prisma.route.findFirst({
@@ -33,7 +46,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 }
             },
         });
-      
+
+        if(gottenRoute.passcode !== passcode) {
+            res.status(403).json({ result: "Passcode is invalid" });
+            return;
+        }
+        
         const client = new Client({});
         const request: GeocodeRequest = {
             params: {

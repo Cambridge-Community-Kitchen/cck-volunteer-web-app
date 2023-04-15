@@ -13,6 +13,39 @@ export enum UserRole {
 }
 
 /**
+ * Calculates the days since a provided date 
+ * This returns a positive number for dates more than ~24h in the past
+ * and a negative number for dates more than ~24h in the future.
+ */
+export function daysSince(date: Date) {
+    const t1 = date.getTime();
+    const t2 = (new Date()).getTime();
+    return Math.floor((t2-t1)/(24*3600*1000));
+}
+
+/**
+ * Parses a DD-MM-YYYY string into a date object
+ * 
+ * @throws an error if the string is invalidly formatted or a valid date cannot be parsed
+ */
+export function parseDashedDate(date: string) {
+    const parts = date.split("-");
+    if (parts.length != 3) {
+        throw new Error("Invalid date format");
+    }
+
+    const parsedDate = new Date(parseInt(parts[2], 10),
+                            parseInt(parts[1], 10) - 1,
+                            parseInt(parts[0], 10));
+
+    if (isNaN(parsedDate.getTime())) {
+        throw new Error("Invalid date format");
+    }
+
+    return parsedDate;
+}
+
+/**
  * Validates the JWT and retrieves the logged in user information
  */
 export async function getUserContext(req: Request | IncomingMessage) {

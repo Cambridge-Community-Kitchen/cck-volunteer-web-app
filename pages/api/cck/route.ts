@@ -33,6 +33,7 @@ export default async function handler(
   //   render demo data if the path is like /route?date=03-02-2022&ref=demo&passcode=ZHZW
   if (ref === "demo") {
     res.status(200).json(demoRouteData);
+    return;
   }
   let parsedDate: Date;
   try {

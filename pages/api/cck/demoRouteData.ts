@@ -22,7 +22,8 @@ type RouteData = {
   event: {
     start_date: Date | string;
     addl_info: {
-      dishOfTheDay: Dish;
+      dishOfTheDay?: Dish;
+      alternateDish?: Dish;
     }
   };
 };
@@ -89,6 +90,11 @@ export const demoRouteData: RouteData = {
         dish        : 'Bean Soup',
         ingredients : 'water, beans, cabbage, onions, lemon juice, salt',
         allergens   : 'sulphites',
+      },
+      alternateDish:{
+        dish        : 'Lentil Soup',
+        ingredients : 'water, lentils, cabbage, onions, black pepper, salt',
+        allergens   : '',
       }
     }
   }

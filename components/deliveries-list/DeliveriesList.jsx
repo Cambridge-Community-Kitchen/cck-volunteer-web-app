@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Box, Button, Text, Flex } from '@chakra-ui/react';
 import dayjs from 'dayjs';
+import Dish from './Dish';
 import Item from './item';
 import LoadingSpinner from '../loading-spinner';
 import BackToLockon from '../../components/back-to-lockon';
@@ -17,7 +18,11 @@ const DeliveriesList = ({ date, id_ref, passcode, mode, basePath }) => {
 	const [isLoading, setIsLoading] = useState(null);
 	const [routeData, setRouteData] = useState();
 
-	const dishOfTheDay = routeData?.event?.addl_info?.dishOfTheDay;
+	const dishes = [
+    routeData?.event?.addl_info?.dishOfTheDay,
+    routeData?.event?.addl_info?.alternateDish,
+  ].filter(Boolean);
+
 	const router = useRouter();
 
 	useEffect(() => {
@@ -58,10 +63,10 @@ const DeliveriesList = ({ date, id_ref, passcode, mode, basePath }) => {
 	if (routeData.result) {
 		return <div>{routeData.result}</div>;
 	}
-	
+
 	const rDate = new Date(routeData.event.start_date);
 	const formattedDate = ((rDate.getDate() > 9) ? rDate.getDate() : ('0' + rDate.getDate())) + '/' + ((rDate.getMonth() > 8) ? (rDate.getMonth() + 1) : ('0' + (rDate.getMonth() + 1))) + '/' + rDate.getFullYear();
-	
+
 	return (
 		<div className={styles.root}>
 			<Box display="flex" justifyContent="space-between">
@@ -76,57 +81,13 @@ const DeliveriesList = ({ date, id_ref, passcode, mode, basePath }) => {
 					</Text>
 				</Box>
 			</Box>
-			{displayDish && dishOfTheDay && (
-				<Box
-					border="2px"
-					borderColor="gray.200"
-					borderRadius={5}
-					p={1}
-					m={2}
-				>
-					<Box
-						alignItems="center"
-						display="flex"
-						justifyContent="flex-start"
-					>
-						<Text
-							fontWeight="bold"
-							fontSize={16}
-							textTransform="uppercase"
-						>
-							{dishOfTheDay?.dish}
-						</Text>
-					</Box>
-					<Box
-						alignItems="flex-start"
-						display="flex"
-						justifyContent="flex-start"
-					>
-						<Text fontSize={14}>
-							<span>Ingredients:</span>{' '}
-							<strong>{dishOfTheDay?.ingredients}</strong>
-						</Text>
-					</Box>
-
-					<Box
-						alignItems="center"
-						display="flex"
-						justifyContent="flex-start"
-					>
-						<Text color="red.400" fontSize={14} fontWeight="bold">
-							Allergens:
-						</Text>
-						{dishOfTheDay.allergens ? (
-							<Text fontSize={14} ml={1}>
-								{dishOfTheDay?.allergens}
-							</Text>
-						) : (
-							<Text fontSize={14} ml={1}>
-								No allergens
-							</Text>
-						)}
-					</Box>
-				</Box>
+			{displayDish && dishes.length && dishes.map(
+        (dish, i) => (
+          <Dish
+            dish_info={dish}
+            key={i}
+          />
+        )
 			)}
 			<Flex direction="row">
 			<Button
@@ -152,7 +113,7 @@ const DeliveriesList = ({ date, id_ref, passcode, mode, basePath }) => {
 			<ul className={styles.list}>
 				{routeData.deliveries.map((item, index) => {
 					const portions = item.portions;
-					
+
 					if (item.plus_code.length <= 13 && item.plus_code.includes("+")) { //then it's a PlusCode
 						if (item.plus_code.indexOf("+")==4) {
 							item.plus_code = "9f42"+item.plus_code;

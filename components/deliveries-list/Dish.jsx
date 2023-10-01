@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Text } from '@chakra-ui/react';
 
-const Dish = ({ dish_info }) => {
+const Dish = ({ dish_info, dish_title }) => {
   return (
     <Box
       border="2px"
@@ -20,7 +20,7 @@ const Dish = ({ dish_info }) => {
           fontSize={16}
           textTransform="uppercase"
         >
-          {dish_info?.dish}
+          {dish_title}: {dish_info?.dish}
         </Text>
       </Box>
       <Box

@@ -19,9 +19,15 @@ const DeliveriesList = ({ date, id_ref, passcode, mode, basePath }) => {
 	const [routeData, setRouteData] = useState();
 
 	const dishes = [
-    routeData?.event?.addl_info?.dishOfTheDay,
-    routeData?.event?.addl_info?.alternateDish,
-  ].filter(Boolean);
+    {
+      title: 'Main dish',
+      info: routeData?.event?.addl_info?.dishOfTheDay,
+    },
+    {
+      title: 'Alternate dish',
+      info: routeData?.event?.addl_info?.alternateDish,
+    }
+  ].filter(dish => dish.info);
 
 	const router = useRouter();
 
@@ -82,10 +88,11 @@ const DeliveriesList = ({ date, id_ref, passcode, mode, basePath }) => {
 				</Box>
 			</Box>
 			{displayDish && dishes.length && dishes.map(
-        (dish, i) => (
+        (dish) => (
           <Dish
-            dish_info={dish}
-            key={i}
+            dish_info={dish.info}
+            dish_title={dish.title}
+            key={dish.title}
           />
         )
 			)}

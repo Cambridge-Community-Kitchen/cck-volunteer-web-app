@@ -9,11 +9,23 @@ type Delivery = {
   when_not_home?: string;
 };
 
+type Dish = {
+  dish: string;
+  ingredients: string;
+  allergens: string;
+};
+
 type RouteData = {
   deliveries: Delivery[];
   route_delivery: string;
   name: string;
-  event: { start_date: Date | string };
+  event: {
+    start_date: Date | string;
+    addl_info: {
+      dishOfTheDay?: Dish;
+      alternateDish?: Dish;
+    }
+  };
 };
 
 export const demoRouteData: RouteData = {
@@ -71,5 +83,19 @@ export const demoRouteData: RouteData = {
   ],
   route_delivery: "route_delivery",
   name: "Arbury (DEMO)",
-  event: { start_date: new Date() },
+  event: {
+    start_date: new Date(),
+    addl_info: {
+      dishOfTheDay:{
+        dish        : 'Bean Soup',
+        ingredients : 'water, beans, cabbage, onions, lemon juice, salt',
+        allergens   : 'sulphites',
+      },
+      alternateDish:{
+        dish        : 'Lentil Soup',
+        ingredients : 'water, lentils, cabbage, onions, black pepper, salt',
+        allergens   : '',
+      }
+    }
+  }
 };

@@ -6,7 +6,7 @@ const defaultHeaders = Object.freeze({
 const endpoints = Object.freeze({
     totpRequest: "/api/auth/totp/request",
     totpValidate: "/api/auth/totp/validate",
-    registerUser: "/api/auth/register",
+    registerUserCCK: "/api/cck/auth/register",
     getRouteData: "/api/cck/route"
 });
 
@@ -41,16 +41,17 @@ export async function validateOTP({baseURL, email, otp}) {
 /**
  * Makes an HTTP request to the register user endpoint
  */
-export async function registerUser({baseURL, email, nickname}) {
+ export async function registerUserCCK({baseURL, email, nickname}) {
     
-    const endpointUrl = baseURL + endpoints.registerUser;
+    const endpointUrl = baseURL + endpoints.registerUserCCK;
     const settings = {
         method: 'POST',
         headers: defaultHeaders,
-        body: JSON.stringify({email: email, nickname: nickname})
+        body: JSON.stringify({email: email, addl_info: {nickname: nickname}})
     };
     return await fetch(endpointUrl, settings);
 }
+
 
 /**
  * Makes an HTTP request to cck's route endpoint

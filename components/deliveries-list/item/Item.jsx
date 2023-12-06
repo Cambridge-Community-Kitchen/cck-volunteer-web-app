@@ -5,11 +5,22 @@ import {
 	Box,
 	Button,
 	Divider,
+	Menu,
+	MenuButton,
+	MenuList,
+	MenuItem,
 	Spacer,
 	Stack,
 	Text,
 } from '@chakra-ui/react';
-import { ArrowForwardIcon, CheckIcon, PhoneIcon } from '@chakra-ui/icons';
+import {
+	ArrowForwardIcon,
+	ChatIcon,
+	CheckIcon,
+	ChevronDownIcon,
+	NotAllowedIcon,
+	PhoneIcon
+} from '@chakra-ui/icons';
 import styles from './Item.module.scss';
 
 const Item = ({ data, markComplete, portions, unmarkComplete }) => {
@@ -106,14 +117,41 @@ const Item = ({ data, markComplete, portions, unmarkComplete }) => {
 							Google Maps
 						</Button>
 						{data.phone && (
-							<Button
-								as="a"
-								href={`tel:${data.phone}`}
-								leftIcon={<PhoneIcon h="3" w="3" />}
-								colorScheme="teal"
-							>
-								Call
-							</Button>
+							<Menu>
+								<MenuButton
+									colorScheme="teal"
+									as={Button}
+									rightIcon={<ChevronDownIcon h="3" w="3" />}
+								>
+									Call
+								</MenuButton>
+								<MenuList colorScheme="teal">
+									<MenuItem isFocusable={false}>{data.phone}</MenuItem>
+									<MenuItem
+										as="a"
+										href={`tel:${data.phone}`}
+										icon={<PhoneIcon h="3" w="3" />}
+									>
+										Telephone call
+									</MenuItem>
+									<MenuItem
+										as="a"
+										href={`tel:141${data.phone}`}
+										icon={<NotAllowedIcon h="3" w="3" />}
+									>
+										Call but withhold your number
+									</MenuItem>
+									{/^([+]44|0044|0)7/.test(data.phone) && (
+										<MenuItem
+											as="a"
+											href={`sms:${data.phone}`}
+											icon={<ChatIcon h="3" w="3" />}
+										>
+											Text Message
+										</MenuItem>
+									)}
+								</MenuList>
+							</Menu>
 						)}
 						<Spacer />
 						<Button

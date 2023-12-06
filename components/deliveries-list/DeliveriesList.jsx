@@ -96,27 +96,41 @@ const DeliveriesList = ({ date, id_ref, passcode, mode, basePath }) => {
           />
         )
       )}
-      <Flex direction="row">
-      <Button
-        margin="auto"
-        as="a"
-        onClick={() => {
-          router.push({
-            pathname: '/api/cck/route.gpx',
-            query: {
-              date: date,
-              ref: id_ref,
-              passcode: passcode,
-              mode: mode
-            }
-          });
-        }}
-        rightIcon={<ArrowForwardIcon />}
-        colorScheme="blue"
-        target="_blank"
-      >
-        Download route as GPX
-      </Button></Flex>
+      <Flex direction="row" px={2} py={2}>
+        <Button
+          as="a"
+          mx="auto"
+          onClick={() => {
+            router.push({
+              pathname: '/api/cck/route.gpx',
+              query: {
+                date: date,
+                ref: id_ref,
+                passcode: passcode,
+                mode: mode
+              }
+            });
+          }}
+          rightIcon={<ArrowForwardIcon />}
+          colorScheme="blue"
+          target="_blank"
+          tabindex={0}
+        >
+          Download route as GPX
+        </Button>
+      </Flex>
+      <Flex direction="row" px={2} py={2}>
+        <Button
+          as="a"
+          mx="auto"
+          href="https://bit.ly/CCKroutedebrief"
+          rightIcon={<ArrowForwardIcon />}
+          colorScheme="blue"
+          target="_blank"
+        >
+          Route Debrief
+        </Button>
+      </Flex>
       <ul className={styles.list}>
         {routeData.deliveries.map((item, index) => {
           const portions = item.portions;

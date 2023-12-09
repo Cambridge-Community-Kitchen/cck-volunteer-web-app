@@ -28,12 +28,14 @@ type RouteData = {
   };
 };
 
+// All of this is fake data. Numbers in ranges from:
+// https://www.ofcom.org.uk/phones-telecoms-and-internet/information-for-industry/numbering/numbers-for-drama
 export const demoRouteData: RouteData = {
   deliveries: [
     {
       portions: 1,
       name: "Sarina",
-      phone: "01234 567890",
+      phone: "01632 567890",
       address: "9 Wiegman Road, Cambridge CB9 9SW",
       plus_code: "6574+2F",
       allergies: "",
@@ -43,7 +45,7 @@ export const demoRouteData: RouteData = {
     {
       portions: 9,
       name: "Lucy Bronze",
-      phone: "01234 567890",
+      phone: "07700 900900",
       address: "10 Lioness Road, Cambridge CB1 1LB",
       plus_code: "647F+26",
       allergies: "No spicy food",
@@ -53,7 +55,7 @@ export const demoRouteData: RouteData = {
     {
       portions: 1,
       name: "Millie Bright",
-      phone: "01234 567890",
+      phone: "00447700900900",
       address: "2b England Way, Cambridge CB7 1MB",
       plus_code: "643M+XP",
       allergies: "",
@@ -63,7 +65,7 @@ export const demoRouteData: RouteData = {
     {
       portions: 2,
       name: "Georgia Stanway",
-      phone: "07701234567",
+      phone: "+447700900900",
       address: "212, Champion Avenue, Cambridge CB7 1GS",
       plus_code: "642Q+29",
       allergies: "",
@@ -73,7 +75,7 @@ export const demoRouteData: RouteData = {
     {
       portions: 3,
       name: "Mary Earps",
-      phone: "07701234567",
+      phone: "+441632987654",
       address: "1 Goal Close, Cambridge CB1 1ME",
       plus_code: "642F+MX",
       allergies: "Gluten intolerant",

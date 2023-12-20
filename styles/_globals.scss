@@ -29,12 +29,12 @@ $def-vert-padding: 20px;
 }
 
 .formElement {
-	
+  
 }
 
 .button {
-  	@extend .formElement;
-  	margin-top: $def-vert-padding;
+    @extend .formElement;
+    margin-top: $def-vert-padding;
 }
 
 .centerColumn {

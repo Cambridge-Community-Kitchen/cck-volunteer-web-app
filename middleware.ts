@@ -51,7 +51,7 @@ export async function middleware(request: NextRequest) {
   }
 
   if (request.nextUrl.pathname.startsWith('/api')) {
-  	
+    
     if (request.method == 'POST') {
       let contentType = request.headers.get('content-type')
 

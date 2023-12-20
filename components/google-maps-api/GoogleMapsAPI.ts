@@ -7,7 +7,7 @@ const googleBaseUrl = "https://maps.googleapis.com/maps/api";
  * @returns {object} The search results matching the provided location
  */
 export async function findLocation(location: string) {
-	
+  
     const url = new URL(googleBaseUrl);
     url.pathname += '/place/findplacefromtext/json';
     url.searchParams.append("input", location);

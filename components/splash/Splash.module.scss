@@ -9,7 +9,7 @@
 }
 
 .splash {
-	@extend .fullScreen;
+  @extend .fullScreen;
   overflow: hidden;
   background-color: var(--chakra-colors-red-50);
   display: flex;
@@ -20,5 +20,5 @@
 }
 
 .logoFade {
-	@include transition(transform 400ms ease-out);
+  @include transition(transform 400ms ease-out);
 }

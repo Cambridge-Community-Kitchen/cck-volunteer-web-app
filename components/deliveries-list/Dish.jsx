@@ -53,7 +53,7 @@ const Dish = ({ dish_info, dish_title }) => {
         )}
       </Box>
     </Box>
-	);
+  );
 };
 
 export default Dish;

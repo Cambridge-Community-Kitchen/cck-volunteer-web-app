@@ -14,14 +14,14 @@ const endpoints = Object.freeze({
  * Makes an HTTP request to the request OTP endpoint
  */
 export async function requestOTP({baseURL, email}) {
-	
-	const endpointUrl = baseURL + endpoints.totpRequest;
-	const settings = {
+  
+  const endpointUrl = baseURL + endpoints.totpRequest;
+  const settings = {
         method: 'POST',
         headers: defaultHeaders,
         body: JSON.stringify({email: email})
     };
-	return await fetch(endpointUrl, settings);
+  return await fetch(endpointUrl, settings);
 }
 
 /**

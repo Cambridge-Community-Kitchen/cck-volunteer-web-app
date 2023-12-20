@@ -7,7 +7,7 @@
   ],
   "plugins": ["unused-imports", "@typescript-eslint", "jsdoc"],
   "rules": {
-  	"semi": 2,
+    "semi": 2,
     "jsdoc/check-access": 1, // Recommended
     "jsdoc/check-alignment": 1, // Recommended
     "jsdoc/check-param-names": 1, // Recommended

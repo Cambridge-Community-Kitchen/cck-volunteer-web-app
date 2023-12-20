@@ -9,34 +9,34 @@ export interface OrganizationInsert {
 }
 
 export interface Organization extends OrganizationInsert {
-	id: number;
+  id: number;
 }
 
 /**
  * Creates an organization in the database
  */
 export async function create(org: OrganizationInsert): Promise<Organization> {
-	return await prisma.organization.create({
-		data: {
-			id_ref: org.id_ref,
-			name: org.name,
-			description: org.description,
-		},
-	});
+  return await prisma.organization.create({
+    data: {
+      id_ref: org.id_ref,
+      name: org.name,
+      description: org.description,
+    },
+  });
 }
 
 /**
  * Deletes an organization from the database
  */
  export async function remove(org: RecordIdentifier) {
-	const orgId = getReference(org);
+  const orgId = getReference(org);
 
-	const where = {};
-	where[orgId[0]] = orgId[1];
+  const where = {};
+  where[orgId[0]] = orgId[1];
 
-	await prisma.organization.delete({
-		where: where
-	});
+  await prisma.organization.delete({
+    where: where
+  });
 }
 
 
@@ -44,12 +44,12 @@ export async function create(org: OrganizationInsert): Promise<Organization> {
  * Gets an organization from the database using database ids or refs
  */
  export async function get(org: RecordIdentifier): Promise<Organization> {
-	const orgId = getReference(org);
+  const orgId = getReference(org);
 
-	const where = {};
-	where[orgId[0]] = orgId[1];
+  const where = {};
+  where[orgId[0]] = orgId[1];
 
-	return await prisma.organization.findUnique({
-		where: where
-	});
+  return await prisma.organization.findUnique({
+    where: where
+  });
 }

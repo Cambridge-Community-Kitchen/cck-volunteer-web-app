@@ -1,6 +1,6 @@
+import prisma                    from '@/components/db-connection-prisma';
 import type { RecordIdentifier } from './DBHelpers';
-import { getReference } from './DBHelpers';
-import prisma from '@/components/db-connection-prisma';
+import { getReference }          from './DBHelpers';
 
 export interface OrganizationInsert {
     id_ref: string;
@@ -18,9 +18,9 @@ export interface Organization extends OrganizationInsert {
 export async function create(org: OrganizationInsert): Promise<Organization> {
   return await prisma.organization.create({
     data: {
-      id_ref: org.id_ref,
-      name: org.name,
-      description: org.description,
+      id_ref      : org.id_ref,
+      name        : org.name,
+      description : org.description,
     },
   });
 }
@@ -28,28 +28,29 @@ export async function create(org: OrganizationInsert): Promise<Organization> {
 /**
  * Deletes an organization from the database
  */
- export async function remove(org: RecordIdentifier) {
+export async function remove(org: RecordIdentifier) {
   const orgId = getReference(org);
 
   const where = {};
+
   where[orgId[0]] = orgId[1];
 
   await prisma.organization.delete({
-    where: where
+    where: where,
   });
 }
-
 
 /**
  * Gets an organization from the database using database ids or refs
  */
- export async function get(org: RecordIdentifier): Promise<Organization> {
+export async function get(org: RecordIdentifier): Promise<Organization> {
   const orgId = getReference(org);
 
   const where = {};
+
   where[orgId[0]] = orgId[1];
 
   return await prisma.organization.findUnique({
-    where: where
+    where: where,
   });
 }

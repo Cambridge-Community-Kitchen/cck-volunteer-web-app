@@ -1,7 +1,4 @@
-import NextLink from 'next/link';
-import classnames from 'classnames';
-import { useRouter } from 'next/router';
-import Image from 'next/image';
+import { HamburgerIcon, CloseIcon, ChevronDownIcon } from '@chakra-ui/icons';
 import {
   Box,
   Flex,
@@ -15,10 +12,13 @@ import {
   Popover,
   useDisclosure,
 } from '@chakra-ui/react';
-import { HamburgerIcon, CloseIcon, ChevronDownIcon } from '@chakra-ui/icons';
-import styles from './Nav.module.scss';
-import type React from 'react';
+import classnames    from 'classnames';
 import { setCookie } from 'cookies-next';
+import Image         from 'next/image';
+import NextLink      from 'next/link';
+import { useRouter } from 'next/router';
+import type React    from 'react';
+import styles        from './Nav.module.scss';
 
 /**
  * The navigation bar which appears at the top of the screen
@@ -27,7 +27,7 @@ import { setCookie } from 'cookies-next';
  */
 export default function Nav() {
   const { isOpen, onToggle } = useDisclosure();
-  const router = useRouter();
+  const router               = useRouter();
 
   const onLogout = async () => {
     setCookie('AuthJWT', '', { maxAge: 0 });
@@ -102,10 +102,9 @@ export default function Nav() {
   );
 }
 
-const DesktopNav = ({ currentPathname }) => {
-  return (
+const DesktopNav = ({ currentPathname }) => (
     <Stack direction={'row'} spacing={4}>
-      {NAV_ITEMS.map((navItem) => (
+      {NAV_ITEMS.map(navItem => (
         <Flex alignItems="center" key={navItem.label}>
           <Popover trigger={'hover'} placement={'bottom-start'}>
             {navItem.newWindow ? (
@@ -113,7 +112,7 @@ const DesktopNav = ({ currentPathname }) => {
                 <a
                   className={classnames(
                     styles.navLink,
-                    currentPathname === navItem.href && styles.active,
+                    currentPathname === navItem.href && styles.active
                   )}
                   target="_blank"
                 >
@@ -125,7 +124,7 @@ const DesktopNav = ({ currentPathname }) => {
                 <a
                   className={classnames(
                     styles.navLink,
-                    currentPathname === navItem.href && styles.active,
+                    currentPathname === navItem.href && styles.active
                   )}
                 >
                   {navItem.label}
@@ -136,18 +135,15 @@ const DesktopNav = ({ currentPathname }) => {
         </Flex>
       ))}
     </Stack>
-  );
-};
+);
 
-const MobileNav = () => {
-  return (
+const MobileNav = () => (
     <Stack bg={'white'} p={4} display={{ md: 'none' }}>
-      {NAV_ITEMS.map((navItem) => (
+      {NAV_ITEMS.map(navItem => (
         <MobileNavItem key={navItem.label} {...navItem} />
       ))}
     </Stack>
-  );
-};
+);
 
 const MobileNavItem = ({ label, children, href }) => {
   const { isOpen, onToggle } = useDisclosure();
@@ -187,8 +183,8 @@ const MobileNavItem = ({ label, children, href }) => {
           borderColor={'gray.200'}
           align={'start'}
         >
-          {children &&
-            children.map((child) => (
+          {children
+            && children.map(child => (
               <Link as={NextLink} key={child.label} py={2} href={child.href}>
                 {child.label}
               </Link>
@@ -216,5 +212,5 @@ const NAV_ITEMS = [
     label: 'Volunteer Info',
     href: 'https://bit.ly/CCKwelcomepack',
     newWindow: true,
-  },*/
+  }, */
 ];

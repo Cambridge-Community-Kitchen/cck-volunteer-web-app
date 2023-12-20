@@ -1,8 +1,7 @@
-import React from 'react';
 import { Box, Text } from '@chakra-ui/react';
+import React         from 'react';
 
-const Dish = ({ dish_info, dish_title }) => {
-  return (
+const Dish = ({ dish_info, dish_title }) => (
     <Box
       border="2px"
       borderColor="gray.200"
@@ -53,7 +52,6 @@ const Dish = ({ dish_info, dish_title }) => {
         )}
       </Box>
     </Box>
-  );
-};
+);
 
 export default Dish;

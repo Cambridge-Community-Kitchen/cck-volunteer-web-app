@@ -1,4 +1,3 @@
-import styles from './Registration.module.scss';
 import {
   Image,
   Button,
@@ -17,12 +16,12 @@ import {
   AlertDialogFooter,
   AlertDialog,
 } from '@chakra-ui/react';
-import { useState } from 'react';
 import { Formik, Form, Field } from 'formik';
-import { useRouter } from 'next/router';
-import React from 'react';
+import { useRouter }           from 'next/router';
+import React, { useState }     from 'react';
 
 import { registerUser } from '@/components/api';
+import styles           from './Registration.module.scss';
 
 /**
  * Displays a full-page registration screen
@@ -30,24 +29,25 @@ import { registerUser } from '@/components/api';
  * @returns {React.ReactElement} The registration screen react component
  */
 export default function Registration(): React.ReactElement {
-
   const RegistrationErrorMessage = Object.freeze({
-    duplicate: 'A volunteer with this email or nickname already exists. Please try again.'
+    duplicate: 'A volunteer with this email or nickname already exists. Please try again.',
   });
 
   const router = useRouter();
 
-  const initialEmail = (typeof router.query.email !== "undefined" ? router.query.email : '');
+  const initialEmail = (typeof router.query.email !== 'undefined' ? router.query.email : '');
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [registrationSucceeded, setRegistrationSucceeded] = useState(false);
+  const [ isLoading, setIsLoading ]                         = useState(false);
+  const [ errorMessage, setErrorMessage ]                   = useState('');
+  const [ registrationSucceeded, setRegistrationSucceeded ] = useState(false);
 
   const handleSubmit = async (values) => {
     setIsLoading(true);
     setErrorMessage('');
+
     try {
-      const res = await registerUser({baseURL: router.basePath, email: values.email, nickname: values.nickname}) ;
+      const res = await registerUser({ baseURL: router.basePath, email: values.email, nickname: values.nickname });
+
       if (res.status == 400) {
         setErrorMessage(RegistrationErrorMessage.duplicate);
       } else if (res.status == 200) {
@@ -61,13 +61,12 @@ export default function Registration(): React.ReactElement {
     }
   };
 
-  const errorContent = errorMessage.length > 0 ?
-    <Alert status='error'>
+  const errorContent = errorMessage.length > 0
+    ? <Alert status='error'>
       <AlertIcon />
       <AlertDescription>{errorMessage}</AlertDescription>
     </Alert>
-    :
-    null;
+    :    null;
 
   const cancelRef = React.useRef();
 
@@ -88,8 +87,8 @@ export default function Registration(): React.ReactElement {
           <Formik
             enableReinitialize
             initialValues={{
-              email: initialEmail,
-              nickname: ''
+              email    : initialEmail,
+              nickname : '',
             }}
             onSubmit={async (values) => {
               await handleSubmit(values);
@@ -134,8 +133,8 @@ export default function Registration(): React.ReactElement {
 
                     <AlertDialogFooter>
                       <Button ref={cancelRef} colorScheme='orange' onClick={() => router.push({
-                        pathname: '/login',
-                        query: { email: values.email }
+                        pathname : '/login',
+                        query    : { email: values.email },
                       }, '/login')}>
                         Proceed to Login
                       </Button>

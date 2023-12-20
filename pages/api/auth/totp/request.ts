@@ -1,8 +1,7 @@
-import { totp } from 'otplib';
-import { DBConnection } from '@/components/db-connection';
-import { sendOTP } from '@/components/email';
 import type { NextApiRequest, NextApiResponse } from 'next';
-
+import { totp }                                 from 'otplib';
+import { DBConnection }                         from '@/components/db-connection';
+import { sendOTP }                              from '@/components/email';
 
 interface EmailRequestBody {
   email: string;
@@ -15,26 +14,25 @@ interface EmailRequestBody {
  * @param {NextApiResponse} res The Next.js API response
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-
   const body: EmailRequestBody = req.body;
-  const data = await DBConnection.getUserByEmail(body.email);
+  const data                   = await DBConnection.getUserByEmail(body.email);
 
   if (data.length == 1) {
     const person = data[0];
-    const token = totp.generate(person.totpsecret);
+    const token  = totp.generate(person.totpsecret);
 
-    const response = { result: "Email dispatched" };
+    const response = { result: 'Email dispatched' };
 
-    if(process.env.SEND_EMAIL || !(process.env.DEBUG === "true")) {
-      await sendOTP({otp: token, email: person.email});
+    if (process.env.SEND_EMAIL || !(process.env.DEBUG === 'true')) {
+      await sendOTP({ otp: token, email: person.email });
     } else {
-      console.log(`OTP requested for ${person.email}: ${token}`);
-      response.result = "OTP printed to console";
+      console.log(`OTP requested for ${ person.email }: ${ token }`);
+      response.result = 'OTP printed to console';
     }
 
     res.status(200).json(response);
   } else {
-    res.status(404).json({ result: "User unknown" });
+    res.status(404).json({ result: 'User unknown' });
   }
 }
 
@@ -72,5 +70,4 @@ export default function handler(req, res) {
       resolve();
     });
   });
-}*/
-
+} */

@@ -1,7 +1,6 @@
-import React from 'react';
 import { Box, Heading } from '@chakra-ui/react';
-import Image from 'next/image';
-
+import Image            from 'next/image';
+import React            from 'react';
 
 const Header = () => (
   <div>

@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import {
   Box,
   chakra,
@@ -9,10 +8,10 @@ import {
   useColorModeValue,
   VisuallyHidden,
 } from '@chakra-ui/react';
+import Image                                  from 'next/image';
 import { FaInstagram, FaTwitter, FaFacebook } from 'react-icons/fa';
 
-const Footer = () => {
-  return (
+const Footer = () => (
     <Box
       bg={useColorModeValue('gray.50', 'gray.900')}
       color={useColorModeValue('gray.700', 'gray.200')}
@@ -46,13 +45,11 @@ const Footer = () => {
         </Stack>
       </Container>
     </Box>
-  );
-};
+);
 
 export default Footer;
 
-const Logo = () => {
-  return (
+const Logo = () => (
     <Flex>
       <Image
         alt="Cambridge Community Kitchen logo"
@@ -64,11 +61,9 @@ const Logo = () => {
         Cambridge Community Kitchen
       </Text>
     </Flex>
-  );
-};
+);
 
-const SocialButton = ({ children, label, href }) => {
-  return (
+const SocialButton = ({ children, label, href }) => (
     <chakra.button
       bg={useColorModeValue('blackAlpha.100', 'whiteAlpha.100')}
       rounded="full"
@@ -89,5 +84,4 @@ const SocialButton = ({ children, label, href }) => {
       <VisuallyHidden>{label}</VisuallyHidden>
       {children}
     </chakra.button>
-  );
-};
+);

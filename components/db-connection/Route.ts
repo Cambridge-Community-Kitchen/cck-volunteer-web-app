@@ -1,5 +1,5 @@
-import prisma from '@/components/db-connection-prisma';
 import { Prisma } from '@prisma/client';
+import prisma     from '@/components/db-connection-prisma';
 
 export interface RouteInsert {
     id_ref?: string;
@@ -25,10 +25,10 @@ export async function create(eventRole: RouteInsert): Promise<Route> {
 /**
  * Deletes all routes associated with a given event position
  */
- export async function removeForPosition(eventPositionId: number) {
+export async function removeForPosition(eventPositionId: number) {
   return await prisma.route.deleteMany({
     where: {
-      id_event_position: eventPositionId
-    }
+      id_event_position: eventPositionId,
+    },
   });
 }

@@ -10,46 +10,45 @@ import {
   useColorModeValue,
   useBreakpointValue,
   Button,
-} from "@chakra-ui/react";
-import { useRouter } from "next/router";
-import React from "react";
+} from '@chakra-ui/react';
+import { useRouter } from 'next/router';
+import React         from 'react';
 
 const Hero = (props) => {
-  const router = useRouter();
-  const flexDisp = useBreakpointValue({ base: "none", md: "flex" });
-  const blobColor = useColorModeValue("red.50", "red.400");
+  const router    = useRouter();
+  const flexDisp  = useBreakpointValue({ base: 'none', md: 'flex' });
+  const blobColor = useColorModeValue('red.50', 'red.400');
 
   if (props.user) {
     return (
-      <Container maxW={"7xl"}>
+      <Container maxW={'7xl'}>
         <Stack
-          align={"center"}
+          align={'center'}
           spacing={{ base: 8, md: 10 }}
           py={{ base: 4, md: 14 }}
-          direction={{ base: "column", md: "row" }}
+          direction={{ base: 'column', md: 'row' }}
         >
           <Stack flex={1} spacing={{ base: 5, md: 10 }}>
             <Heading
               lineHeight={1.1}
               fontWeight={600}
-              fontSize={{ base: "4xl", lg: "6xl" }}
+              fontSize={{ base: '4xl', lg: '6xl' }}
             >
-              <Text as={"span"}>Hi, {props.user.nickname}!</Text>
+              <Text as={'span'}>Hi, {props.user.nickname}!</Text>
             </Heading>
-            <Text color={"gray.500"}>
+            <Text color={'gray.500'}>
               Congratulations, you&#39;ve successfully signed in! Sign up for a
               new volunteer shift today.
             </Text>
             <Button
-              onClick={() =>
-                router.push("/route?date=03-02-2022&ref=demo&passcode=ZHZW")
+              onClick={() => router.push('/route?date=03-02-2022&ref=demo&passcode=ZHZW')
               }
-              fontSize={"sm"}
+              fontSize={'sm'}
               fontWeight={600}
-              color={"white"}
-              bg={"green.400"}
+              color={'white'}
+              bg={'green.400'}
               _hover={{
-                bg: "green.300",
+                bg: 'green.300',
               }}
             >
               Demo route
@@ -58,34 +57,34 @@ const Hero = (props) => {
           <Flex
             display={flexDisp}
             flex={1}
-            justify={"center"}
-            align={"center"}
-            position={"relative"}
-            w={"full"}
+            justify={'center'}
+            align={'center'}
+            position={'relative'}
+            w={'full'}
           >
             <Blob
-              w={"150%"}
-              h={"150%"}
-              position={"absolute"}
-              top={"-20%"}
+              w={'150%'}
+              h={'150%'}
+              position={'absolute'}
+              top={'-20%'}
               left={0}
               zIndex={-1}
               color={blobColor}
             />
             <Box
-              position={"relative"}
-              height={"300px"}
-              rounded={"2xl"}
-              width={"full"}
-              overflow={"hidden"}
+              position={'relative'}
+              height={'300px'}
+              rounded={'2xl'}
+              width={'full'}
+              overflow={'hidden'}
             >
               <Image
-                alt={"Hero Image"}
+                alt={'Hero Image'}
                 fit="contain"
-                align={"center"}
-                w={"100%"}
-                h={"100%"}
-                src={"/cck-logo-round.png"}
+                align={'center'}
+                w={'100%'}
+                h={'100%'}
+                src={'/cck-logo-round.png'}
               />
             </Box>
           </Flex>
@@ -97,10 +96,9 @@ const Hero = (props) => {
   return null;
 };
 
-export const Blob = (props) => {
-  return (
+export const Blob = props => (
     <Icon
-      width={"100%"}
+      width={'100%'}
       viewBox="0 0 578 440"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -113,7 +111,6 @@ export const Blob = (props) => {
         fill="currentColor"
       />
     </Icon>
-  );
-};
+);
 
 export default Hero;

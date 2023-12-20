@@ -1,14 +1,13 @@
-import styles from './Splash.module.scss';
 import {
   Image,
   SlideFade,
   Box,
   Text,
-  Heading
+  Heading,
 } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
-import type React from 'react';
-
+import type React              from 'react';
+import styles                  from './Splash.module.scss';
 
 /**
  * Briefly displays a full-splash screen
@@ -16,19 +15,19 @@ import type React from 'react';
  * @returns {React.ReactElement} The splash screen react component
  */
 export default function Splash(props): React.ReactElement {
-  const [isVisible, setVisible] = useState(true);
+  const [ isVisible, setVisible ] = useState(true);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
       setVisible(false);
+
       if (props.onComplete !== null && typeof props.onComplete === 'function') {
         props.onComplete();
       }
     }, 2250);
 
     return () => clearTimeout(timeout);
-
-  }, [props]);
+  }, [ props ]);
 
   return isVisible ? <div className={styles.splash}>
       <SlideFade className={styles.logoFade} offsetY='80vh' in>

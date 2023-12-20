@@ -1,5 +1,11 @@
-import React, { memo } from 'react';
-import PropTypes from 'prop-types';
+import {
+  ArrowForwardIcon,
+  ChatIcon,
+  CheckIcon,
+  ChevronDownIcon,
+  NotAllowedIcon,
+  PhoneIcon,
+} from '@chakra-ui/icons';
 import {
   Badge,
   Box,
@@ -13,22 +19,16 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
-import {
-  ArrowForwardIcon,
-  ChatIcon,
-  CheckIcon,
-  ChevronDownIcon,
-  NotAllowedIcon,
-  PhoneIcon
-} from '@chakra-ui/icons';
-import styles from './Item.module.scss';
+import PropTypes       from 'prop-types';
+import React, { memo } from 'react';
+import styles          from './Item.module.scss';
 
 const Item = ({ data, markComplete, portions, unmarkComplete }) => {
-  const encodedGoogleMapsUrl = `https://www.google.com/maps/place/${encodeURIComponent(
-    data.plusCode,
-  )}`;
+  const encodedGoogleMapsUrl = `https://www.google.com/maps/place/${ encodeURIComponent(
+    data.plusCode
+  ) }`;
 
-  const portionsString = portions > 1 ? `portions` : `portion`;
+  const portionsString = portions > 1 ? 'portions' : 'portion';
 
   if (data?.completed) {
     return (
@@ -129,14 +129,14 @@ const Item = ({ data, markComplete, portions, unmarkComplete }) => {
                   <MenuItem isFocusable={false}>{data.phone}</MenuItem>
                   <MenuItem
                     as="a"
-                    href={`tel:${data.phone}`}
+                    href={`tel:${ data.phone }`}
                     icon={<PhoneIcon h="3" w="3" />}
                   >
                     Telephone call
                   </MenuItem>
                   <MenuItem
                     as="a"
-                    href={`tel:141${data.phone}`}
+                    href={`tel:141${ data.phone }`}
                     icon={<NotAllowedIcon h="3" w="3" />}
                   >
                     Call but withhold your number
@@ -144,7 +144,7 @@ const Item = ({ data, markComplete, portions, unmarkComplete }) => {
                   {/^([+]44|0044|0)7/.test(data.phone) && (
                     <MenuItem
                       as="a"
-                      href={`sms:${data.phone}`}
+                      href={`sms:${ data.phone }`}
                       icon={<ChatIcon h="3" w="3" />}
                     >
                       Text Message
@@ -171,10 +171,10 @@ const Item = ({ data, markComplete, portions, unmarkComplete }) => {
 };
 
 Item.propTypes = {
-  data: PropTypes.object.isRequired,
-  markComplete: PropTypes.func.isRequired,
-  portions: PropTypes.string.isRequired,
-  unmarkComplete: PropTypes.func.isRequired,
+  data           : PropTypes.object.isRequired,
+  markComplete   : PropTypes.func.isRequired,
+  portions       : PropTypes.string.isRequired,
+  unmarkComplete : PropTypes.func.isRequired,
 };
 
 export default memo(Item);

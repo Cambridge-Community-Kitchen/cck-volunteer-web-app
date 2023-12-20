@@ -13,13 +13,13 @@ import {
   Text,
   Spinner,
 } from '@chakra-ui/react';
-import { useState } from 'react';
-import styles from './Login.module.scss';
-import OtpInput from 'react18-otp-input';
+import { setCookie }   from 'cookies-next';
+import { useRouter }   from 'next/router';
+import { useState }    from 'react';
+import type React      from 'react';
+import OtpInput        from 'react18-otp-input';
 import { validateOTP } from '@/components/api';
-import { useRouter } from 'next/router';
-import { setCookie } from 'cookies-next';
-import type React from 'react';
+import styles          from './Login.module.scss';
 
 /**
  * A modal that allows a user to enter in a OTP that they received (i.e., by phone or email)
@@ -27,23 +27,22 @@ import type React from 'react';
  * @returns {React.ReactElement} The OTP modal react component
  */
 export default function OTPModal(props): React.ReactElement {
-
   const OTPErrorMessage = Object.freeze({
-    invalid: 'The validation code entered is invalid. Please try again.'
+    invalid: 'The validation code entered is invalid. Please try again.',
   });
 
-  const [errorMessage, setErrorMessage] = useState('');
-  const [otpEntryVal, setOTPEntryVal] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [ errorMessage, setErrorMessage ] = useState('');
+  const [ otpEntryVal, setOTPEntryVal ]   = useState('');
+  const [ isLoading, setIsLoading ]       = useState(false);
 
   const router = useRouter();
 
   const maskEmail = (email) => {
     if (email !== null) {
       return email.replace(/^(.)(.*)(.@.*)$/,
-      (_, a, b, c) => a + b.replace(/./g, '*') + c
-      );
+        (_, a, b, c) => a + b.replace(/./g, '*') + c);
     }
+
     return null;
   };
 
@@ -58,9 +57,12 @@ export default function OTPModal(props): React.ReactElement {
 
   const handleOTPSubmit = async () => {
     const otp = otpEntryVal;
+
     setIsLoading(true);
+
     try {
-      const res = await validateOTP({baseURL: router.basePath, email: props.email, otp});
+      const res = await validateOTP({ baseURL: router.basePath, email: props.email, otp });
+
       if (res.status == 401) {
         // OTP validation failed, prompt for re-entry
         clearOTPEntry();
@@ -69,6 +71,7 @@ export default function OTPModal(props): React.ReactElement {
       } else if (res.status == 200) {
         // OTP validation succeeded, proceed to home screen
         const responseBody = await res.json();
+
         setCookie('AuthJWT', responseBody.jwt);
         router.push('/');
       }
@@ -79,27 +82,26 @@ export default function OTPModal(props): React.ReactElement {
     }
   };
 
-  const modalBodyText = errorMessage.length > 0 ?
-    <Alert status='error'>
+  const modalBodyText = errorMessage.length > 0
+    ? <Alert status='error'>
       <AlertIcon />
       <AlertDescription>{errorMessage}</AlertDescription>
     </Alert>
-    :
-      (props.debug ?
-        <Text>We&apos;re in debug mode! Check the console for your OTP</Text>
-        :
-        <Text>
+    :      (props.debug
+      ? <Text>We&apos;re in debug mode! Check the console for your OTP</Text>
+      :        <Text>
           An email has been dispatched to <b>{maskEmail(props.email)}</b> with a verification code. Please enter that code below:
         </Text>
-      );
+    );
 
   let newIsOpen;
+
   const newProps = {};
-  for(const key in props){
-    if (key === "isOpen") {
+
+  for (const key in props) {
+    if (key === 'isOpen') {
       newIsOpen = props[key];
-    }
-    else if (key !== "onClose") {
+    } else if (key !== 'onClose') {
       newProps[key] = props[key];
     }
   }
@@ -109,7 +111,7 @@ export default function OTPModal(props): React.ReactElement {
     props.onClose();
   };
 
-  const spinner = isLoading? <Spinner size='xs' marginLeft="1em;"/> : null;
+  const spinner = isLoading ? <Spinner size='xs' marginLeft="1em;"/> : null;
 
   return (
       <Modal isOpen={newIsOpen} onClose={newOnClose} {...newProps}>

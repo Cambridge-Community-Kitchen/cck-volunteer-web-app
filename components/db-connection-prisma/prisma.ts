@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient }   from '@prisma/client';
 import { setDatabaseUrl } from '@/components/db-connection/DBHelpers';
 
 setDatabaseUrl();
@@ -11,6 +11,7 @@ if (process.env.NODE_ENV === 'production') {
   if (!global.prisma) {
     global.prisma = new PrismaClient();
   }
+
   prisma = global.prisma;
 }
 

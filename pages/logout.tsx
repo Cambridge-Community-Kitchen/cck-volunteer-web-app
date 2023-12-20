@@ -7,7 +7,9 @@ import { useEffect } from 'react';
  */
 const LogoutPage = () => {
   setCookie('AuthJWT', '', { maxAge: 0 });
+
   const router = useRouter();
+
   useEffect(() => {
     const timeout = setTimeout(() => {
       router.push('/login');

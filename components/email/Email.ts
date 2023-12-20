@@ -4,11 +4,11 @@ import AWSEmail from './AWS';
  * Template for the OTP email
  */
 function otpEmailBody(otp: string): string {
-  return `Hello,\n\nWe received a request to log in to the CCK volunteer app.\n\n${otp}\n\nEnter this code on the login screen to confirm your identity.\n\nThanks,\nApp Administrators`;
+  return `Hello,\n\nWe received a request to log in to the CCK volunteer app.\n\n${ otp }\n\nEnter this code on the login screen to confirm your identity.\n\nThanks,\nApp Administrators`;
 }
 
 export const EMAIL_PROVIDER = Object.freeze({
-  aws: "AWS"
+  aws: 'AWS',
 });
 
 /**
@@ -25,13 +25,13 @@ function getEmailSender(provider: string) {
 /**
  * Sends an email containing a one-time password for purposes of two-factor authentication
  */
-export async function sendOTP({otp, email, provider = EMAIL_PROVIDER.aws}) {
-
+export async function sendOTP({ otp, email, provider = EMAIL_PROVIDER.aws }) {
   const sender = getEmailSender(provider);
+
   await sender.sendEmail({
-    from: 'admin@cckitchen-app.uk',
-    to: [email],
-    subject: 'CCK verification code',
-    body: otpEmailBody(otp)
+    from    : 'admin@cckitchen-app.uk',
+    to      : [ email ],
+    subject : 'CCK verification code',
+    body    : otpEmailBody(otp),
   });
 }

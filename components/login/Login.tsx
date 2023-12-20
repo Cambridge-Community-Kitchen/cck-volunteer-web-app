@@ -1,4 +1,3 @@
-import styles from './Login.module.scss';
 import {
   Image,
   Button,
@@ -10,15 +9,16 @@ import {
   Alert,
   AlertIcon,
   AlertDescription,
-  Spinner
+  Spinner,
 } from '@chakra-ui/react';
-import { useState } from 'react';
 import { Formik, Form, Field } from 'formik';
-import { useRouter } from 'next/router';
+import { useRouter }           from 'next/router';
+import { useState }            from 'react';
 
+import type React     from 'react';
 import { requestOTP } from '@/components/api';
-import OTPModal from './OTPModal';
-import type React from 'react';
+import styles         from './Login.module.scss';
+import OTPModal       from './OTPModal';
 
 /**
  * Displays a full-page login screen
@@ -26,33 +26,36 @@ import type React from 'react';
  * @returns {React.ReactElement} The login screen react component
  */
 export default function Login(): React.ReactElement {
-
   const UserIdErrorMessage = Object.freeze({
-    notFound: 'Volunteer not found. Please try again or register below.',
-    generalError: 'We are experiencing technical difficulties. Please try again later.'
+    notFound     : 'Volunteer not found. Please try again or register below.',
+    generalError : 'We are experiencing technical difficulties. Please try again later.',
   });
 
   const router = useRouter();
 
-  const initialEmail = (typeof router.query.email !== "undefined" ? router.query.email : '');
+  const initialEmail = (typeof router.query.email !== 'undefined' ? router.query.email : '');
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [displayOTPEntry, setDisplayOTPEntry] = useState(false);
-  const [email, setEmail] = useState(initialEmail);
-  const [userEntryErrorMessage, setUserEntryErrorMessage] = useState('');
-  const [debug, setDebug] = useState(false);
+  const [ isLoading, setIsLoading ]                         = useState(false);
+  const [ displayOTPEntry, setDisplayOTPEntry ]             = useState(false);
+  const [ email, setEmail ]                                 = useState(initialEmail);
+  const [ userEntryErrorMessage, setUserEntryErrorMessage ] = useState('');
+  const [ debug, setDebug ]                                 = useState(false);
 
   const handleUserIdSubmit = async (email) => {
     setIsLoading(true);
+
     try {
-      const res = await requestOTP({baseURL: router.basePath, email});
+      const res = await requestOTP({ baseURL: router.basePath, email });
+
       if (res.status == 404) {
         setUserEntryErrorMessage(UserIdErrorMessage.notFound);
       } else if (res.status == 200) {
         const body = await res.json();
+
         if (body.result.includes('console')) {
           setDebug(true);
         }
+
         setEmail(email);
         setDisplayOTPEntry(true);
       }
@@ -67,15 +70,14 @@ export default function Login(): React.ReactElement {
 
   const onOTPModalClose = () => setDisplayOTPEntry(false);
 
-  const userEntryErrorContent = userEntryErrorMessage.length > 0 ?
-    <Alert status='error'>
+  const userEntryErrorContent = userEntryErrorMessage.length > 0
+    ? <Alert status='error'>
       <AlertIcon />
       <AlertDescription>{userEntryErrorMessage}</AlertDescription>
     </Alert>
-    :
-    null;
+    :    null;
 
-  const spinner = isLoading? <Spinner size='xs' marginLeft="1em;"/> : null;
+  const spinner = isLoading ? <Spinner size='xs' marginLeft="1em;"/> : null;
 
   const onEmailChange = (event) => {
     setEmail(event.target.value);
@@ -124,7 +126,7 @@ export default function Login(): React.ReactElement {
         <div className={styles.newVolunteer}>New to CCK?</div>
         <Button
           filter='auto'
-          onClick={() => router.push('/register?email=' + email)}
+          onClick={() => router.push(`/register?email=${  email }`)}
           colorScheme='blackAlpha'
           className={styles.volunteerButton}>
           Register to volunteer

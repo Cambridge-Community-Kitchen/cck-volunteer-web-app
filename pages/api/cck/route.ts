@@ -1,7 +1,7 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import prisma from "@/components/db-connection-prisma";
-import { daysSince, parseDashedDate } from "@/components/api-helpers";
-import { demoRouteData } from "./demoRouteData";
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { daysSince, parseDashedDate }           from '@/components/api-helpers';
+import prisma                                   from '@/components/db-connection-prisma';
+import { demoRouteData }                        from './demoRouteData';
 
 /**
  * Gets route information
@@ -27,29 +27,33 @@ export default async function handler(
 
   // Example path: /route?date=03-02-2022&ref=arbury&passcode=ZHZW
 
-  const query = req.query;
+  const query                   = req.query;
   const { date, ref, passcode } = query;
 
   //   render demo data if the path is like /route?date=03-02-2022&ref=demo&passcode=ZHZW
-  if (ref === "demo") {
+  if (ref === 'demo') {
     res.status(200).json(demoRouteData);
+
     return;
   }
+
   let parsedDate: Date;
+
   try {
     parsedDate = parseDashedDate(date as string);
   } catch (error) {
-    res.status(400).json({ result: "invalid date" });
+    res.status(400).json({ result: 'invalid date' });
+
     return;
   }
+
   const daysDiff = daysSince(parsedDate);
 
   // Do not return route data if the delivery date is more than a day ago
   if (daysDiff > 1) {
-    res.status(404).json({ result: "route not found" });
-    return;
+    res.status(404).json({ result: 'route not found' });
   } else if (passcode) {
-    const routeRef = `meal-prep-delivery-${date}-delivery-${ref}`;
+    const routeRef = `meal-prep-delivery-${ date }-delivery-${ ref }`;
 
     const gottenRoute = await prisma.route.findFirst({
       where: {
@@ -58,7 +62,7 @@ export default async function handler(
       include: {
         route_delivery: {
           orderBy: {
-            sequence: "asc",
+            sequence: 'asc',
           },
         },
         event_position: {
@@ -74,24 +78,24 @@ export default async function handler(
     });
 
     if (!gottenRoute) {
-      res.status(404).json({ result: "route not found" });
+      res.status(404).json({ result: 'route not found' });
+
       return;
     }
 
     if (gottenRoute.passcode !== passcode) {
-      res.status(403).json({ result: "Passcode is invalid" });
+      res.status(403).json({ result: 'Passcode is invalid' });
+
       return;
     }
 
     cleanupRoute(gottenRoute);
 
     res.status(200).json(gottenRoute);
-    return;
   } else {
     res.status(403).json({
-      result: "For now, you MUST provide a passcode to access a route.",
+      result: 'For now, you MUST provide a passcode to access a route.',
     });
-    return;
   }
 }
 
@@ -99,10 +103,11 @@ export default async function handler(
  * Removes unneeded fields and changes field names to make the response more user-friendly
  */
 function cleanupRoute(gottenRoute) {
-  gottenRoute["deliveries"] = gottenRoute.route_delivery.map((route) => {
+  gottenRoute.deliveries = gottenRoute.route_delivery.map((route) => {
     delete route.sequence;
     delete route.id;
     delete route.id_route;
+
     return route;
   });
 
@@ -113,19 +118,20 @@ function cleanupRoute(gottenRoute) {
   delete gottenRoute.passcode;
 
   const eventCategory = gottenRoute.event_position.event.event_category;
+
   delete eventCategory.id;
   delete eventCategory.id_organization;
   delete eventCategory.id_ref;
 
-  gottenRoute.event_position.event["category"] = eventCategory;
+  gottenRoute.event_position.event.category = eventCategory;
 
   delete gottenRoute.event_position.event.event_category;
 
-  gottenRoute["event"] = gottenRoute.event_position.event;
-  delete gottenRoute["event"].id;
-  delete gottenRoute["event"].id_organization;
-  delete gottenRoute["event"].id_event_category;
-  delete gottenRoute["event"].id_ref;
+  gottenRoute.event = gottenRoute.event_position.event;
+  delete gottenRoute.event.id;
+  delete gottenRoute.event.id_organization;
+  delete gottenRoute.event.id_event_category;
+  delete gottenRoute.event.id_ref;
 
   delete gottenRoute.event_position;
 }

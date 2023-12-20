@@ -1,21 +1,21 @@
 import { Box, SlideFade, useBreakpointValue } from '@chakra-ui/react';
 
-import Nav from '@/components/nav';
 import Footer from '@/components/footer';
+import Nav    from '@/components/nav';
 
-const LayoutContainer = ({ children }) => {
+const LayoutContainer = ({ children }) =>
 
-//<Nav />
+// <Nav />
 
-  return (
+  (
     <>
       <Nav />
       <SlideFade in>
         <Box
           mt="1rem"
           minHeight={useBreakpointValue({
-            base: 'calc(100vh - 186px)',
-            lg: 'calc(100vh - 140px)',
+            base : 'calc(100vh - 186px)',
+            lg   : 'calc(100vh - 140px)',
           })}
         >
           {children}
@@ -24,6 +24,5 @@ const LayoutContainer = ({ children }) => {
       <Footer />
     </>
   );
-};
 
 export default LayoutContainer;

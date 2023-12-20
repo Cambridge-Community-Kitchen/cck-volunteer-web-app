@@ -90,6 +90,8 @@ async function replaceRefs(event) {
  * if available, and the unique reference string as a fallback
  */
 async function getUniqueEventWhereClause(event: EventIdentifier) {
+  // TODO: follow the style guide instead of suspending it here
+  /* eslint-disable no-param-reassign */
   const where = {};
 
   if (event.id) {
@@ -107,6 +109,7 @@ async function getUniqueEventWhereClause(event: EventIdentifier) {
   }
 
   return where;
+  /* eslint-enable */
 }
 
 // Get all events where

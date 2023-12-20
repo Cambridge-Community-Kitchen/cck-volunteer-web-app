@@ -102,6 +102,8 @@ export function isValidEventPositionIdentifier(positionId: EventPositionIdentifi
  * if available, and the unique reference string as a fallback
  */
 async function getUniqueEventPositionWhereClause(eventPosition: EventPositionIdentifier) {
+  // TODO: follow the style guide instead of suspending it here
+  /* eslint-disable no-param-reassign */
   const where = {};
 
   if (eventPosition.id) {
@@ -119,6 +121,7 @@ async function getUniqueEventPositionWhereClause(eventPosition: EventPositionIde
   }
 
   return where;
+  /* eslint-enable */
 }
 
 /**

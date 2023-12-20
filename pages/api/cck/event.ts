@@ -111,6 +111,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
               const gottenRoute = await Route.create(routeInsert);
 
+              // TODO: follow the style guide instead of suspending it here
+              // eslint-disable-next-line guard-for-in
               for (const deliveryIdx in position.route.deliveries) {
                 const deliveryInsert = position.route.deliveries[deliveryIdx];
 

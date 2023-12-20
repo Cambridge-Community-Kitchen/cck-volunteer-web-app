@@ -34,6 +34,8 @@ export async function get(category: EventCategoryIdentifier): Promise<EventCateg
   if (category.id_organization_ref) {
     const org = await Organization.get({ id_ref: category.id_organization_ref });
 
+    // TODO: follow the style guide instead of suspending it here
+    // eslint-disable-next-line no-param-reassign
     category.id_organization = org.id;
   }
 

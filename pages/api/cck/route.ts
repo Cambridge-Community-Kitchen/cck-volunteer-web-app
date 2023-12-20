@@ -103,6 +103,8 @@ export default async function handler(
  * Removes unneeded fields and changes field names to make the response more user-friendly
  */
 function cleanupRoute(gottenRoute) {
+  // TODO: follow the style guide instead of suspending it here
+  /* eslint-disable no-param-reassign */
   gottenRoute.deliveries = gottenRoute.route_delivery.map((route) => {
     delete route.sequence;
     delete route.id;
@@ -134,4 +136,5 @@ function cleanupRoute(gottenRoute) {
   delete gottenRoute.event.id_ref;
 
   delete gottenRoute.event_position;
+  /* eslint-enable no-param-reassign */
 }

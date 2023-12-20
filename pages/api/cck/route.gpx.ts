@@ -69,6 +69,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const waypoints: LatLng[] = [];
 
+    // TODO: follow the style guide instead of suspending it here
+    // eslint-disable-next-line guard-for-in
     for (const deliveryIdx in gottenRoute.route_delivery) {
       let a = gottenRoute.route_delivery[deliveryIdx].plus_code;
 
@@ -101,11 +103,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     let gpx = '<?xml version="1.0" encoding="UTF-8"?><gpx version="1.1" creator="Cambridge Community Kitchen - https://cckitchen.uk" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.topografix.com/GPX/1/1" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd"><trk><trkseg>';
 
+    // TODO: follow the style guide instead of suspending it here
+    // eslint-disable-next-line guard-for-in
     for (const tupleIdx in latlngs) {
-      gpx = `${ gpx  }<trkpt lat="${ latlngs[tupleIdx][0] }" lon="${ latlngs[tupleIdx][1] }"/>`;
+      gpx = `${ gpx }<trkpt lat="${ latlngs[tupleIdx][0] }" lon="${ latlngs[tupleIdx][1] }"/>`;
     }
 
-    gpx = `${ gpx  }</trkseg></trk></gpx>`;
+    gpx = `${ gpx }</trkseg></trk></gpx>`;
 
     res.setHeader('Content-Type', 'application/gpx+xml').status(200).write(gpx);
     res.end();

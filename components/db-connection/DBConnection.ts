@@ -39,7 +39,7 @@ export async function getUserRoles(personId: number) {
     LEFT JOIN organization ON organization.id = person_system_role.id_organization
     WHERE person.id = ${personId}
   `;
-  
+
   const response = {};
   const rows = await asyncQuery(qString);
 
@@ -65,7 +65,7 @@ export async function getUserRoles(personId: number) {
  * Gets a unique user from the database by email address
  */
 export async function getUserByEmail(email) {
-  const qString = SQL`SELECT * FROM person WHERE email = ${email}`; 
+  const qString = SQL`SELECT * FROM person WHERE email = ${email}`;
   return await asyncQuery(qString);
 }
 
@@ -73,7 +73,7 @@ export async function getUserByEmail(email) {
  * Gets a unique user from the database by email address or nickname
  */
  export async function getUserByEmailorNickname(email, nickname) {
-  const qString = SQL`SELECT * FROM person WHERE (email = ${email} OR nickname = ${nickname} )`; 
+  const qString = SQL`SELECT * FROM person WHERE (email = ${email} OR nickname = ${nickname} )`;
   return await asyncQuery(qString);
 }
 
@@ -81,6 +81,6 @@ export async function getUserByEmail(email) {
  * Creates a user in the database
  */
  export async function createUser({email, totpsecret, nickname}) {
-  const qString = SQL`INSERT INTO person(email, totpsecret, nickname) VALUES(${email}, ${totpsecret}, ${nickname})`; 
+  const qString = SQL`INSERT INTO person(email, totpsecret, nickname) VALUES(${email}, ${totpsecret}, ${nickname})`;
   return await asyncQuery(qString);
 }

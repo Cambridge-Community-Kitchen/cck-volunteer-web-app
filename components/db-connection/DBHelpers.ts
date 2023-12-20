@@ -8,7 +8,7 @@ export interface RecordIdentifier {
 /**
  * Builds a where clause using the database record id, if available,
  * and unique reference string otherwise
- *  
+ *
  * @returns A tuple containing the field name and value, for inclusion in the database query
  * @throws An error if neither the object id nor its unique reference is provided.
  */

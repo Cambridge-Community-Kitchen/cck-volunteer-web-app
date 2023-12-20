@@ -9,7 +9,7 @@ const prisma = new PrismaClient()
 dotenv.config({ path: '.env.local' });
 
 async function main() {
-    
+
     setDatabaseUrl();
 
     if (!process.argv[2]) {
@@ -40,7 +40,7 @@ async function main() {
         }
       }
     })
-    
+
     console.log("Successfully made a master admin")
 }
 

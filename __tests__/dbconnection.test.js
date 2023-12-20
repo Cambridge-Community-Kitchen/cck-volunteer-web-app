@@ -49,12 +49,12 @@ async function createEventRole(eventRole, eventId) {
 }
 
 async function createEventPosition(eventPosition, eventId, eventRoleId) {
-  
-  
+
+
   var testEventPosition = JSON.parse(JSON.stringify(testEventPosition1));
   testEventPosition['id_event'] = eventId
   testEventPosition['id_event_role'] = eventRoleId
-  
+
   return await EventPosition.create(testEventPosition);
 }
 
@@ -107,7 +107,7 @@ async function createEventPosition(eventPosition, eventId, eventRoleId) {
         id_organization_ref: org.id_ref,
         id_ref: theEventCategory.id_ref
       }
-      
+
       const gottenEventCategory = await EventCategory.get(categoryId);
       expect(gottenEventCategory.id_ref).toMatch(testEventCategory1.id_ref);
       expect(gottenEventCategory.name).toMatch(testEventCategory1.name);
@@ -124,7 +124,7 @@ async function createEventPosition(eventPosition, eventId, eventRoleId) {
       expect(theEvent.name).toMatch(testEvent1.name);
       expect(theEvent.id_organization).toEqual(org.id);
       createdId = theEvent.id;
-      
+
       const gottenEvent = await Event.get({id: createdId});
       expect(gottenEvent.id_ref).toMatch(testEvent1.id_ref);
       expect(gottenEvent.name).toMatch(testEvent1.name);
@@ -155,7 +155,7 @@ async function createEventPosition(eventPosition, eventId, eventRoleId) {
       const theEventRole = await createEventRole(testEventRole1, theEvent.id);
       createdId = theEventRole.id;
       expect(createdId).toEqual(expect.any(Number));
-      
+
       const gottenEventRole = await EventRole.get({id: createdId});
       expect(gottenEventRole.id_ref).toMatch(testEventRole1.id_ref);
       expect(gottenEventRole.name).toMatch(testEventRole1.name);
@@ -195,7 +195,7 @@ async function createEventPosition(eventPosition, eventId, eventRoleId) {
       const theEventPosition = await createEventPosition(testEventPosition1, theEvent.id, theEventRole.id);
       createdId = theEventPosition.id;
       expect(createdId).toEqual(expect.any(Number));
-      
+
       const gottenEventPosition = await EventPosition.get({id: createdId});
       expect(gottenEventPosition.id_ref).toMatch(testEventPosition1.id_ref);
       expect(gottenEventPosition.name).toMatch(testEventPosition1.name);

@@ -13,7 +13,7 @@ export enum UserRole {
 }
 
 /**
- * Calculates the days since a provided date 
+ * Calculates the days since a provided date
  * This returns a positive number for dates more than ~24h in the past
  * and a negative number for dates more than ~24h in the future.
  */
@@ -25,7 +25,7 @@ export function daysSince(date: Date) {
 
 /**
  * Parses a DD-MM-YYYY string into a date object
- * 
+ *
  * @throws an error if the string is invalidly formatted or a valid date cannot be parsed
  */
 export function parseDashedDate(date: string) {
@@ -49,7 +49,7 @@ export function parseDashedDate(date: string) {
  * Validates the JWT and retrieves the logged in user information
  */
 export async function getUserContext(req: Request | IncomingMessage) {
-    
+
     const token = getTokenFromRequest(req);
 
     const verified = await jwtVerify(
@@ -85,7 +85,7 @@ export function parseJwt(token: string) {
  * Determines whether the user has one or more of the authorized roles to perform a given action
  */
 export async function isUserAuthorized(req: NextApiRequest | NextRequest, res: NextApiResponse, authorizedRoles: string[], orgRef?: string) {
-    
+
     try {
         const user = await getUserContext(req);
 

@@ -22,7 +22,7 @@ import type React from 'react';
 
 /**
  * Displays a full-page login screen
- * 
+ *
  * @returns {React.ReactElement} The login screen react component
  */
 export default function Login(): React.ReactElement {
@@ -35,13 +35,13 @@ export default function Login(): React.ReactElement {
   const router = useRouter();
 
   const initialEmail = (typeof router.query.email !== "undefined" ? router.query.email : '');
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [displayOTPEntry, setDisplayOTPEntry] = useState(false);
   const [email, setEmail] = useState(initialEmail);
   const [userEntryErrorMessage, setUserEntryErrorMessage] = useState('');
   const [debug, setDebug] = useState(false);
-  
+
   const handleUserIdSubmit = async (email) => {
     setIsLoading(true);
     try {
@@ -49,7 +49,7 @@ export default function Login(): React.ReactElement {
       if (res.status == 404) {
         setUserEntryErrorMessage(UserIdErrorMessage.notFound);
       } else if (res.status == 200) {
-        const body = await res.json(); 
+        const body = await res.json();
         if (body.result.includes('console')) {
           setDebug(true);
         }
@@ -85,7 +85,7 @@ export default function Login(): React.ReactElement {
   return (
     <div className={styles.login}>
       <OTPModal isOpen={displayOTPEntry} debug={debug} onClose={onOTPModalClose} email={email}/>
-      
+
       <div className={styles.centerColumn}>
         <Image
           alt={'Hero Image'}

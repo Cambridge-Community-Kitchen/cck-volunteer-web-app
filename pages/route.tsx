@@ -8,7 +8,7 @@ import styles from '../styles/Home.module.css';
  * The app's route page, i.e., the '/route' path
  */
 const RoutePage = () => {
-  
+
   let baseUrl;
   if (typeof window !== 'undefined') {
     const getUrl = window.location;
@@ -17,7 +17,7 @@ const RoutePage = () => {
 
   const router = useRouter();
   const query = router.query;
-  
+
   const { date, ref, passcode } = query;
     let { mode } = query;
   mode = mode ? mode : "bicycling";

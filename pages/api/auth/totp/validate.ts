@@ -7,12 +7,12 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 interface EmailRequestBody {
   email?: string;
-  totp: string;  
+  totp: string;
 }
 
 /**
  * Accepts a request for TOTP token validation, to complete two-factor authentication
- * 
+ *
  * @param {NextApiRequest} req The Next.js API request
  * @param {NextApiResponse} res The Next.js API response
  */
@@ -25,14 +25,14 @@ interface EmailRequestBody {
 
     totp.options = { window: 5 };
     const isValid = totp.check(body.totp, person.totpsecret);
-    
+
     if (isValid) {
       const {...personn} = person;
       delete personn.totpsecret;
 
       const roles = await DBConnection.getUserRoles(person.id);
       const wholePerson = {...personn, ...roles};
-      
+
       const token = await new SignJWT(wholePerson)
         .setProtectedHeader({ alg: 'HS256' })
         .setJti(nanoid())

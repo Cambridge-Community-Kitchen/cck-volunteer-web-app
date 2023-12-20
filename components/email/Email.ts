@@ -26,7 +26,7 @@ function getEmailSender(provider: string) {
  * Sends an email containing a one-time password for purposes of two-factor authentication
  */
 export async function sendOTP({otp, email, provider = EMAIL_PROVIDER.aws}) {
-  
+
   const sender = getEmailSender(provider);
   await sender.sendEmail({
     from: 'admin@cckitchen-app.uk',

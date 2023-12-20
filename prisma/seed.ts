@@ -9,9 +9,9 @@ const prisma = new PrismaClient()
 dotenv.config({ path: '.env.local' });
 
 async function main() {
-    
+
     setDatabaseUrl();
-    
+
     const organization = {
       id_ref: 'cck',
       name: 'Cambridge Community Kitchen',
@@ -38,7 +38,7 @@ async function main() {
         create: Roles[key],
       })
     }
-    
+
     console.log("Database successfully seeded with cck data.")
 }
 

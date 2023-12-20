@@ -35,7 +35,7 @@ export async function get(category: EventCategoryIdentifier): Promise<EventCateg
     const org = await Organization.get({id_ref: category.id_organization_ref});
     category.id_organization = org.id;
   }
-  
+
   const where = {};
   if (category.id) {
     where['id'] = category.id;

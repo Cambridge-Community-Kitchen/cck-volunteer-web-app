@@ -14,7 +14,7 @@ const endpoints = Object.freeze({
  * Makes an HTTP request to the request OTP endpoint
  */
 export async function requestOTP({baseURL, email}) {
-  
+
   const endpointUrl = baseURL + endpoints.totpRequest;
   const settings = {
         method: 'POST',
@@ -28,7 +28,7 @@ export async function requestOTP({baseURL, email}) {
  * Makes an HTTP request to the validate OTP endpoint
  */
 export async function validateOTP({baseURL, email, otp}) {
-    
+
     const endpointUrl = baseURL + endpoints.totpValidate;
     const settings = {
         method: 'POST',
@@ -42,7 +42,7 @@ export async function validateOTP({baseURL, email, otp}) {
  * Makes an HTTP request to the register user endpoint
  */
 export async function registerUser({baseURL, email, nickname}) {
-    
+
     const endpointUrl = baseURL + endpoints.registerUser;
     const settings = {
         method: 'POST',

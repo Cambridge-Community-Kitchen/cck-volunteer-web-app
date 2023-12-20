@@ -29,7 +29,7 @@ export async function create(event: EventInsert): Promise<Event> {
   //TODO: Ensure we don't end up with a duplicate combo of event.id_ref and id_organization; or should this be in the schema?
   //It probably needs to be here since id_ref is optional; and there CAN be multiple events with no id_ref for a given organization
   const eventReplaced = await replaceRefs(event);
-  
+
   return await prisma.event.create({
     data: eventReplaced,
   });
@@ -39,10 +39,10 @@ export async function create(event: EventInsert): Promise<Event> {
  * Updates an event in the database
  */
  export async function update(event: Event) {
-  
+
   const eventReplaced = await replaceRefs(event);
   const where = await getUniqueEventWhereClause(eventReplaced);
-  
+
   return await prisma.event.updateMany({
     data: eventReplaced,
     where: where
@@ -53,7 +53,7 @@ export async function create(event: EventInsert): Promise<Event> {
  * Replaces object references to database identifiers
  */
 async function replaceRefs(event) {
-  
+
   // Don't modify the passed object
   const eventCopy = JSON.parse(JSON.stringify(event));
 
@@ -79,7 +79,7 @@ async function replaceRefs(event) {
     eventCopy.id_event_category = eventCategory.id;
     delete eventCopy.id_event_category_ref;
   }
-  
+
   return eventCopy;
 }
 
@@ -88,7 +88,7 @@ async function replaceRefs(event) {
  * if available, and the unique reference string as a fallback
  */
 async function getUniqueEventWhereClause(event: EventIdentifier) {
-  
+
   const where = {};
   if (event.id) {
     where['id'] = event.id;
@@ -105,7 +105,7 @@ async function getUniqueEventWhereClause(event: EventIdentifier) {
   return where;
 }
 
-// Get all events where 
+// Get all events where
 //export async function getEvents
 
 /**

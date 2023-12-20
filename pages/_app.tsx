@@ -30,7 +30,7 @@ const theme = extendTheme({
 
 /**
  * The top-most React component, i.e., the entire app
- * 
+ *
  * @param {NextJsAppParams} params The app parameters (as defined by Next.js)
  * @returns {React.ReactElement} The app's top-level component
  * @see {@link https://nextjs.org/docs/advanced-features/custom-app|Next.js documentation}

@@ -7,7 +7,7 @@ import { daysSince, parseDashedDate } from '@/components/api-helpers';
 
 /**
  * Generates a gpx from route data
- * 
+ *
  * @param {NextApiRequest} req The Next.js API request
  * @param {NextApiResponse} res The Next.js API response
  */
@@ -51,7 +51,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             res.status(403).json({ result: "Passcode is invalid" });
             return;
         }
-        
+
         const client = new Client({});
         const request: GeocodeRequest = {
             params: {
@@ -78,7 +78,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 waypoints.push(loc.candidates[0].geometry.location);
             }
         }
-        
+
         const directionsRequest: DirectionsRequest = {
             params: {
                 origin: lockon,

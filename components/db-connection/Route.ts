@@ -27,7 +27,7 @@ export async function create(eventRole: RouteInsert): Promise<Route> {
  */
  export async function removeForPosition(eventPositionId: number) {
   return await prisma.route.deleteMany({
-    where: { 
+    where: {
       id_event_position: eventPositionId
     }
   });

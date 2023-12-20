@@ -23,7 +23,7 @@ import type React from 'react';
 
 /**
  * A modal that allows a user to enter in a OTP that they received (i.e., by phone or email)
- * 
+ *
  * @returns {React.ReactElement} The OTP modal react component
  */
 export default function OTPModal(props): React.ReactElement {
@@ -37,7 +37,7 @@ export default function OTPModal(props): React.ReactElement {
   const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
-  
+
   const maskEmail = (email) => {
     if (email !== null) {
       return email.replace(/^(.)(.*)(.@.*)$/,

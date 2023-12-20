@@ -35,10 +35,10 @@ export async function create(eventRole: EventRoleInsert): Promise<EventRole> {
  * Updates an event role in the database
  */
  export async function update(eventRole: EventRole) {
-  
+
   const eventRoleReplaced = await replaceRefs(eventRole);
   const where = await getUniqueEventRoleWhereClause(eventRoleReplaced);
-  
+
   return await prisma.event_role.updateMany({
     data: eventRoleReplaced,
     where: where
@@ -50,7 +50,7 @@ export async function create(eventRole: EventRoleInsert): Promise<EventRole> {
  * if available, and the unique reference string as a fallback
  */
  async function getUniqueEventRoleWhereClause(eventRole: EventRoleIdentifier) {
-  
+
   const where = {};
   if (eventRole.id) {
     where['id'] = eventRole.id;
@@ -77,8 +77,8 @@ export function isValidEventRoleIdentifier(roleId: EventRoleIdentifier) {
  */
 export async function deleteRolesNotInRefs(event: Event.EventIdentifier, refs: string[]) {
   return await prisma.event_role.deleteMany({
-    where: { 
-      id_event: event.id, 
+    where: {
+      id_event: event.id,
       NOT: {
         id_ref: { in: refs }
       }
@@ -90,7 +90,7 @@ export async function deleteRolesNotInRefs(event: Event.EventIdentifier, refs: s
  * Replaces object references to database identifiers
  */
  async function replaceRefs(eventRole) {
-  
+
   // Don't modify the passed object
   const eventRoleCopy = {...{}, ...eventRole};
 
@@ -108,7 +108,7 @@ export async function deleteRolesNotInRefs(event: Event.EventIdentifier, refs: s
     eventRoleCopy.id_event = event.id;
     delete eventRoleCopy.id_event_ref;
   }
-  
+
   return eventRoleCopy;
 }
 
@@ -117,7 +117,7 @@ export async function deleteRolesNotInRefs(event: Event.EventIdentifier, refs: s
  * Gets an event role from the database
  */
 export async function get(eventRole: EventRoleIdentifier): Promise<EventRole> {
-  
+
   if (!isValidEventRoleIdentifier(eventRole)) {
     if (process.env.DEBUG === "true") {
       console.log(eventRole);

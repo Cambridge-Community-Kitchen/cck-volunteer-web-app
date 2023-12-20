@@ -37,10 +37,10 @@ export async function create(eventPosition: EventPositionInsert): Promise<EventP
  * Updates an event position in the database
  */
  export async function update(eventPosition: EventPosition) {
-  
+
   const eventPositionReplaced = await replaceRefs(eventPosition);
   const where = await getUniqueEventPositionWhereClause(eventPositionReplaced);
-  
+
   return await prisma.event_position.updateMany({
     data: eventPositionReplaced,
     where: where
@@ -51,7 +51,7 @@ export async function create(eventPosition: EventPositionInsert): Promise<EventP
  * Replaces object references to database identifiers
  */
  async function replaceRefs(eventPosition) {
-  
+
   // Don't modify the passed object
   const eventPositionCopy = {...{}, ...eventPosition};
 
@@ -81,7 +81,7 @@ export async function create(eventPosition: EventPositionInsert): Promise<EventP
     eventPositionCopy.id_event_role = eventRole.id;
     delete eventPositionCopy.id_event_role_ref;
   }
-  
+
   return eventPositionCopy;
 }
 
@@ -99,7 +99,7 @@ export function isValidEventPositionIdentifier(positionId: EventPositionIdentifi
  * if available, and the unique reference string as a fallback
  */
 async function getUniqueEventPositionWhereClause(eventPosition: EventPositionIdentifier) {
-  
+
   const where = {};
   if (eventPosition.id) {
     where['id'] = eventPosition.id;
@@ -108,7 +108,7 @@ async function getUniqueEventPositionWhereClause(eventPosition: EventPositionIde
       const eventPositionReplaced = await replaceRefs(eventPosition);
       eventPosition.id_event = eventPositionReplaced.id_event;
       delete eventPosition.id_event_ref;
-    }    
+    }
     where['id_event'] = eventPosition.id_event;
     where['id_ref'] = eventPosition.id_ref;
   }
@@ -120,8 +120,8 @@ async function getUniqueEventPositionWhereClause(eventPosition: EventPositionIde
  */
  export async function deletePositionsNotInRefs(event: Event.EventIdentifier, refs: string[]) {
   return await prisma.event_position.deleteMany({
-    where: { 
-      id_event: event.id, 
+    where: {
+      id_event: event.id,
       NOT: {
         id_ref: { in: refs }
       }
@@ -133,7 +133,7 @@ async function getUniqueEventPositionWhereClause(eventPosition: EventPositionIde
  * Gets an event position from the database
  */
 export async function get(eventPosition: EventPositionIdentifier): Promise<EventPosition> {
-  
+
   if (!isValidEventPositionIdentifier(eventPosition)) {
     if (process.env.DEBUG === "true") {
       console.log(eventPosition);

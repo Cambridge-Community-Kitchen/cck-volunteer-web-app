@@ -10,7 +10,7 @@ export async function middleware(request: NextRequest) {
     /^\/api\/auth\/totp\/request/,
     /^\/api\/auth\/register/
   ];
-  
+
   if(rateLimited.some(rx => rx.test(request.nextUrl.pathname)) && process.env.UPSTASH_REDIS_REST_URL) {
 
     // You can only request a totp up to 25 times a day from a single IP address.
@@ -51,7 +51,7 @@ export async function middleware(request: NextRequest) {
   }
 
   if (request.nextUrl.pathname.startsWith('/api')) {
-    
+
     if (request.method == 'POST') {
       let contentType = request.headers.get('content-type')
 

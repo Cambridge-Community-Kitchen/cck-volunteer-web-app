@@ -10,7 +10,7 @@ interface EmailRequestBody {
 
 /**
  * Accepts a request for a TOTP token, to be sent to email or phone
- * 
+ *
  * @param {NextApiRequest} req The Next.js API request
  * @param {NextApiResponse} res The Next.js API response
  */
@@ -22,7 +22,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (data.length == 1) {
     const person = data[0];
     const token = totp.generate(person.totpsecret);
-    
+
     const response = { result: "Email dispatched" };
 
     if(process.env.SEND_EMAIL || !(process.env.DEBUG === "true")) {
@@ -31,7 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       console.log(`OTP requested for ${person.email}: ${token}`);
       response.result = "OTP printed to console";
     }
-    
+
     res.status(200).json(response);
   } else {
     res.status(404).json({ result: "User unknown" });
@@ -54,13 +54,13 @@ export default function handler(req, res) {
 
   return new Promise((resolve, reject) => {
     graphcms.request(`
-    {  
+    {
       person(where: {email: "cck@agolden.com"}) {
         sha1
       }
     }
     `).then(data => {
-      
+
       if (data.person !== null) {
         const token = authenticator.generate(data.person.sha1);
         console.log(token)

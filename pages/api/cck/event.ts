@@ -12,15 +12,15 @@ function ObjectEntries<T extends object>(t: T): Entries<T>[] {
 
 /**
  * Batch upload of an event and all its roles and positions
- * 
+ *
  * @param {NextApiRequest} req The Next.js API request
  * @param {NextApiResponse} res The Next.js API response
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    
+
     if (req.method === 'POST') {
         const event = req.body;
-    
+
         if (! (await isUserAuthorized(req, res, [UserRole.MASTER_ADMIN]) || await isUserAuthorized(req, res, [UserRole.EVENT_ADMIN], 'cck'))) {
             res.status(403).json({ result: "You must be a master administrator or an events admin for cck to batch upload event data." });
             return;
@@ -40,13 +40,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             delete eventForCreate.roles;
             gottenEvent = await Event.create(eventForCreate);
         }
-        
+
         // Update event roles
         // If no roles exist, insert them all.
         // If roles DO exist, we don't want to delete the event role... UNLESS that event role no longer exists in the upload
 
         if (event.roles) {
-            
+
             // Delete any roles that are not provided in the upload
             EventRole.deleteRolesNotInRefs(gottenEvent, Object.keys(event.roles));
 
@@ -72,14 +72,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 if (eventRole['positions']) {
 
                     EventPosition.deletePositionsNotInRefs(gottenEvent, Object.keys(eventRole['positions']));
-                    
+
                     for (const [positionKey, position] of  ObjectEntries(eventRole['positions'])) {
-                        
+
                         const eventPositionId = {
                             id_event: gottenEvent.id,
                             id_ref: positionKey
                         };
-                        
+
                         let gottenEventPosition = await EventPosition.get(eventPositionId);
 
                         if(gottenEventPosition) {
@@ -98,14 +98,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         }
 
                         if(position['route']) {
-                            
+
                             const routeInsert = {...position['route']};
                             delete routeInsert.deliveries;
                             routeInsert['id_ref'] = gottenEventPosition.id_ref;
                             routeInsert['id_event_position'] = gottenEventPosition.id;
 
                             const gottenRoute = await Route.create(routeInsert);
-                            
+
                             for (const deliveryIdx in position['route']['deliveries']) {
                                 const deliveryInsert = position['route']['deliveries'][deliveryIdx];
                                 deliveryInsert['id_route'] = gottenRoute.id;

@@ -26,7 +26,7 @@ import { registerUser } from '@/components/api';
 
 /**
  * Displays a full-page registration screen
- * 
+ *
  * @returns {React.ReactElement} The registration screen react component
  */
 export default function Registration(): React.ReactElement {
@@ -38,11 +38,11 @@ export default function Registration(): React.ReactElement {
   const router = useRouter();
 
   const initialEmail = (typeof router.query.email !== "undefined" ? router.query.email : '');
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [registrationSucceeded, setRegistrationSucceeded] = useState(false);
-  
+
   const handleSubmit = async (values) => {
     setIsLoading(true);
     setErrorMessage('');
@@ -70,7 +70,7 @@ export default function Registration(): React.ReactElement {
     null;
 
   const cancelRef = React.useRef();
-  
+
   return (
     <div className={styles.fullScreenPage}>
 
@@ -146,7 +146,7 @@ export default function Registration(): React.ReactElement {
             </Form>
           )}
           </Formik>
-        </Flex>        
+        </Flex>
       </div>
     </div>
   );

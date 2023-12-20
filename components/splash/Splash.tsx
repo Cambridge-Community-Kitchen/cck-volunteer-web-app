@@ -12,11 +12,11 @@ import type React from 'react';
 
 /**
  * Briefly displays a full-splash screen
- * 
+ *
  * @returns {React.ReactElement} The splash screen react component
  */
 export default function Splash(props): React.ReactElement {
-  const [isVisible, setVisible] = useState(true);  
+  const [isVisible, setVisible] = useState(true);
 
   useEffect(() => {
     const timeout = setTimeout(() => {

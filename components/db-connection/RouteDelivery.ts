@@ -1,7 +1,7 @@
 import prisma from '@/components/db-connection-prisma';
 
 export interface RouteDeliveryInsert {
-    id_route: number;
+  id_route: number;
   portions: number;
   name?: string;
   phone?: string;

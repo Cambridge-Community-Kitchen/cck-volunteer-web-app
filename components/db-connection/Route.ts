@@ -2,9 +2,9 @@ import { Prisma } from '@prisma/client';
 import prisma     from '@/components/db-connection-prisma';
 
 export interface RouteInsert {
-    id_ref?: string;
+  id_ref?: string;
   id_event_position: number;
-    name: string;
+  name: string;
   distance?: Prisma.JsonValue;
   passcode?: string;
 }

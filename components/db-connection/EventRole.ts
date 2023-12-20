@@ -11,11 +11,11 @@ export interface EventRoleIdentifier extends RecordIdentifier {
 }
 
 export interface EventRoleInsert {
-    id_event: number;
-    general_volunteers_needed?: number;
-    id_ref?: string;
-    name: string;
-    description?: string;
+  id_event: number;
+  general_volunteers_needed?: number;
+  id_ref?: string;
+  name: string;
+  description?: string;
 }
 
 export interface EventRole extends EventRoleInsert {

@@ -9,13 +9,13 @@ export interface EventIdentifier extends RecordIdentifier {
 }
 
 export interface EventInsert {
-    id_organization: number;
-    id_event_category?: number;
-    id_ref?: string;
-    start_date: Date;
-    end_date?: Date;
-    name: string;
-    description?: string;
+  id_organization: number;
+  id_event_category?: number;
+  id_ref?: string;
+  start_date: Date;
+  end_date?: Date;
+  name: string;
+  description?: string;
 }
 
 export interface Event extends EventInsert {

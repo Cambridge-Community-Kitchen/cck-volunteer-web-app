@@ -1,7 +1,7 @@
 import { Box, Text } from '@chakra-ui/react';
 import React         from 'react';
 
-const Dish = ({ dish_info, dish_title }) => (
+const Dish = ({ dish_info: dishInfo, dish_title: dishTitle }) => (
     <Box
       border="2px"
       borderColor="gray.200"
@@ -19,7 +19,7 @@ const Dish = ({ dish_info, dish_title }) => (
           fontSize={16}
           textTransform="uppercase"
         >
-          {dish_title}: {dish_info?.dish}
+          {dishTitle}: {dishInfo?.dish}
         </Text>
       </Box>
       <Box
@@ -29,7 +29,7 @@ const Dish = ({ dish_info, dish_title }) => (
       >
         <Text fontSize={14}>
           <span>Ingredients:</span>{' '}
-          <strong>{dish_info?.ingredients}</strong>
+          <strong>{dishInfo?.ingredients}</strong>
         </Text>
       </Box>
 
@@ -41,9 +41,9 @@ const Dish = ({ dish_info, dish_title }) => (
         <Text color="red.400" fontSize={14} fontWeight="bold">
           Allergens:
         </Text>
-        {dish_info.allergens ? (
+        {dishInfo.allergens ? (
           <Text fontSize={14} ml={1}>
-            {dish_info?.allergens}
+            {dishInfo?.allergens}
           </Text>
         ) : (
           <Text fontSize={14} ml={1}>

@@ -115,7 +115,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 const deliveryInsert = position.route.deliveries[deliveryIdx];
 
                 deliveryInsert.id_route = gottenRoute.id;
-                deliveryInsert.sequence = parseInt(deliveryIdx);
+                deliveryInsert.sequence = parseInt(deliveryIdx, 10);
                 await RouteDelivery.create(deliveryInsert);
               }
             }

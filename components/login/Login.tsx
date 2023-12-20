@@ -41,26 +41,30 @@ export default function Login(): React.ReactElement {
   const [ userEntryErrorMessage, setUserEntryErrorMessage ] = useState('');
   const [ debug, setDebug ]                                 = useState(false);
 
-  const handleUserIdSubmit = async (email) => {
+  const handleUserIdSubmit = async (emailToSubmit) => {
     setIsLoading(true);
 
     try {
-      const res = await requestOTP({ baseURL: router.basePath, email });
+      const res = await requestOTP({
+        baseURL : router.basePath,
+        email   : emailToSubmit,
+      });
 
-      if (res.status == 404) {
+      if (res.status === 404) {
         setUserEntryErrorMessage(UserIdErrorMessage.notFound);
-      } else if (res.status == 200) {
+      } else if (res.status === 200) {
         const body = await res.json();
 
         if (body.result.includes('console')) {
           setDebug(true);
         }
 
-        setEmail(email);
+        setEmail(emailToSubmit);
         setDisplayOTPEntry(true);
       }
     } catch (error) {
       // Our request failed for some reason.  Tell the user to try again later?
+      // eslint-disable-next-line no-console
       console.log(error);
       setUserEntryErrorMessage(UserIdErrorMessage.generalError);
     } finally {

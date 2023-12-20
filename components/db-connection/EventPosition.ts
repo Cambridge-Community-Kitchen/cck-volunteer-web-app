@@ -12,11 +12,11 @@ export interface EventPositionIdentifier extends RecordIdentifier {
 }
 
 export interface EventPositionInsert {
-    id_event: number;
-    id_event_role?: number;
-    id_ref?: string;
-    name: string;
-    description?: string;
+  id_event: number;
+  id_event_role?: number;
+  id_ref?: string;
+  name: string;
+  description?: string;
 }
 
 export interface EventPosition extends EventPositionInsert {

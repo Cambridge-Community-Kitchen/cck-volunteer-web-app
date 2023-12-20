@@ -48,13 +48,13 @@ export default function Registration(): React.ReactElement {
     try {
       const res = await registerUser({ baseURL: router.basePath, email: values.email, nickname: values.nickname });
 
-      if (res.status == 400) {
+      if (res.status === 400) {
         setErrorMessage(RegistrationErrorMessage.duplicate);
-      } else if (res.status == 200) {
+      } else if (res.status === 200) {
         setRegistrationSucceeded(true);
       }
     } catch (error) {
-      console.log(error);
+      console.log(error); // eslint-disable-line no-console
       // Our request failed for some reason.  Tell the user to try again later?
     } finally {
       setIsLoading(false);

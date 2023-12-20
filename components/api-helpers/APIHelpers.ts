@@ -5,10 +5,12 @@ import type { NextRequest }                     from 'next/server';
 
 const hasMappedHeaders = (headers: Headers | IncomingMessage['headers']): headers is Headers => headers instanceof Headers;
 
+/* eslint-disable no-shadow, no-unused-vars */
 export enum UserRole {
-    MASTER_ADMIN = 'master-admin',
-    EVENT_ADMIN = 'event-admin'
+  MASTER_ADMIN = 'master-admin',
+  EVENT_ADMIN = 'event-admin'
 }
+/* eslint-enable */
 
 /**
  * Calculates the days since a provided date
@@ -30,7 +32,7 @@ export function daysSince(date: Date) {
 export function parseDashedDate(date: string) {
   const parts = date.split('-');
 
-  if (parts.length != 3) {
+  if (parts.length !== 3) {
     throw new Error('Invalid date format');
   }
 
@@ -38,7 +40,7 @@ export function parseDashedDate(date: string) {
     parseInt(parts[1], 10) - 1,
     parseInt(parts[0], 10));
 
-  if (isNaN(parsedDate.getTime())) {
+  if (Number.isNaN(parsedDate.getTime())) {
     throw new Error('Invalid date format');
   }
 
@@ -87,26 +89,28 @@ export async function isUserAuthorized(req: NextApiRequest | NextRequest, res: N
   try {
     const user = await getUserContext(req);
 
-    const relevantRoles = orgRef == undefined ? user.roles : user.organizations[orgRef].roles;
+    const relevantRoles = orgRef === undefined ? user.roles : user.organizations[orgRef].roles;
 
-    for (const role in authorizedRoles) {
-      if (relevantRoles.indexOf(authorizedRoles[role]) >= 0) {
-        return true;
-      }
+    if (authorizedRoles.some(role => relevantRoles.indexOf(role) >= 0)) {
+      return true;
     }
 
     if (process.env.DEBUG === 'true') {
+      /* eslint-disable no-console */
       console.log('User does not have any of the authorized roles.');
       console.log(`User roles: ${  relevantRoles }`);
       console.log(`Authorized roles: ${  authorizedRoles }`);
+      /* eslint-enable no-console */
     }
 
     return false;
   } catch (e) {
     if (process.env.DEBUG === 'true') {
+      /* eslint-disable no-console */
       console.log('Error when attempting authorize user:');
       console.log(e);
       console.log(parseJwt(getTokenFromRequest(req)));
+      /* eslint-enable no-console */
     }
   }
 

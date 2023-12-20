@@ -9,13 +9,16 @@ const dbConfig = {
   user            : process.env.DB_USER,
   password        : process.env.DB_PASSWORD,
   database        : process.env.DB_NAME,
+  ...(
+    (process.env.NO_DB_SSL !== 'true' && process.env.DB_HOST.includes('aws.com'))
+      ? {
+        ssl: {
+          ca: fs.readFileSync(`${ process.cwd()  }/aws/eu-west-2-bundle.pem`),
+        },
+      }
+      : {}
+  ),
 };
-
-if (process.env.NO_DB_SSL !== 'true' && process.env.DB_HOST.includes('aws.com')) {
-  dbConfig.ssl = {
-    ca: fs.readFileSync(`${ process.cwd()  }/aws/eu-west-2-bundle.pem`),
-  };
-}
 
 const dbPool = mysql.createPool(dbConfig);
 
@@ -40,25 +43,23 @@ export async function getUserRoles(personId: number) {
     WHERE person.id = ${ personId }
   `;
 
-  const response = {};
   const rows     = await asyncQuery(qString);
-
-  response.roles = rows.filter(row => row.orgRef == null)
-    .map(row => row.role);
+  const response = {
+    organizations : {},
+    roles         : rows.filter(row => row.orgRef == null).map(row => row.role),
+  };
 
   const orgRoles = rows.filter(row => row.orgRef !== null);
   const a        = orgRoles.map(row => row.orgRef);
   const orgRefs  = a.filter((item, i, ar) => ar.indexOf(item) === i);
 
-  for (const i in orgRefs) {
-    if (!response.organizations) { response.organizations = {}; }
+  orgRefs.forEach((orgRef) => {
+    const org = {
+      roles: rows.filter(row => row.orgRef === orgRef).map(row => row.role),
+    };
 
-    const org = {};
-
-    org.roles                          = rows.filter(row => row.orgRef == orgRefs[i])
-      .map(row => row.role);
-    response.organizations[orgRefs[i]] = org;
-  }
+    response.organizations[orgRef] = org;
+  });
 
   return response;
 }

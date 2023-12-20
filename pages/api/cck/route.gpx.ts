@@ -73,7 +73,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       let a = gottenRoute.route_delivery[deliveryIdx].plus_code;
 
       if (a.length <= 13 && a.includes('+')) { // then it's a PlusCode
-        if (a.indexOf('+') == 4) {
+        if (a.indexOf('+') === 4) {
           a = `9f42${ a }`;
         }
       }

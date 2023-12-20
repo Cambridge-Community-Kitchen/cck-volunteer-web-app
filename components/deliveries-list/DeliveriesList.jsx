@@ -13,7 +13,7 @@ import Item                                        from './item';
 
 dayjs.extend(customParseFormat);
 
-const DeliveriesList = ({ date, id_ref, passcode, mode, basePath }) => {
+const DeliveriesList = ({ date, id_ref: idRef, passcode, mode, basePath }) => {
   const [ displayDish, setDisplayDish ] = useState(false);
   const [ isLoading, setIsLoading ]     = useState(null);
   const [ routeData, setRouteData ]     = useState();
@@ -33,7 +33,7 @@ const DeliveriesList = ({ date, id_ref, passcode, mode, basePath }) => {
 
   useEffect(() => {
     setIsLoading(true);
-    getRouteData({ basePath, date, ref: id_ref, passcode, mode }).then((response) => {
+    getRouteData({ basePath, date, ref: idRef, passcode, mode }).then((response) => {
       response.json().then((data) => {
         setRouteData(data);
         // Temporarily hardcoded to true; previous logic said only show dish if it's within the last 3 days
@@ -41,7 +41,7 @@ const DeliveriesList = ({ date, id_ref, passcode, mode, basePath }) => {
         setIsLoading(false);
       });
     });
-  }, [ basePath, date, id_ref, passcode, mode ]);
+  }, [ basePath, date, idRef, passcode, mode ]);
 
   const updateItemCompletion = useCallback(
     (id, value) => {
@@ -106,7 +106,7 @@ const DeliveriesList = ({ date, id_ref, passcode, mode, basePath }) => {
               pathname : '/api/cck/route.gpx',
               query    : {
                 date     : date,
-                ref      : id_ref,
+                ref      : idRef,
                 passcode : passcode,
                 mode     : mode,
               },
@@ -134,20 +134,22 @@ const DeliveriesList = ({ date, id_ref, passcode, mode, basePath }) => {
       </Flex>
       <ul className={styles.list}>
         {routeData.deliveries.map((item, index) => {
-          const portions = item.portions;
+          const portions         = item.portions;
+          const itemForRendering = {
+            ...item,
+            plusCode    : item.plus_code,
+            whenNotHome : item.when_not_home,
+          };
 
           if (item.plus_code.length <= 13 && item.plus_code.includes('+')) { // then it's a PlusCode
-            if (item.plus_code.indexOf('+') == 4) {
-              item.plus_code = `9f42${ item.plus_code }`;
+            if (item.plus_code.indexOf('+') === 4) {
+              itemForRendering.plus_code = `9f42${ item.plus_code }`;
             }
           }
 
-          item.plusCode    = item.plus_code;
-          item.whenNotHome = item.when_not_home;
-
           return (
             <Item
-              data={item}
+              data={itemForRendering}
               key={index.toString()}
               markComplete={() => markItemComplete(index)}
               portions={portions.toString()}

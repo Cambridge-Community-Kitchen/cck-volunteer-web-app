@@ -63,12 +63,12 @@ export default function OTPModal(props): React.ReactElement {
     try {
       const res = await validateOTP({ baseURL: router.basePath, email: props.email, otp });
 
-      if (res.status == 401) {
+      if (res.status === 401) {
         // OTP validation failed, prompt for re-entry
         clearOTPEntry();
         setErrorMessage(OTPErrorMessage.invalid);
         setIsLoading(false);
-      } else if (res.status == 200) {
+      } else if (res.status === 200) {
         // OTP validation succeeded, proceed to home screen
         const responseBody = await res.json();
 
@@ -76,7 +76,7 @@ export default function OTPModal(props): React.ReactElement {
         router.push('/');
       }
     } catch (error) {
-      console.log(error);
+      console.log(error); // eslint-disable-line no-console
       // Our request failed for some reason.  Tell the user to try again later?
       setIsLoading(false);
     }
@@ -133,7 +133,7 @@ export default function OTPModal(props): React.ReactElement {
             </div>
           </ModalBody>
           <ModalFooter>
-            <Button marginRight="20px;" onClick={clearOTPEntry} disabled={otpEntryVal.length == 0 || isLoading}>Clear</Button>
+            <Button marginRight="20px;" onClick={clearOTPEntry} disabled={otpEntryVal.length === 0 || isLoading}>Clear</Button>
             <Button colorScheme='orange' onClick={handleOTPSubmit} disabled={otpEntryVal.length < 6 || isLoading}>
               Submit {spinner}
             </Button>

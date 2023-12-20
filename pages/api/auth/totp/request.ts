@@ -17,7 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const body: EmailRequestBody = req.body;
   const data                   = await DBConnection.getUserByEmail(body.email);
 
-  if (data.length == 1) {
+  if (data.length === 1) {
     const person = data[0];
     const token  = totp.generate(person.totpsecret);
 

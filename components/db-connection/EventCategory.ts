@@ -8,10 +8,10 @@ export interface EventCategoryIdentifier extends RecordIdentifier {
 }
 
 export interface EventCategoryInsert {
-    id_ref?: string;
-    name: string;
-    id_organization: number;
-    description?: string;
+  id_ref?: string;
+  name: string;
+  id_organization: number;
+  description?: string;
 }
 
 export interface EventCategory extends EventCategoryInsert {

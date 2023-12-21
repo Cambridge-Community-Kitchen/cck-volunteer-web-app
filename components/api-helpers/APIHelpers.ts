@@ -66,13 +66,13 @@ export async function getUserContext(req: Request | IncomingMessage) {
  */
 export function getTokenFromRequest(req: Request | IncomingMessage) {
   const isAPIRequest = !hasMappedHeaders(req.headers);
-  const authHeader   = isAPIRequest ? (req as Request).headers.authorization : (req.headers as Headers).get('authorization');
+  const authHeader   = isAPIRequest ? (req as NextApiRequest).headers.authorization : (req.headers as Headers).get('authorization');
 
   if (authHeader) {
     return authHeader.split(' ')[1];
   }
 
-  return isAPIRequest ? (req as Request).cookies.AuthJWT : (req as IncomingMessage).cookies.get('AuthJWT');
+  return isAPIRequest ? (req as NextApiRequest).cookies.AuthJWT : (req as NextRequest).cookies.get('AuthJWT');
 }
 
 /**

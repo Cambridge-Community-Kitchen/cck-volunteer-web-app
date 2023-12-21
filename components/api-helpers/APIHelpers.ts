@@ -3,7 +3,9 @@ import { jwtVerify }                            from 'jose';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import type { NextRequest }                     from 'next/server';
 
-const hasMappedHeaders = (headers: Headers | IncomingMessage['headers']): headers is Headers => headers instanceof Headers;
+const hasMappedHeaders = (
+  headers: Headers | IncomingMessage['headers']
+): headers is Headers => headers instanceof Headers;
 
 /* eslint-disable no-shadow, no-unused-vars */
 export enum UserRole {
@@ -85,7 +87,12 @@ export function parseJwt(token: string) {
 /**
  * Determines whether the user has one or more of the authorized roles to perform a given action
  */
-export async function isUserAuthorized(req: NextApiRequest | NextRequest, res: NextApiResponse, authorizedRoles: string[], orgRef?: string) {
+export async function isUserAuthorized(
+  req: NextApiRequest | NextRequest,
+  res: NextApiResponse,
+  authorizedRoles: string[],
+  orgRef?: string
+) {
   try {
     const user = await getUserContext(req);
 
@@ -98,8 +105,8 @@ export async function isUserAuthorized(req: NextApiRequest | NextRequest, res: N
     if (process.env.DEBUG === 'true') {
       /* eslint-disable no-console */
       console.log('User does not have any of the authorized roles.');
-      console.log(`User roles: ${  relevantRoles }`);
-      console.log(`Authorized roles: ${  authorizedRoles }`);
+      console.log(`User roles: ${ relevantRoles }`);
+      console.log(`Authorized roles: ${ authorizedRoles }`);
       /* eslint-enable no-console */
     }
 

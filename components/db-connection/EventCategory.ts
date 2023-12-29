@@ -39,7 +39,13 @@ export async function get(category: EventCategoryIdentifier): Promise<EventCateg
     category.id_organization = org.id;
   }
 
-  const where = {};
+  interface EventCategoryWhereClause {
+    id?: number,
+    id_organization?: number,
+    id_ref?: string,
+  }
+
+  const where : EventCategoryWhereClause = {};
 
   if (category.id) {
     where.id = category.id;

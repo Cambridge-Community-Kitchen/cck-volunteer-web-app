@@ -92,7 +92,13 @@ async function replaceRefs(event) {
 async function getUniqueEventWhereClause(event: EventIdentifier) {
   // TODO: follow the style guide instead of suspending it here
   /* eslint-disable no-param-reassign */
-  const where = {};
+  interface EventWhereClause {
+    id?: number,
+    id_organization?: number,
+    id_ref?: string,
+  }
+
+  const where: EventWhereClause = {};
 
   if (event.id) {
     where.id = event.id;

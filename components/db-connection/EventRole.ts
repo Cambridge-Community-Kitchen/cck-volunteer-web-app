@@ -49,7 +49,13 @@ export async function update(eventRole: EventRole) {
  * if available, and the unique reference string as a fallback
  */
 async function getUniqueEventRoleWhereClause(eventRole: EventRoleIdentifier) {
-  const where = {};
+  interface EventRoleWhereClause {
+    id?: number,
+    id_event?: number,
+    id_ref?: string,
+  }
+
+  const where : EventRoleWhereClause = {};
 
   if (eventRole.id) {
     where.id = eventRole.id;

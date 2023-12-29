@@ -102,9 +102,15 @@ export function isValidEventPositionIdentifier(positionId: EventPositionIdentifi
  * if available, and the unique reference string as a fallback
  */
 async function getUniqueEventPositionWhereClause(eventPosition: EventPositionIdentifier) {
+  interface EventPositionWhereClause {
+    id?: number,
+    id_event?: number,
+    id_ref?: string,
+  }
+
   // TODO: follow the style guide instead of suspending it here
   /* eslint-disable no-param-reassign */
-  const where = {};
+  const where : EventPositionWhereClause = {};
 
   if (eventPosition.id) {
     where.id = eventPosition.id;

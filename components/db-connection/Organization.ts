@@ -3,9 +3,9 @@ import type { RecordIdentifier } from './DBHelpers';
 import { getReference }          from './DBHelpers';
 
 export interface OrganizationInsert {
-    id_ref: string;
-    name: string;
-    description?: string;
+  id_ref: string;
+  name: string;
+  description?: string;
 }
 
 export interface Organization extends OrganizationInsert {

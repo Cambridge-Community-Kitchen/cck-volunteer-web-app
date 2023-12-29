@@ -4,7 +4,8 @@
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
     "next/core-web-vitals",
-    "right-align"
+    "right-align",
+    "plugin:@next/next/recommended"
   ],
   "plugins": ["unused-imports", "@typescript-eslint", "jsdoc"],
   "rules": {

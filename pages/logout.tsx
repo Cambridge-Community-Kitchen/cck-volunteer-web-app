@@ -6,19 +6,21 @@ import { useEffect } from 'react';
  * The app's login page, i.e., the '/logout' path
  */
 const LogoutPage = () => {
-	setCookie('AuthJWT', '', { maxAge: 0 });
-	const router = useRouter();
-	useEffect(() => {
-		const timeout = setTimeout(() => {
-			router.push('/login');
-		}, 100);
+  setCookie('AuthJWT', '', { maxAge: 0 });
 
-		return () => clearTimeout(timeout);
-	});
+  const router = useRouter();
 
-	return (
-		<div>Redirecting...</div>
-	);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      router.push('/login');
+    }, 100);
+
+    return () => clearTimeout(timeout);
+  });
+
+  return (
+    <div>Redirecting...</div>
+  );
 };
 
 export default LogoutPage;

@@ -3,11 +3,13 @@
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
-    "next/core-web-vitals"
+    "next/core-web-vitals",
+    "right-align",
+    "plugin:@next/next/recommended"
   ],
   "plugins": ["unused-imports", "@typescript-eslint", "jsdoc"],
   "rules": {
-  	"semi": 2,
+    "semi": 2,
     "jsdoc/check-access": 1, // Recommended
     "jsdoc/check-alignment": 1, // Recommended
     "jsdoc/check-param-names": 1, // Recommended
@@ -35,6 +37,16 @@
     "jsdoc/require-yields": 1, // Recommended
     "jsdoc/require-yields-check": 1, // Recommended
     "jsdoc/tag-lines": 1, // Recommended
-    "jsdoc/valid-types": 1 // Recommended
+    "jsdoc/valid-types": 1, // Recommended
+    // The following are temporary; we have existing code that doesn't (yet)
+    // meet these rules, but they may be reasonable in the React context.
+    "no-restricted-exports": 0,
+    "no-restricted-syntax": 0,
+    "import/extensions": 0,
+    "import/prefer-default-export": 0,
+    "no-use-before-define": 0,
+    "no-return-await": 0,
+    "no-await-in-loop": 0,
+    "object-shorthand": 0
   }
 }

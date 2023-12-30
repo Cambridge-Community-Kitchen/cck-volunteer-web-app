@@ -50,6 +50,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
     });
 
+    if (!gottenRoute) {
+      res.status(404).json({ result: 'Route not found' });
+
+      return;
+    }
+
     if (gottenRoute.passcode !== passcode) {
       res.status(403).json({ result: 'Passcode is invalid' });
 

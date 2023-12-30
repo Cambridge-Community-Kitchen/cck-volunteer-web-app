@@ -74,6 +74,18 @@ const DeliveriesList = ({ date, id_ref: idRef, passcode, mode, basePath }) => {
   const rDate         = new Date(routeData.event.start_date);
   const formattedDate = `${ (rDate.getDate() > 9) ? rDate.getDate() : (`0${  rDate.getDate() }`)  }/${  (rDate.getMonth() > 8) ? (rDate.getMonth() + 1) : (`0${  rDate.getMonth() + 1 }`)  }/${  rDate.getFullYear() }`;
 
+  const googleRouteBaseUrl = 'https://www.google.com/maps/dir';
+  const plusCodes          = routeData.deliveries.map(item => item.plus_code);
+  const originForUrl       = encodeURIComponent('The Lockon, Fair Street, Cambridge');
+  const googleRouteUrl     = `${ googleRouteBaseUrl }/?api=1&origin=${
+    originForUrl
+  }&waypoints=${
+    plusCodes.map(encodeURIComponent).join('|')
+  }&destination=${
+    originForUrl
+  }`;
+  // We could also set `&travelmode=${mode}` but mode is never actually passed in.
+
   return (
     <div className={styles.root}>
       <Box display="flex" justifyContent="space-between">
@@ -101,6 +113,31 @@ const DeliveriesList = ({ date, id_ref: idRef, passcode, mode, basePath }) => {
         <Button
           as="a"
           mx="auto"
+          href={`${ googleRouteUrl }&travelmode=bicycling`}
+          rightIcon={<ArrowForwardIcon />}
+          colorScheme="blue"
+          target="_blank"
+        >
+          Google Bike Route
+        </Button>
+      </Flex>
+      <Flex direction="row" px={2} py={2}>
+        <Button
+          as="a"
+          mx="auto"
+          href={`${ googleRouteUrl }&travelmode=driving`}
+          rightIcon={<ArrowForwardIcon />}
+          colorScheme="blue"
+          target="_blank"
+        >
+          Google Driving Route
+        </Button>
+      </Flex>
+      {/* This now fails with error: You must enable Billing on the Google Cloud Project...
+      <Flex direction="row" px={2} py={2}>
+        <Button
+          as="a"
+          mx="auto"
           onClick={() => {
             router.push({
               pathname : '/api/cck/route.gpx',
@@ -120,6 +157,7 @@ const DeliveriesList = ({ date, id_ref: idRef, passcode, mode, basePath }) => {
           Download route as GPX
         </Button>
       </Flex>
+      */}
       <Flex direction="row" px={2} py={2}>
         <Button
           as="a"

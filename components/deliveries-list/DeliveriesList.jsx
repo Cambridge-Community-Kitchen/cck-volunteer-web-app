@@ -2,7 +2,6 @@ import { ArrowForwardIcon }                        from '@chakra-ui/icons';
 import { Box, Button, Text, Flex }                 from '@chakra-ui/react';
 import dayjs                                       from 'dayjs';
 import customParseFormat                           from 'dayjs/plugin/customParseFormat';
-import { useRouter }                               from 'next/router';
 import React, { useCallback, useEffect, useState } from 'react';
 import { getRouteData }                            from '@/components/api';
 import BackToLockon                                from '../back-to-lockon';
@@ -28,8 +27,6 @@ const DeliveriesList = ({ date, id_ref: idRef, passcode, mode, basePath }) => {
       info  : routeData?.event?.addl_info?.alternateDish,
     },
   ].filter(dish => dish.info);
-
-  const router = useRouter();
 
   useEffect(() => {
     setIsLoading(true);

@@ -12,6 +12,22 @@ import Item                                        from './item';
 
 dayjs.extend(customParseFormat);
 
+/**
+ *
+ * @param {string} originalCode
+ * @returns {string}
+ */
+
+const addPlusCodePrefix = (originalCode) => {
+  if (originalCode.length <= 13 && originalCode.includes('+')) { // then it's a PlusCode
+    if (originalCode.indexOf('+') === 4) {
+      return `9f42${ originalCode }`;
+    }
+  }
+
+  return originalCode;
+};
+
 const DeliveriesList = ({ date, id_ref: idRef, passcode, mode, basePath }) => {
   const [ displayDish, setDisplayDish ] = useState(false);
   const [ isLoading, setIsLoading ]     = useState(null);
@@ -172,15 +188,9 @@ const DeliveriesList = ({ date, id_ref: idRef, passcode, mode, basePath }) => {
           const portions         = item.portions;
           const itemForRendering = {
             ...item,
-            plusCode    : item.plus_code,
+            plusCode    : addPlusCodePrefix(item.plus_code),
             whenNotHome : item.when_not_home,
           };
-
-          if (item.plus_code.length <= 13 && item.plus_code.includes('+')) { // then it's a PlusCode
-            if (item.plus_code.indexOf('+') === 4) {
-              itemForRendering.plus_code = `9f42${ item.plus_code }`;
-            }
-          }
 
           return (
             <Item

@@ -12,6 +12,22 @@ import Item                                        from './item';
 
 dayjs.extend(customParseFormat);
 
+/**
+ *
+ * @param {string} originalCode
+ * @returns {string}
+ */
+
+const addPlusCodePrefix = (originalCode) => {
+  if (originalCode.length <= 13 && originalCode.includes('+')) { // then it's a PlusCode
+    if (originalCode.indexOf('+') === 4) {
+      return `9f42${ originalCode }`;
+    }
+  }
+
+  return originalCode;
+};
+
 const DeliveriesList = ({ date, id_ref: idRef, passcode, mode, basePath }) => {
   const [ displayDish, setDisplayDish ] = useState(false);
   const [ isLoading, setIsLoading ]     = useState(null);
@@ -72,7 +88,7 @@ const DeliveriesList = ({ date, id_ref: idRef, passcode, mode, basePath }) => {
   const formattedDate = `${ (rDate.getDate() > 9) ? rDate.getDate() : (`0${  rDate.getDate() }`)  }/${  (rDate.getMonth() > 8) ? (rDate.getMonth() + 1) : (`0${  rDate.getMonth() + 1 }`)  }/${  rDate.getFullYear() }`;
 
   const googleRouteBaseUrl = 'https://www.google.com/maps/dir';
-  const plusCodes          = routeData.deliveries.map(item => item.plus_code);
+  const plusCodes          = routeData.deliveries.map(item => addPlusCodePrefix(item.plus_code));
   const originForUrl       = encodeURIComponent('The Lockon, Fair Street, Cambridge');
   const googleRouteUrl     = `${ googleRouteBaseUrl }/?api=1&origin=${
     originForUrl
@@ -172,15 +188,9 @@ const DeliveriesList = ({ date, id_ref: idRef, passcode, mode, basePath }) => {
           const portions         = item.portions;
           const itemForRendering = {
             ...item,
-            plusCode    : item.plus_code,
+            plusCode    : addPlusCodePrefix(item.plus_code),
             whenNotHome : item.when_not_home,
           };
-
-          if (item.plus_code.length <= 13 && item.plus_code.includes('+')) { // then it's a PlusCode
-            if (item.plus_code.indexOf('+') === 4) {
-              itemForRendering.plus_code = `9f42${ item.plus_code }`;
-            }
-          }
 
           return (
             <Item

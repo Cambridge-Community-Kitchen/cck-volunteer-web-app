@@ -1,0 +1,21 @@
+# Use root/example as user/password credentials
+version: '3.1'
+
+services:
+  db:
+    image: mysql
+    # NOTE: use of "mysql_native_password" is not recommended: https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: "${DB_MASTER_PASSWORD}"
+      MYSQL_USER: "${DB_USER:-cckvolunteer}"
+      MYSQL_PASSWORD: "${DB_PASSWORD:-cckvolunteer}"
+      MYSQL_DATABASE: "${DB_NAME:-cckvolunteer}"
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:

@@ -63,7 +63,20 @@ In this file, there are several default variables that may be changed (and sever
 * **DEBUG** - Enables debugging functionality, e.g., logging one time passwords to console
 * **NO_DB_SSL** - Disables SSL connections to the database. Should likely only be set to 'true' when connecting to localhost.
 
-## Helper scripts
+## Setting up a DB using Docker
+
+```console
+source scripts/helper.sh
+source .env
+docker compose up -d
+export DATABASE_URL="mysql://$DB_MASTER_USER:$(urlencode $DB_MASTER_PASSWORD)@$DB_HOST:3306/$DB_NAME?schema=public"
+source scripts/create-users.sh | yarn prisma db execute --stdin
+export DATABASE_URL=$(databaseurl)
+npm run prisma validate
+npm run prisma migrate dev
+```
+
+## DB Helper scripts (depends on mysql client and locally-running mysql server)
 
 A series of (optional) scripts are provided that will simplify the process of setting up your local development environment. Execute them in the following sequence:
 

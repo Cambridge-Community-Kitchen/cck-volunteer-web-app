@@ -23,7 +23,6 @@ const RoutePage = () => {
   useEffect(() => {
     if (isReady) {
       setQueryValues(query);
-      console.log('values found, refreshing!');
     }
   }, [ query, isReady ]);
 

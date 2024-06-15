@@ -1,8 +1,9 @@
-import Head           from 'next/head';
-import { useRouter }  from 'next/router';
-import DeliveriesList from '@/components/deliveries-list';
-import Header         from '@/components/header';
-import styles         from '../styles/Home.module.css';
+import Head                    from 'next/head';
+import { useRouter }           from 'next/router';
+import { useEffect, useState } from 'react';
+import DeliveriesList          from '@/components/deliveries-list';
+import Header                  from '@/components/header';
+import styles                  from '../styles/Home.module.css';
 
 /**
  * The app's route page, i.e., the '/route' path
@@ -16,14 +17,18 @@ const RoutePage = () => {
     baseUrl = `${ getUrl.protocol  }//${  getUrl.host }`;
   }
 
-  const router = useRouter();
-  const query  = router.query;
+  const { query, isReady }              = useRouter();
+  const [ queryValues, setQueryValues ] = useState(query);
 
-  const { date, ref, passcode } = query;
+  useEffect(() => {
+    if (isReady) {
+      setQueryValues(query);
+    }
+  }, [ query, isReady ]);
 
-  let { mode } = query;
+  const { date, ref, passcode } = queryValues;
 
-  mode = mode || 'bicycling';
+  const mode = queryValues.mode || 'bicycling';
 
   if (!date || !ref || !passcode) {
     return (<div>Oh no! Missing one or more required query parameters</div>);

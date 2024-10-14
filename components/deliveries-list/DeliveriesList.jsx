@@ -88,7 +88,7 @@ const DeliveriesList = ({ date, id_ref: idRef, passcode, mode, basePath }) => {
   const formattedDate = `${ (rDate.getDate() > 9) ? rDate.getDate() : (`0${  rDate.getDate() }`)  }/${  (rDate.getMonth() > 8) ? (rDate.getMonth() + 1) : (`0${  rDate.getMonth() + 1 }`)  }/${  rDate.getFullYear() }`;
 
   const googleRouteBaseUrl = 'https://www.google.com/maps/dir';
-  const plusCodes          = routeData.deliveries.map(item => addPlusCodePrefix(item.plus_code));
+  const plusCodes          = [...new Set(routeData.deliveries.map(item => addPlusCodePrefix(item.plus_code)))];
   const originForUrl       = encodeURIComponent('The Lockon, Fair Street, Cambridge');
   const googleRouteUrl     = `${ googleRouteBaseUrl }/?api=1&origin=${
     originForUrl

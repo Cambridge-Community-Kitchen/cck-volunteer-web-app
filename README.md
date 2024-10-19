@@ -19,8 +19,8 @@ sudo apt -y install git nodejs mysql-server
 # Clone the repo and install dependencies
 
 ```console
-git clone https://github.com/agolden/cck-volunteer-app
-cd cck-volunteer-app
+git clone https://github.com/agolden/cck-volunteer-web-app
+cd cck-volunteer-web-app
 npm install
 ```
 

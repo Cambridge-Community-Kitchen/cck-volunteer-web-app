@@ -114,7 +114,7 @@ const Item = ({ data, markComplete, portions, unmarkComplete }) => {
               colorScheme="blue"
               target="_blank"
             >
-              Google Maps
+              navigate to front door
             </Button>
             {data.phone && (
               <Menu>

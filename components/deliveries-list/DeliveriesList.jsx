@@ -131,7 +131,7 @@ const DeliveriesList = ({ date, id_ref: idRef, passcode, mode, basePath }) => {
           colorScheme="blue"
           target="_blank"
         >
-          Google Bike Route
+          cycle route overview
         </Button>
       </Flex>
       <Flex direction="row" px={2} py={2}>
@@ -143,7 +143,7 @@ const DeliveriesList = ({ date, id_ref: idRef, passcode, mode, basePath }) => {
           colorScheme="blue"
           target="_blank"
         >
-          Google Driving Route
+          driving route overview
         </Button>
       </Flex>
       {/* This now fails with error: You must enable Billing on the Google Cloud Project...
@@ -180,7 +180,7 @@ const DeliveriesList = ({ date, id_ref: idRef, passcode, mode, basePath }) => {
           colorScheme="blue"
           target="_blank"
         >
-          Route Debrief
+          route debrief
         </Button>
       </Flex>
       <ul className={styles.list}>

@@ -23,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     parsedDate = parseDashedDate(date as string);
-  } catch (error) {
+  } catch {
     res.status(400).json({ result: 'invalid date' });
 
     return;

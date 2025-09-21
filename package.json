@@ -58,7 +58,6 @@
     "eslint": "9.36.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-next": "15.5.3",
-    "eslint-config-right-align": "^0.1.5",
     "eslint-plugin-align-assignments": "^1.1.2",
     "eslint-plugin-align-import": "^1.0.0",
     "eslint-plugin-import": "^2.32.0",

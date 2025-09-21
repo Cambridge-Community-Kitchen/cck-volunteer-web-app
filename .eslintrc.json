@@ -4,9 +4,10 @@
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
     "next/core-web-vitals",
-    "right-align",
+    // "right-align",
     "plugin:@next/next/recommended"
   ],
+	"env": { "es6": true },
   "plugins": ["unused-imports", "@typescript-eslint", "jsdoc"],
   "rules": {
     "semi": 2,
@@ -20,7 +21,7 @@
     "jsdoc/empty-tags": 1, // Recommended
     "jsdoc/implements-on-classes": 1, // Recommended
     "jsdoc/multiline-blocks": 1, // Recommended
-    "jsdoc/newline-after-description": 1, // Recommended
+    // "jsdoc/newline-after-description": 1, // Recommended but fails
     "jsdoc/no-multi-asterisks": 1, // Recommended
     "jsdoc/no-undefined-types": 1, // Recommended
     "jsdoc/require-description": 1, // Recommended
@@ -36,7 +37,8 @@
     "jsdoc/require-throws": 1,
     "jsdoc/require-yields": 1, // Recommended
     "jsdoc/require-yields-check": 1, // Recommended
-    "jsdoc/tag-lines": 1, // Recommended
+    // configured the following to match removed newline-after-description
+    "jsdoc/tag-lines": [ "error", "any", { "startLines": 1 } ],
     "jsdoc/valid-types": 1, // Recommended
     // The following are temporary; we have existing code that doesn't (yet)
     // meet these rules, but they may be reasonable in the React context.
@@ -47,6 +49,8 @@
     "no-use-before-define": 0,
     "no-return-await": 0,
     "no-await-in-loop": 0,
-    "object-shorthand": 0
+    "object-shorthand": 0,
+    // Stop error
+    "align-assignments/align-assignments": 0
   }
 }

@@ -56,7 +56,10 @@ const Logo = () => (
       src="/cck-simple.png"
       width="38"
       height="30"
-    />
+      style={{
+        maxWidth: "100%",
+        height: "auto"
+      }} />
     <Text fontWeight="bold" ml={3}>
       Cambridge Community Kitchen
     </Text>

@@ -71,7 +71,10 @@ export default function Nav() {
                   src="/cck-simple.png"
                   width="36"
                   height="30"
-                />
+                  style={{
+                    maxWidth: "100%",
+                    height: "auto"
+                  }} />
               </a>
             </Link>
 

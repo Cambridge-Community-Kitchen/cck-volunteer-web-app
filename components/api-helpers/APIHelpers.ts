@@ -74,7 +74,7 @@ export function getTokenFromRequest(req: Request | IncomingMessage) {
     return authHeader.split(' ')[1];
   }
 
-  return isAPIRequest ? (req as NextApiRequest).cookies.AuthJWT : (req as NextRequest).cookies.get('AuthJWT');
+  return isAPIRequest ? (req as NextApiRequest).cookies.AuthJWT : (req as NextRequest).cookies.get('AuthJWT')?.value;
 }
 
 /**

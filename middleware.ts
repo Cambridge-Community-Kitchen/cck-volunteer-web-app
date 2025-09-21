@@ -20,7 +20,7 @@ export async function middleware(request: NextRequest) {
       limiter : Ratelimit.slidingWindow(25, '1 d'),
     });
 
-    const identifier  = request.ip ? request.ip : '127.0.0.1';
+    const identifier  = request.headers.get('X-Forwarded-for') || '127.0.0.1';
     const { success } = await ratelimit.limit(identifier);
 
     if (!success) {

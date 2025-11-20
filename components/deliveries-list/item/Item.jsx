@@ -19,14 +19,19 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
+
 import PropTypes       from 'prop-types';
 import React, { memo } from 'react';
 import styles          from './Item.module.scss';
+import { decode }      from 'pluscodes';
 
 const Item = ({ data, markComplete, portions, unmarkComplete }) => {
   const encodedGoogleMapsUrl = `https://www.google.com/maps/place/${ encodeURIComponent(
     data.plusCode
   ) }`;
+
+  const { latitude, longitude } = decode(String(data.plusCode).toUpperCase()) ?? {};
+  const encodedOpenStreetMapUrl = `https://www.openstreetmap.org/search?query=${latitude},${longitude}#map=19/${latitude}/${longitude}`;
 
   const portionsString = portions > 1 ? 'portions' : 'portion';
 
@@ -115,6 +120,14 @@ const Item = ({ data, markComplete, portions, unmarkComplete }) => {
               target="_blank"
             >
               navigate to front door
+            </Button><Button
+              as="a"
+              href={encodedOpenStreetMapUrl}
+              rightIcon={<ArrowForwardIcon />}
+              colorScheme="blue"
+              target="_blank"
+            >
+              OSM
             </Button>
             {data.phone && (
               <Menu>

@@ -21,6 +21,7 @@
     "@emotion/react": "^11.10.0",
     "@emotion/styled": "^11.10.0",
     "@googlemaps/google-maps-services-js": "^3.3.16",
+    "@next/eslint-plugin-next": "^16.0.3",
     "@prisma/client": "^4.16.1",
     "@upstash/ratelimit": "^0.1.5",
     "@upstash/redis": "^1.13.1",
@@ -45,7 +46,8 @@
     "react-markdown": "^8.0.3",
     "react18-otp-input": "^1.0.3",
     "sass": "^1.93.0",
-    "sql-template-strings": "^2.2.2"
+    "sql-template-strings": "^2.2.2",
+    "typescript-eslint": "^8.47.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.8.0",
@@ -56,7 +58,6 @@
     "@vercel/node": "^2.3.0",
     "dotenv": "^16.0.2",
     "eslint": "9.36.0",
-    "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-next": "15.5.3",
     "eslint-plugin-align-assignments": "^1.1.2",
     "eslint-plugin-align-import": "^1.0.0",

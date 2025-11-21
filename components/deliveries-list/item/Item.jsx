@@ -1,8 +1,8 @@
 import {
-  ArrowForwardIcon,
   ChatIcon,
   CheckIcon,
   ChevronDownIcon,
+  ExternalLinkIcon,
   NotAllowedIcon,
   PhoneIcon,
 } from '@chakra-ui/icons';
@@ -112,23 +112,45 @@ const Item = ({ data, markComplete, portions, unmarkComplete }) => {
           )}
 
           <Stack direction="row" mt="4" spacing={3}>
-            <Button
-              as="a"
-              href={encodedGoogleMapsUrl}
-              rightIcon={<ArrowForwardIcon />}
-              colorScheme="blue"
-              target="_blank"
-            >
-              navigate to front door
-            </Button><Button
-              as="a"
-              href={encodedOpenStreetMapUrl}
-              rightIcon={<ArrowForwardIcon />}
-              colorScheme="blue"
-              target="_blank"
-            >
-              OSM
-            </Button>
+            {data.plusCode && (
+              <Menu>
+                <MenuButton
+                  colorScheme="teal"
+                  as={Button}
+                  rightIcon={<ChevronDownIcon h="3" w="3" />}
+                >
+                  Find front door
+                </MenuButton>
+                <MenuList colorScheme="teal">
+                  <MenuItem
+                    as="a"
+                    href={`geo:${ latitude },${ longitude }`}
+                    icon={<ExternalLinkIcon h="3" w="3" />}
+                  >
+                    { latitude },{ longitude }<br/>
+                    <small>Open in your default app</small>
+                  </MenuItem>
+                  <MenuItem
+                    as="a"
+                    href={encodedGoogleMapsUrl}
+                    target="_blank"
+                    icon={<ExternalLinkIcon h="3" w="3" />}
+                  >
+                    { data.plusCode }<br/>
+                    <small>Google Maps</small>
+                  </MenuItem>
+                  <MenuItem
+                    as="a"
+                    href={encodedOpenStreetMapUrl}
+                    target="_blank"
+                    icon={<ExternalLinkIcon h="3" w="3" />}
+                  >
+                    { latitude },{ longitude }<br/>
+                    <small>OpenStreetMap</small>
+                  </MenuItem>
+                </MenuList>
+              </Menu>
+            )}
             {data.phone && (
               <Menu>
                 <MenuButton

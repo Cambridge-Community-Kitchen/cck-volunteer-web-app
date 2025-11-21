@@ -31,7 +31,7 @@ const Item = ({ data, markComplete, portions, unmarkComplete }) => {
   ) }`;
 
   const { latitude, longitude } = decode(String(data.plusCode).toUpperCase()) ?? {};
-  const encodedOpenStreetMapUrl = `https://www.openstreetmap.org/search?query=${latitude},${longitude}#map=19/${latitude}/${longitude}`;
+  const encodedOpenStreetMapUrl = `https://www.openstreetmap.org/directions?to=${latitude},${longitude}#map=19/${latitude}/${longitude}`;
 
   const portionsString = portions > 1 ? 'portions' : 'portion';
 

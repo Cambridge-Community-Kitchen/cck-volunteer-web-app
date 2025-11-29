@@ -1,7 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { daysSince, parseDashedDate }           from '@/components/api-helpers';
-import prisma                                   from '@/components/db-connection-prisma';
-import { demoRouteData }                        from './demoRouteData';
+
+import {
+  errorHandlingMiddleware, RequestError, validateRecentDate
+} from '@/components/api-helpers';
+
+import prisma            from '@/components/db-connection-prisma';
+import { demoRouteData } from './demoRouteData';
 
 /**
  * Gets route information
@@ -9,7 +13,7 @@ import { demoRouteData }                        from './demoRouteData';
  * @param {NextApiRequest} req The Next.js API request
  * @param {NextApiResponse} res The Next.js API response
  */
-export default async function handler(
+export default errorHandlingMiddleware(async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -32,27 +36,12 @@ export default async function handler(
 
   //   render demo data if the path is like /route?date=03-02-2022&ref=demo&passcode=ZHZW
   if (ref === 'demo') {
-    res.status(200).json(demoRouteData);
-
-    return;
+    return demoRouteData;
   }
 
-  let parsedDate: Date;
+  validateRecentDate(date as string);
 
-  try {
-    parsedDate = parseDashedDate(date as string);
-  } catch {
-    res.status(400).json({ result: 'invalid date' });
-
-    return;
-  }
-
-  const daysDiff = daysSince(parsedDate);
-
-  // Do not return route data if the delivery date is more than a day ago
-  if (daysDiff > 1) {
-    res.status(404).json({ result: 'route not found' });
-  } else if (passcode) {
+  if (passcode) {
     const routeRef = `meal-prep-delivery-${ date }-delivery-${ ref }`;
 
     const gottenRoute = await prisma.route.findFirst({
@@ -78,26 +67,20 @@ export default async function handler(
     });
 
     if (!gottenRoute) {
-      res.status(404).json({ result: 'route not found' });
-
-      return;
+      throw RequestError.NotFoundError('Route not found');
     }
 
     if (gottenRoute.passcode !== passcode) {
-      res.status(403).json({ result: 'Passcode is invalid' });
-
-      return;
+      throw RequestError.NotAuthenticatedError('Passcode is invalid');
     }
 
     cleanupRoute(gottenRoute);
 
-    res.status(200).json(gottenRoute);
-  } else {
-    res.status(403).json({
-      result: 'For now, you MUST provide a passcode to access a route.',
-    });
+    return gottenRoute;
   }
-}
+
+  throw RequestError.NotAuthenticatedError('For now, you MUST provide a passcode to access a route.');
+})
 
 /**
  * Removes unneeded fields and changes field names to make the response more user-friendly

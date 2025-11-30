@@ -122,6 +122,7 @@ const SimpleRouteMap = ({ routes }) => {
     }}
   >
     <Image
+      alt="A map of Cambridge and surrounding area"
       style={{
         position: "absolute",
         top: 0,

@@ -1,12 +1,15 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 import {
-  errorHandlingMiddleware, isUserAuthorized, RequestError, UserRole
+  errorHandlingMiddleware, isUserAuthorized, RequestError, UserRole,
+  validateRecentDate
 } from '@/components/api-helpers';
 
 import {
   Event, EventPosition, EventRole, Route, RouteDelivery
 } from '@/components/db-connection';
+
+import prisma from '@/components/db-connection-prisma';
 
 type Entries<T> = { [K in keyof T]: [K, T[K]] }[keyof T];
 
@@ -134,8 +137,62 @@ export default errorHandlingMiddleware(
       }
 
       return { result: 'Event data successfully imported.' };
+    } else if (req.method = 'GET') {
+      const { date = '' } = req.query
+
+      return await getPublicEventData({ date: String(date) });
     }
 
     throw RequestError.InvalidMethodError('This endpoint does not allow this request method.');
   }
 );
+
+
+const getPublicEventData = async({ date }: { date: string }) => {
+  validateRecentDate(date);
+
+  const routes = await prisma.route.findMany({
+    where: {
+      id_ref: {
+        startsWith: `meal-prep-delivery-${ date }-delivery-`
+      },
+    },
+    include: {
+      route_delivery: {
+        orderBy: {
+          sequence: 'asc',
+        },
+      },
+    },
+  });
+
+  // unique in sorted array
+  const differsFromPreceding = (item, i, arr) => (!i || arr[i - 1] !== item);
+
+  return {
+    routes: routes.map(
+      route => {
+        const plusCodes = route.route_delivery.map(
+          d => d.plus_code?.toUpperCase() || ''
+        ).sort().filter(Boolean).filter(
+          differsFromPreceding
+        );
+
+        const truncatedPlusCodes = plusCodes.map(
+          code => code.replace(/[+].+/, '')
+        ).filter(Boolean).filter(
+          differsFromPreceding
+        );
+
+        return {
+          name: route.name,
+          dropCount: plusCodes.length,
+          plusCodes: truncatedPlusCodes,
+          portionCount: route.route_delivery.reduce(
+            (acc, {portions})=> acc + portions, 0
+          )
+        };
+      }
+    )
+  }
+}

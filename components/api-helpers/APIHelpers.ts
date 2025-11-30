@@ -42,7 +42,11 @@ export const RequestError: (
   ErrorConstructor & Record<ErrorStatus, ErrorConstructor>
 )
 
-export const errorHandlingMiddleware = fn => async (req, res) => {
+export const errorHandlingMiddleware = (fn : (
+  (req: NextApiRequest, res: NextApiResponse) => any
+)) => async (
+  req: NextApiRequest, res: NextApiResponse
+) => {
   try {
     const result = await fn(req, res);
 
@@ -56,6 +60,7 @@ export const errorHandlingMiddleware = fn => async (req, res) => {
   } catch (e) {
     if (e.message && e.code){
       console.error(e.code, e.message);
+
       res.status(e.code).json({ result: e.message });
     } else {
       console.error(e);
@@ -124,7 +129,7 @@ export function validateRecentDate (originalDate: string): Date {
 
   // Do not return route data if the delivery date is more than a day ago
   if (daysDiff > 1) {
-    throw RequestError.NotFoundError('Route not found');
+    throw RequestError.ForbiddenError('Date must be within 24h of event');
   }
 
   return parsedDate;

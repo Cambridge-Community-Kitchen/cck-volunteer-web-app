@@ -75,23 +75,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const waypoints: LatLng[] = [];
 
-    // TODO: follow the style guide instead of suspending it here
-    // eslint-disable-next-line guard-for-in
-    for (const deliveryIdx in gottenRoute.route_delivery) {
-      let a = gottenRoute.route_delivery[deliveryIdx].plus_code;
+    await gottenRoute.route_delivery.reduce(
+      async (ready, delivery) => {
+        await ready;
 
-      if (a.length <= 13 && a.includes('+')) { // then it's a PlusCode
-        if (a.indexOf('+') === 4) {
-          a = `9f42${ a }`;
+        let a = delivery.plus_code;
+
+        if (a.length <= 13 && a.includes('+')) { // then it's a PlusCode
+          if (a.indexOf('+') === 4) {
+            a = `9f42${ a }`;
+          }
         }
-      }
 
-      if (a.length > 0) {
-        const loc = await findLocation(a);
+        if (a.length > 0) {
+          const loc = await findLocation(a);
 
-        waypoints.push(loc.candidates[0].geometry.location);
-      }
-    }
+          waypoints.push(loc.candidates[0].geometry.location);
+        }
+      }, Promise.resolve()
+    );
 
     const directionsRequest: DirectionsRequest = {
       params: {
@@ -109,11 +111,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     let gpx = '<?xml version="1.0" encoding="UTF-8"?><gpx version="1.1" creator="Cambridge Community Kitchen - https://cckitchen.uk" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.topografix.com/GPX/1/1" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd"><trk><trkseg>';
 
-    // TODO: follow the style guide instead of suspending it here
-    // eslint-disable-next-line guard-for-in
-    for (const tupleIdx in latlngs) {
-      gpx = `${ gpx }<trkpt lat="${ latlngs[tupleIdx][0] }" lon="${ latlngs[tupleIdx][1] }"/>`;
-    }
+    latlngs.forEach(
+      ([lat, lon]) => {
+        gpx = `${ gpx }<trkpt lat="${ lat }" lon="${ lon }"/>`;
+      }
+    );
 
     gpx = `${ gpx }</trkseg></trk></gpx>`;
 

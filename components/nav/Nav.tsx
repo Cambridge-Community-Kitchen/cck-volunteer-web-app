@@ -65,17 +65,15 @@ export default function Nav() {
           </Flex>
           <Flex alignItems="center" justify={{ base: 'center', md: 'start' }}>
             <Link as={NextLink} href="/">
-              <a>
-                <Image
-                  alt="Cambridge Community Kitchen logo"
-                  src="/cck-simple.png"
-                  width="36"
-                  height="30"
-                  style={{
-                    maxWidth: "100%",
-                    height: "auto"
-                  }} />
-              </a>
+              <Image
+                alt="Cambridge Community Kitchen logo"
+                src="/cck-simple.png"
+                width="36"
+                height="30"
+                style={{
+                  maxWidth: "100%",
+                  height: "auto"
+                }} />
             </Link>
 
             <Flex display={{ base: 'none', md: 'flex' }} ml={10}>

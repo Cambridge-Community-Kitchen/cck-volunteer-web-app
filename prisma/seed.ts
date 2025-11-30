@@ -28,7 +28,7 @@ async function main() {
     },
   };
 
-  const cck = await prisma.organization.upsert({
+  const _cck = await prisma.organization.upsert({
     where  : { id_ref: 'cck' },
     update : organization,
     create : organization,

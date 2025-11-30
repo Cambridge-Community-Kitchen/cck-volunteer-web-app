@@ -8,6 +8,7 @@ const endpoints = Object.freeze({
   totpValidate : '/api/auth/totp/validate',
   registerUser : '/api/auth/register',
   getRouteData : '/api/cck/route',
+  getEventData : '/api/cck/event',
 });
 
 /**
@@ -63,6 +64,21 @@ export async function getRouteData({ basePath, date, ref, passcode, mode }) {
   url.searchParams.append('ref', ref);
   url.searchParams.append('passcode', passcode);
   url.searchParams.append('mode', mode);
+
+  return await fetch(url.href);
+}
+
+/**
+ * Makes an HTTP request to cck's event endpoint
+ */
+export async function getEventData({ basePath, date }) {
+  const url = new URL(basePath);
+
+  url.pathname += endpoints.getEventData;
+
+  if (date) {
+    url.searchParams.append('date', date)
+  };
 
   return await fetch(url.href);
 }

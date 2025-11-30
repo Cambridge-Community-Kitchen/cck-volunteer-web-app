@@ -1,8 +1,8 @@
 import {
-  ArrowForwardIcon,
   ChatIcon,
   CheckIcon,
   ChevronDownIcon,
+  ExternalLinkIcon,
   NotAllowedIcon,
   PhoneIcon,
 } from '@chakra-ui/icons';
@@ -19,14 +19,19 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
+
 import PropTypes       from 'prop-types';
 import React, { memo } from 'react';
 import styles          from './Item.module.scss';
+import { decode }      from 'pluscodes';
 
 const Item = ({ data, markComplete, portions, unmarkComplete }) => {
   const encodedGoogleMapsUrl = `https://www.google.com/maps/place/${ encodeURIComponent(
     data.plusCode
   ) }`;
+
+  const { latitude, longitude } = decode(String(data.plusCode).toUpperCase()) ?? {};
+  const encodedOpenStreetMapUrl = `https://www.openstreetmap.org/directions?to=${latitude},${longitude}#map=19/${latitude}/${longitude}`;
 
   const portionsString = portions > 1 ? 'portions' : 'portion';
 
@@ -107,15 +112,45 @@ const Item = ({ data, markComplete, portions, unmarkComplete }) => {
           )}
 
           <Stack direction="row" mt="4" spacing={3}>
-            <Button
-              as="a"
-              href={encodedGoogleMapsUrl}
-              rightIcon={<ArrowForwardIcon />}
-              colorScheme="blue"
-              target="_blank"
-            >
-              navigate to front door
-            </Button>
+            {data.plusCode && (
+              <Menu>
+                <MenuButton
+                  colorScheme="teal"
+                  as={Button}
+                  rightIcon={<ChevronDownIcon h="3" w="3" />}
+                >
+                  Find front door
+                </MenuButton>
+                <MenuList colorScheme="teal">
+                  <MenuItem
+                    as="a"
+                    href={`geo:${ latitude },${ longitude }`}
+                    icon={<ExternalLinkIcon h="3" w="3" />}
+                  >
+                    <div>Open in your default app</div>
+                    <small>{ latitude },{ longitude }</small>
+                  </MenuItem>
+                  <MenuItem
+                    as="a"
+                    href={encodedGoogleMapsUrl}
+                    target="_blank"
+                    icon={<ExternalLinkIcon h="3" w="3" />}
+                  >
+                    <div>Google Maps</div>
+                    <small>{ data.plusCode }</small>
+                  </MenuItem>
+                  <MenuItem
+                    as="a"
+                    href={encodedOpenStreetMapUrl}
+                    target="_blank"
+                    icon={<ExternalLinkIcon h="3" w="3" />}
+                  >
+                    <div>OpenStreetMap</div>
+                    <small>{ latitude },{ longitude }</small>
+                  </MenuItem>
+                </MenuList>
+              </Menu>
+            )}
             {data.phone && (
               <Menu>
                 <MenuButton

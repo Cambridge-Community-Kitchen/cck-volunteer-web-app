@@ -14,6 +14,14 @@ export default defineConfig([
     },
     rules: {
       ...nextPlugin.configs.recommended.rules,
+      '@typescript-eslint/no-unused-vars': [
+        2, {
+          argsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+          destructuredArrayIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+        }
+      ]
     },
   },
   {

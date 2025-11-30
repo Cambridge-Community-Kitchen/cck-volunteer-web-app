@@ -3,11 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "license": "CC BY-NC-SA 4.0",
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "npx prisma generate && next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint",
     "test": "jest --watch",
     "create-schema-migration": "./scripts/create-schema-migration.sh",
     "seed-db": "./scripts/run-ts.sh ./prisma/seed.ts",

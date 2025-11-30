@@ -12,7 +12,7 @@ type RouteMatcher = {
 const requestMatches = (
   request: NextRequest,
   { path, methods }: RouteMatcher
-): Boolean => {
+): boolean => {
   if (path && !path.test(request.nextUrl.pathname)) {
     return false;
   }
@@ -73,7 +73,7 @@ export async function middleware(request: NextRequest) {
       await getUserContext(request);
 
       return NextResponse.next();
-    } catch (err) {
+    } catch (_err) {
       if (requestMatches(request, { path: /^\/api/ })) {
         return NextResponse.rewrite(new URL('/api/auth/unauthorized', request.url));
       }

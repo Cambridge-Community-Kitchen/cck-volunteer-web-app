@@ -43,7 +43,7 @@ export const RequestError: (
 )
 
 export const errorHandlingMiddleware = (fn : (
-  (req: NextApiRequest, res: NextApiResponse) => any
+  (req: NextApiRequest, res: NextApiResponse) => unknown
 )) => async (
   req: NextApiRequest, res: NextApiResponse
 ) => {

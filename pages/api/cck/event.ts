@@ -121,15 +121,16 @@ export default errorHandlingMiddleware(
 
                 const gottenRoute = await Route.create(routeInsert);
 
-                // TODO: follow the style guide instead of suspending it here
-                // eslint-disable-next-line guard-for-in
-                for (const deliveryIdx in position.route.deliveries) {
-                  const deliveryInsert = position.route.deliveries[deliveryIdx];
+                await position.route.deliveries.reduce(
+                  async (ready, deliveryInsert, deliveryIdx) => {
+                    await ready;
 
-                  deliveryInsert.id_route = gottenRoute.id;
-                  deliveryInsert.sequence = parseInt(deliveryIdx, 10);
-                  await RouteDelivery.create(deliveryInsert);
-                }
+                    deliveryInsert.id_route = gottenRoute.id;
+                    deliveryInsert.sequence = parseInt(deliveryIdx, 10);
+
+                    await RouteDelivery.create(deliveryInsert);
+                  }, Promise.resolve()
+                );
               }
             }
           }
@@ -137,7 +138,7 @@ export default errorHandlingMiddleware(
       }
 
       return { result: 'Event data successfully imported.' };
-    } else if (req.method = 'GET') {
+    } else if (req.method == 'GET') {
       const { date = '' } = req.query
 
       return await getPublicEventData({ date: String(date) });

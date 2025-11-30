@@ -15,7 +15,7 @@ import { demoRouteData } from './demoRouteData';
  */
 export default errorHandlingMiddleware(async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  _res: NextApiResponse
 ) {
   // To find route info, we need to know the date (e.g., 03-02-2022) and the route (e.g., arbury).
   // Everything else can be calculated

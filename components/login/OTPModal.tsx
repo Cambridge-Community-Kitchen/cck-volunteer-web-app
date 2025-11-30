@@ -79,6 +79,8 @@ export default function OTPModal(props): React.ReactElement {
       console.log(error); // eslint-disable-line no-console
       // Our request failed for some reason.  Tell the user to try again later?
       setIsLoading(false);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -114,31 +116,31 @@ export default function OTPModal(props): React.ReactElement {
   const spinner = isLoading ? <Spinner size='xs' marginLeft="1em;"/> : null;
 
   return (
-      <Modal isOpen={newIsOpen} onClose={newOnClose} {...newProps}>
-        <ModalOverlay />
-        <ModalContent marginX="20px;">
-          <ModalHeader textAlign="center">Enter Verification Code</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            {modalBodyText}
-            <div className={styles.otpContainer}>
-              <OtpInput
-                inputStyle={styles.inputStyle}
-                isInputNum={true}
-                value={otpEntryVal}
-                onChange={handleOTPChange}
-                numInputs={6}
-                separator={<span>-</span>}
-              />
-            </div>
-          </ModalBody>
-          <ModalFooter>
-            <Button marginRight="20px;" onClick={clearOTPEntry} disabled={otpEntryVal.length === 0 || isLoading}>Clear</Button>
-            <Button colorScheme='orange' onClick={handleOTPSubmit} disabled={otpEntryVal.length < 6 || isLoading}>
-              Submit {spinner}
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+    <Modal isOpen={newIsOpen} onClose={newOnClose} {...newProps}>
+      <ModalOverlay />
+      <ModalContent marginX="20px;">
+        <ModalHeader textAlign="center">Enter Verification Code</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          {modalBodyText}
+          <div className={styles.otpContainer}>
+            <OtpInput
+              inputStyle={styles.inputStyle}
+              isInputNum={true}
+              value={otpEntryVal}
+              onChange={handleOTPChange}
+              numInputs={6}
+              separator={<span>-</span>}
+            />
+          </div>
+        </ModalBody>
+        <ModalFooter>
+          <Button marginRight="20px;" onClick={clearOTPEntry} disabled={otpEntryVal.length === 0 || isLoading}>Clear</Button>
+          <Button colorScheme='orange' onClick={handleOTPSubmit} disabled={otpEntryVal.length < 6 || isLoading}>
+            Submit {spinner}
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 }

@@ -4,7 +4,7 @@ import Login from '@/components/login';
  * The app's login page, i.e., the '/login' path
  */
 const LoginPage = () => (
-    <Login/>
+  <Login/>
 );
 
 export default LoginPage;

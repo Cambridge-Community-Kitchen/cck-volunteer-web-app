@@ -75,7 +75,10 @@ export async function getEventData({ basePath, date }) {
   const url = new URL(basePath);
 
   url.pathname += endpoints.getEventData;
-  url.searchParams.append('date', date);
+
+  if (date) {
+    url.searchParams.append('date', date)
+  };
 
   return await fetch(url.href);
 }

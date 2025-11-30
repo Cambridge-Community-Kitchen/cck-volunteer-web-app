@@ -141,15 +141,22 @@ export default errorHandlingMiddleware(
     } else if (req.method == 'GET') {
       const { date = '' } = req.query
 
-      return await getPublicEventData({ date: String(date) });
+      return await getPublicEventData({ date: date ? String(date) : null });
     }
 
     throw RequestError.InvalidMethodError('This endpoint does not allow this request method.');
   }
 );
 
+const getLatestEvent = async () => {
+  return await prisma.event.findFirst({
+    orderBy: { start_date: 'desc' }
+  })
+}
 
-const getPublicEventData = async({ date }: { date: string }) => {
+const getPublicEventData = async({ date: originalDate }: { date?: string }) => {
+  const date = originalDate ?? (await getLatestEvent())?.id_ref?.replace(/^meal-prep-delivery-/, '')
+
   validateRecentDate(date);
 
   const routes = await prisma.route.findMany({

@@ -127,8 +127,8 @@ const Item = ({ data, markComplete, portions, unmarkComplete }) => {
                     href={`geo:${ latitude },${ longitude }`}
                     icon={<ExternalLinkIcon h="3" w="3" />}
                   >
-                    { latitude },{ longitude }<br/>
-                    <small>Open in your default app</small>
+                    <div>Open in your default app</div>
+                    <small>{ latitude },{ longitude }</small>
                   </MenuItem>
                   <MenuItem
                     as="a"
@@ -136,8 +136,8 @@ const Item = ({ data, markComplete, portions, unmarkComplete }) => {
                     target="_blank"
                     icon={<ExternalLinkIcon h="3" w="3" />}
                   >
-                    { data.plusCode }<br/>
-                    <small>Google Maps</small>
+                    <div>Google Maps</div>
+                    <small>{ data.plusCode }</small>
                   </MenuItem>
                   <MenuItem
                     as="a"
@@ -145,8 +145,8 @@ const Item = ({ data, markComplete, portions, unmarkComplete }) => {
                     target="_blank"
                     icon={<ExternalLinkIcon h="3" w="3" />}
                   >
-                    { latitude },{ longitude }<br/>
-                    <small>OpenStreetMap</small>
+                    <div>OpenStreetMap</div>
+                    <small>{ latitude },{ longitude }</small>
                   </MenuItem>
                 </MenuList>
               </Menu>

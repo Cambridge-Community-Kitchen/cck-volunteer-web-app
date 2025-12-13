@@ -55,6 +55,7 @@
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/react": "^13.4.0",
     "@types/node": "^22.0.0",
+    "@types/react": "^18.3.27",
     "@typescript-eslint/eslint-plugin": "^8.44.0",
     "@typescript-eslint/parser": "^8.44.0",
     "@vercel/node": "^2.3.0",

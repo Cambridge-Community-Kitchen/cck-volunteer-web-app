@@ -1,5 +1,4 @@
-module.exports = {
+export default {
   basePath        : '',
   reactStrictMode : true,
-  swcMinify       : true,
 };

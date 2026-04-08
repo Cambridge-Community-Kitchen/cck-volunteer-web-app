@@ -1,6 +1,15 @@
-import type { NextApiRequest, NextApiResponse }                  from 'next';
-import { isUserAuthorized, UserRole }                            from '@/components/api-helpers';
-import { Event, EventPosition, EventRole, Route, RouteDelivery } from '@/components/db-connection';
+import type { NextApiRequest, NextApiResponse } from 'next';
+
+import {
+  errorHandlingMiddleware, isUserAuthorized, RequestError, UserRole,
+  validateRecentDate
+} from '@/components/api-helpers';
+
+import {
+  Event, EventPosition, EventRole, Route, RouteDelivery
+} from '@/components/db-connection';
+
+import prisma from '@/components/db-connection-prisma';
 
 type Entries<T> = { [K in keyof T]: [K, T[K]] }[keyof T];
 
@@ -17,119 +26,181 @@ function ObjectEntries<T extends object>(t: T): Entries<T>[] {
  * @param {NextApiRequest} req The Next.js API request
  * @param {NextApiResponse} res The Next.js API response
  */
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'POST') {
-    const event = req.body;
+export default errorHandlingMiddleware(
+  async function handler(req: NextApiRequest, res: NextApiResponse) {
+    if (req.method === 'POST') {
+      const event = req.body;
 
-    if (!(await isUserAuthorized(req, res, [ UserRole.MASTER_ADMIN ]) || await isUserAuthorized(req, res, [ UserRole.EVENT_ADMIN ], 'cck'))) {
-      res.status(403).json({ result: 'You must be a master administrator or an events admin for cck to batch upload event data.' });
+      if (!(await isUserAuthorized(req, res, [ UserRole.MASTER_ADMIN ]) || await isUserAuthorized(req, res, [ UserRole.EVENT_ADMIN ], 'cck'))) {
+        throw RequestError.ForbiddenError(
+          'You must be a master administrator or an events admin for cck to batch upload event data.'
+        );
+      }
 
-      return;
-    }
+      // Update the event
+      let gottenEvent = await Event.get(event);
 
-    // Update the event
-    let gottenEvent = await Event.get(event);
+      if (gottenEvent) {
+        // Event found, perform an update
+        const eventForUpdate = JSON.parse(JSON.stringify(event));
 
-    if (gottenEvent) {
-      // Event found, perform an update
-      const eventForUpdate = JSON.parse(JSON.stringify(event));
+        delete eventForUpdate.roles;
+        await Event.update(eventForUpdate);
+        gottenEvent = { ...gottenEvent, ...eventForUpdate };
+      } else {
+        // Event not found, perform an insert
+        const eventForCreate = JSON.parse(JSON.stringify(event));
 
-      delete eventForUpdate.roles;
-      await Event.update(eventForUpdate);
-      gottenEvent = { ...gottenEvent, ...eventForUpdate };
-    } else {
-      // Event not found, perform an insert
-      const eventForCreate = JSON.parse(JSON.stringify(event));
+        delete eventForCreate.roles;
+        gottenEvent = await Event.create(eventForCreate);
+      }
 
-      delete eventForCreate.roles;
-      gottenEvent = await Event.create(eventForCreate);
-    }
+      // Update event roles
+      // If no roles exist, insert them all.
+      // If roles DO exist, we don't want to delete the event role... UNLESS that event role no longer exists in the upload
 
-    // Update event roles
-    // If no roles exist, insert them all.
-    // If roles DO exist, we don't want to delete the event role... UNLESS that event role no longer exists in the upload
+      if (event.roles) {
+        // Delete any roles that are not provided in the upload
+        EventRole.deleteRolesNotInRefs(gottenEvent, Object.keys(event.roles));
 
-    if (event.roles) {
-      // Delete any roles that are not provided in the upload
-      EventRole.deleteRolesNotInRefs(gottenEvent, Object.keys(event.roles));
+        // Iterate over the roles, inserting roles where necessary
+        for (const [ eventRoleKey, eventRole ] of ObjectEntries(event.roles)) {
+          const eventRoleId = {
+            id_event : gottenEvent.id,
+            id_ref   : eventRoleKey,
+          };
 
-      // Iterate over the roles, inserting roles where necessary
-      for (const [ eventRoleKey, eventRole ] of ObjectEntries(event.roles)) {
-        const eventRoleId = {
-          id_event : gottenEvent.id,
-          id_ref   : eventRoleKey,
-        };
+          let gottenEventRole = await EventRole.get(eventRoleId);
 
-        let gottenEventRole = await EventRole.get(eventRoleId);
+          if (gottenEventRole) {
+            const eventRoleForUpdate = { ...gottenEventRole, ...eventRole };
 
-        if (gottenEventRole) {
-          const eventRoleForUpdate = { ...gottenEventRole, ...eventRole };
+            delete eventRoleForUpdate.positions;
+            await EventRole.update(eventRoleForUpdate);
+            gottenEventRole = { ...gottenEventRole, ...eventRoleForUpdate };
+          } else {
+            const insertEventRole = { ...eventRoleId, ...eventRole };
 
-          delete eventRoleForUpdate.positions;
-          await EventRole.update(eventRoleForUpdate);
-          gottenEventRole = { ...gottenEventRole, ...eventRoleForUpdate };
-        } else {
-          const insertEventRole = { ...eventRoleId, ...eventRole };
+            delete insertEventRole.positions;
+            gottenEventRole = await EventRole.create(insertEventRole);
+          }
 
-          delete insertEventRole.positions;
-          gottenEventRole = await EventRole.create(insertEventRole);
-        }
+          if (eventRole.positions) {
+            EventPosition.deletePositionsNotInRefs(gottenEvent, Object.keys(eventRole.positions));
 
-        if (eventRole.positions) {
-          EventPosition.deletePositionsNotInRefs(gottenEvent, Object.keys(eventRole.positions));
+            for (const [ positionKey, position ] of ObjectEntries(eventRole.positions)) {
+              const eventPositionId = {
+                id_event : gottenEvent.id,
+                id_ref   : positionKey,
+              };
 
-          for (const [ positionKey, position ] of  ObjectEntries(eventRole.positions)) {
-            const eventPositionId = {
-              id_event : gottenEvent.id,
-              id_ref   : positionKey,
-            };
+              let gottenEventPosition = await EventPosition.get(eventPositionId);
 
-            let gottenEventPosition = await EventPosition.get(eventPositionId);
+              if (gottenEventPosition) {
+                const eventPositionForUpdate = { ...gottenEventPosition, ...position };
 
-            if (gottenEventPosition) {
-              const eventPositionForUpdate = { ...gottenEventPosition, ...position };
+                delete eventPositionForUpdate.route;
+                await EventPosition.update(eventPositionForUpdate);
+                gottenEventPosition = { ...gottenEventPosition, ...eventPositionForUpdate };
 
-              delete eventPositionForUpdate.route;
-              await EventPosition.update(eventPositionForUpdate);
-              gottenEventPosition = { ...gottenEventPosition, ...eventPositionForUpdate };
+                await Route.removeForPosition(gottenEventPosition.id);
+              } else {
+                const insertEventPosition = { ...eventPositionId, ...position };
 
-              await Route.removeForPosition(gottenEventPosition.id);
-            } else {
-              const insertEventPosition = { ...eventPositionId, ...position };
+                insertEventPosition.id_event_role = gottenEventRole.id;
+                delete insertEventPosition.route;
+                gottenEventPosition = await EventPosition.create(insertEventPosition);
+              }
 
-              insertEventPosition.id_event_role = gottenEventRole.id;
-              delete insertEventPosition.route;
-              gottenEventPosition = await EventPosition.create(insertEventPosition);
-            }
+              if (position.route) {
+                const routeInsert = { ...position.route };
 
-            if (position.route) {
-              const routeInsert = { ...position.route };
+                delete routeInsert.deliveries;
+                routeInsert.id_ref            = gottenEventPosition.id_ref;
+                routeInsert.id_event_position = gottenEventPosition.id;
 
-              delete routeInsert.deliveries;
-              routeInsert.id_ref            = gottenEventPosition.id_ref;
-              routeInsert.id_event_position = gottenEventPosition.id;
+                const gottenRoute = await Route.create(routeInsert);
 
-              const gottenRoute = await Route.create(routeInsert);
+                await position.route.deliveries.reduce(
+                  async (ready, deliveryInsert, deliveryIdx) => {
+                    await ready;
 
-              // TODO: follow the style guide instead of suspending it here
-              // eslint-disable-next-line guard-for-in
-              for (const deliveryIdx in position.route.deliveries) {
-                const deliveryInsert = position.route.deliveries[deliveryIdx];
+                    deliveryInsert.id_route = gottenRoute.id;
+                    deliveryInsert.sequence = parseInt(deliveryIdx, 10);
 
-                deliveryInsert.id_route = gottenRoute.id;
-                deliveryInsert.sequence = parseInt(deliveryIdx, 10);
-                await RouteDelivery.create(deliveryInsert);
+                    await RouteDelivery.create(deliveryInsert);
+                  }, Promise.resolve()
+                );
               }
             }
           }
         }
       }
+
+      return { result: 'Event data successfully imported.' };
+    } else if (req.method == 'GET') {
+      const { date = '' } = req.query
+
+      return await getPublicEventData({ date: date ? String(date) : null });
     }
 
-    res.status(200).json({ result: 'Event data successfully imported.' });
-
-    return;
+    throw RequestError.InvalidMethodError('This endpoint does not allow this request method.');
   }
+);
 
-  res.status(400).json({ result: 'This endpoint does not allow this request method.' });
+const getLatestEvent = async () => {
+  return await prisma.event.findFirst({
+    orderBy: { start_date: 'desc' }
+  })
+}
+
+const getPublicEventData = async({ date: originalDate }: { date?: string }) => {
+  const date = originalDate ?? (await getLatestEvent())?.id_ref?.replace(/^meal-prep-delivery-/, '')
+
+  validateRecentDate(date);
+
+  const routes = await prisma.route.findMany({
+    where: {
+      id_ref: {
+        startsWith: `meal-prep-delivery-${ date }-delivery-`
+      },
+    },
+    include: {
+      route_delivery: {
+        orderBy: {
+          sequence: 'asc',
+        },
+      },
+    },
+  });
+
+  // unique in sorted array
+  const differsFromPreceding = (item, i, arr) => (!i || arr[i - 1] !== item);
+
+  return {
+    routes: routes.map(
+      route => {
+        const plusCodes = route.route_delivery.map(
+          d => d.plus_code?.toUpperCase() || ''
+        ).sort().filter(Boolean).filter(
+          differsFromPreceding
+        );
+
+        const truncatedPlusCodes = plusCodes.map(
+          code => code.replace(/[+].+/, '')
+        ).filter(Boolean).filter(
+          differsFromPreceding
+        );
+
+        return {
+          name: route.name,
+          dropCount: plusCodes.length,
+          plusCodes: truncatedPlusCodes,
+          portionCount: route.route_delivery.reduce(
+            (acc, {portions})=> acc + portions, 0
+          )
+        };
+      }
+    )
+  }
 }

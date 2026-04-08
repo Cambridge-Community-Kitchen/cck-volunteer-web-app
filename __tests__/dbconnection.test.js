@@ -26,8 +26,6 @@ async function standupOrg(org, afterStandup) {
 
   try {
     await afterStandup(theOrg);
-  } catch (e) {
-    throw e;
   } finally {
     await Organization.remove({ id: theOrg.id });
   }

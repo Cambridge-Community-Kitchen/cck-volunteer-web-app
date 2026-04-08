@@ -3,6 +3,73 @@ import { jwtVerify }                            from 'jose';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import type { NextRequest }                     from 'next/server';
 
+type ErrorConstructor = (message?: string, code?: number) => Error & { code: number }
+
+const errorStatusByType = {
+  BadRequestError: 400,
+  NotAuthenticatedError: 401,
+  NotFoundError: 404,
+  InvalidMethodError: 405,
+  ForbiddenError: 403,
+  ValidationError: 422,
+};
+
+type ErrorStatus = keyof typeof errorStatusByType;
+
+export const RequestError: (
+  ErrorConstructor & Record<ErrorStatus, ErrorConstructor>
+) = Object.entries(
+  errorStatusByType
+).reduce(
+  (
+    acc,
+    [errorType, errorStatus]
+  ) => Object.assign(
+    acc,
+    {
+      [errorType]: (
+        message = errorType,
+        code = errorStatus
+      ) => RequestError(message, code)
+    }
+  ),
+  (message = 'Internal Error', code = 500) => Object.assign(
+    new Error(message), { code }
+  )
+) as (
+  ErrorConstructor & Partial<Record<ErrorStatus, ErrorConstructor>>
+) as (
+  ErrorConstructor & Record<ErrorStatus, ErrorConstructor>
+)
+
+export const errorHandlingMiddleware = (fn : (
+  (req: NextApiRequest, res: NextApiResponse) => unknown
+)) => async (
+  req: NextApiRequest, res: NextApiResponse
+) => {
+  try {
+    const result = await fn(req, res);
+
+    if (result !== undefined && result !== res) {
+      res.status(200).json(result);
+
+      return;
+    }
+
+    return result;
+  } catch (e) {
+    if (e.message && e.code){
+      console.error(e.code, e.message);
+
+      res.status(e.code).json({ result: e.message });
+    } else {
+      console.error(e);
+
+      res.status(500).json({ result: 'Internal error' });
+    }
+  }
+}
+
 const hasMappedHeaders = (
   headers: Headers | IncomingMessage['headers']
 ): headers is Headers => headers instanceof Headers;
@@ -32,10 +99,10 @@ export function daysSince(date: Date) {
  * @throws an error if the string is invalidly formatted or a valid date cannot be parsed
  */
 export function parseDashedDate(date: string) {
-  const parts = date.split('-');
+  const parts = String(date).split('-');
 
   if (parts.length !== 3) {
-    throw new Error('Invalid date format');
+    throw RequestError.ValidationError('Invalid date format');
   }
 
   const parsedDate = new Date(parseInt(parts[2], 10),
@@ -43,7 +110,26 @@ export function parseDashedDate(date: string) {
     parseInt(parts[0], 10));
 
   if (Number.isNaN(parsedDate.getTime())) {
-    throw new Error('Invalid date format');
+    throw RequestError.ValidationError('Invalid date format');
+  }
+
+  return parsedDate;
+}
+
+export function validateRecentDate (originalDate: string): Date {
+  let parsedDate: Date;
+
+  try {
+    parsedDate = parseDashedDate(originalDate);
+  } catch {
+    throw RequestError.ValidationError('Invalid Date');
+  }
+
+  const daysDiff = daysSince(parsedDate);
+
+  // Do not return route data if the delivery date is more than a day ago
+  if (daysDiff > 1) {
+    throw RequestError.ForbiddenError('Date must be within 24h of event');
   }
 
   return parsedDate;
@@ -74,7 +160,7 @@ export function getTokenFromRequest(req: Request | IncomingMessage) {
     return authHeader.split(' ')[1];
   }
 
-  return isAPIRequest ? (req as NextApiRequest).cookies.AuthJWT : (req as NextRequest).cookies.get('AuthJWT');
+  return isAPIRequest ? (req as NextApiRequest).cookies.AuthJWT : (req as NextRequest).cookies.get('AuthJWT')?.value;
 }
 
 /**

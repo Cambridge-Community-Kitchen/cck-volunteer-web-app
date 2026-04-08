@@ -183,7 +183,7 @@ const Item = ({ data, markComplete, portions, unmarkComplete }) => {
                   >
                     Call but withhold your number
                   </MenuItem>
-                  {/^([+]44|0044|0)7/.test(data.phone) && (
+                  {/^([+]44|0044|0)\s*7/.test(data.phone) && (
                     <MenuItem
                       as="a"
                       href={`sms:${ data.phone }`}

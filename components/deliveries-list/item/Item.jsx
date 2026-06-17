@@ -101,7 +101,7 @@ const Item = ({ data, markComplete, portions, unmarkComplete }) => {
           <Text color="gray.500" fontSize="sm">
             {data.notes}
           </Text>
-          <Text color="red.500" fontSize="sm">
+          <Text color="red.500" fontSize="md">
             {data.allergies}
           </Text>
           {data.whenNotHome && (

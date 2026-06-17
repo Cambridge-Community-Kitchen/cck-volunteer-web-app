@@ -9,6 +9,8 @@ import LoadingSpinner                              from '../loading-spinner';
 import styles                                      from './DeliveriesList.module.scss';
 import Dish                                        from './Dish';
 import Item                                        from './item';
+import { FaCarAlt, FaBiking, FaWpforms } from 'react-icons/fa';
+
 
 dayjs.extend(customParseFormat);
 
@@ -127,11 +129,12 @@ const DeliveriesList = ({ date, id_ref: idRef, passcode, mode, basePath }) => {
           as="a"
           mx="auto"
           href={`${ googleRouteUrl }&travelmode=bicycling`}
+          leftIcon={<FaBiking />}
           rightIcon={<ArrowForwardIcon />}
           colorScheme="blue"
           target="_blank"
         >
-          cycle route overview
+          Cycle route - overview
         </Button>
       </Flex>
       <Flex direction="row" px={2} py={2}>
@@ -139,11 +142,12 @@ const DeliveriesList = ({ date, id_ref: idRef, passcode, mode, basePath }) => {
           as="a"
           mx="auto"
           href={`${ googleRouteUrl }&travelmode=driving`}
+          leftIcon={<FaCarAlt />}
           rightIcon={<ArrowForwardIcon />}
           colorScheme="blue"
           target="_blank"
         >
-          driving route overview
+          Driving route - overview
         </Button>
       </Flex>
       {/* This now fails with error: You must enable Billing on the Google Cloud Project...
@@ -176,11 +180,11 @@ const DeliveriesList = ({ date, id_ref: idRef, passcode, mode, basePath }) => {
           as="a"
           mx="auto"
           href="https://bit.ly/CCKroutedebrief"
-          rightIcon={<ArrowForwardIcon />}
-          colorScheme="blue"
+          leftIcon={<FaWpforms />}
+          colorScheme="purple"
           target="_blank"
         >
-          route debrief
+          Submit a debrief form
         </Button>
       </Flex>
       <ul className={styles.list}>

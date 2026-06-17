@@ -20,7 +20,7 @@ const BackToLockon = () => {
         >
           Back to the Lockon
         </MenuButton>
-        <MenuList>
+        <MenuList lineHeight={1.2}>
           <MenuItem
             as="a"
             href={`geo:${ latitude },${ longitude }`}

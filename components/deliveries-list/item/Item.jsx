@@ -123,7 +123,7 @@ const Item = ({ data, markComplete, portions, unmarkComplete }) => {
                 >
                   Find front door
                 </MenuButton>
-                <MenuList colorScheme="teal">
+                <MenuList colorScheme="teal" lineHeight={1.2}>
                   <MenuItem
                     as="a"
                     href={`geo:${ latitude },${ longitude }`}

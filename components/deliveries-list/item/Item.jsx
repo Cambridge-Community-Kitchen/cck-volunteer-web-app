@@ -5,6 +5,7 @@ import {
   ExternalLinkIcon,
   NotAllowedIcon,
   PhoneIcon,
+  CopyIcon
 } from '@chakra-ui/icons';
 import {
   Badge,
@@ -13,11 +14,13 @@ import {
   Divider,
   Menu,
   MenuButton,
+  MenuDivider,
   MenuList,
   MenuItem,
   Spacer,
   Stack,
   Text,
+  useClipboard
 } from '@chakra-ui/react';
 
 import PropTypes       from 'prop-types';
@@ -34,6 +37,7 @@ const Item = ({ data, markComplete, portions, unmarkComplete }) => {
   const encodedOpenStreetMapUrl = `https://www.openstreetmap.org/directions?to=${latitude},${longitude}#map=19/${latitude}/${longitude}`;
 
   const portionsString = portions > 1 ? 'portions' : 'portion';
+  const { onCopy, hasCopied } = useClipboard(data.phone);
 
   if (data?.completed) {
     return (
@@ -113,7 +117,7 @@ const Item = ({ data, markComplete, portions, unmarkComplete }) => {
 
           <Stack direction="row" mt="4" spacing={3}>
             {data.plusCode && (
-              <Menu>
+              <Menu isLazy>
                 <MenuButton
                   colorScheme="teal"
                   as={Button}
@@ -152,7 +156,7 @@ const Item = ({ data, markComplete, portions, unmarkComplete }) => {
               </Menu>
             )}
             {data.phone && (
-              <Menu>
+              <Menu isLazy>
                 <MenuButton
                   colorScheme="teal"
                   as={Button}
@@ -161,7 +165,10 @@ const Item = ({ data, markComplete, portions, unmarkComplete }) => {
                   Call
                 </MenuButton>
                 <MenuList colorScheme="teal">
-                  <MenuItem isFocusable={false}>{data.phone}</MenuItem>
+                  <Box px={2} py={0.5} fontWeight="bold" color="gray.800">
+                    {data.phone}
+                  </Box>
+                  <MenuDivider />
                   <MenuItem
                     as="a"
                     href={`tel:${ data.phone }`}
@@ -185,6 +192,15 @@ const Item = ({ data, markComplete, portions, unmarkComplete }) => {
                       Text Message
                     </MenuItem>
                   )}
+                  <MenuItem 
+                    onClick={onCopy}
+                    closeOnSelect={false} 
+                    color={hasCopied ? "green.500" : "inherit"}
+                    fontWeight={hasCopied ? "semibold" : "normal"}
+                    icon={<CopyIcon h="3" w="3" />}
+                  >
+                    {hasCopied ? "Copied!" : "Copy number to clipboard"}
+                  </MenuItem>
                 </MenuList>
               </Menu>
             )}

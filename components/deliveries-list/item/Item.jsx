@@ -87,12 +87,14 @@ const Item = ({ data, markComplete, portions, unmarkComplete }) => {
           <Box display="flex" alignItems="baseline">
             <Badge
               colorScheme="green"
-              fontSize={14}
+              fontSize={24}
+              minWidth={30}
+              textAlign="center"
               variant="solid"
             >
               {portions}
             </Badge>
-            <Text color="gray.500" ml={1}>
+            <Text color="gray.500" ml={1} fontSize={18}>
               {portionsString}
             </Text>
           </Box>

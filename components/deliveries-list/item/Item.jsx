@@ -91,19 +91,21 @@ const Item = ({ data, markComplete, portions, unmarkComplete }) => {
           <Box display="flex" alignItems="baseline">
             <Badge
               colorScheme="green"
-              fontSize={14}
+              fontSize={24}
+              minWidth={30}
+              textAlign="center"
               variant="solid"
             >
               {portions}
             </Badge>
-            <Text color="gray.500" ml={1}>
+            <Text color="gray.500" ml={1} fontSize={18}>
               {portionsString}
             </Text>
           </Box>
           <Text color="gray.500" fontSize="sm">
             {data.notes}
           </Text>
-          <Text color="red.500" fontSize="sm">
+          <Text color="red.500" fontSize="md">
             {data.allergies}
           </Text>
           {data.whenNotHome && (
@@ -125,7 +127,7 @@ const Item = ({ data, markComplete, portions, unmarkComplete }) => {
                 >
                   Find front door
                 </MenuButton>
-                <MenuList colorScheme="teal">
+                <MenuList colorScheme="teal" lineHeight={1.2}>
                   <MenuItem
                     as="a"
                     href={`geo:${ latitude },${ longitude }`}

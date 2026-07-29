@@ -24,7 +24,7 @@ export default function Splash(props): React.ReactElement {
       if (props.onComplete !== null && typeof props.onComplete === 'function') {
         props.onComplete();
       }
-    }, 2250);
+    }, 1100);
 
     return () => clearTimeout(timeout);
   }, [ props ]);

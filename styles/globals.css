@@ -2,10 +2,11 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: sans-serif;
   height: 100%;
   width: 100%;
   min-height: -webkit-fill-available;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
 #__next {
@@ -20,23 +21,7 @@ a {
 
 * {
   box-sizing: border-box;
-}
-
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-* {
-  box-sizing: border-box;
+  border-style: solid !important; /* quick-hack, because chakra doesn't explicitly set border-style: solid on each element, and this file currently sets border: 0 explicitly on every element */
 }
 
 /* http://meyerweb.com/eric/tools/css/reset/

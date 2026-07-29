@@ -199,7 +199,7 @@ const Item = ({ data, markComplete, portions, unmarkComplete }) => {
                     fontWeight={hasCopied ? "semibold" : "normal"}
                     icon={<CopyIcon h="3" w="3" />}
                   >
-                    {hasCopied ? "Copied!" : "Copy number to clipboard"}
+                    {hasCopied ? "Copied to clipboard!" : "Copy number to clipboard"}
                   </MenuItem>
                 </MenuList>
               </Menu>

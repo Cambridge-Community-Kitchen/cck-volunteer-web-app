@@ -17,7 +17,7 @@ import { setCookie }   from 'cookies-next';
 import { useRouter }   from 'next/router';
 import { useState }    from 'react';
 import type React      from 'react';
-import OtpInput        from 'react18-otp-input';
+import OtpInput        from 'react-otp-input';
 import { validateOTP } from '@/components/api';
 import styles          from './Login.module.scss';
 
@@ -26,7 +26,7 @@ import styles          from './Login.module.scss';
  *
  * @returns {React.ReactElement} The OTP modal react component
  */
-export default function OTPModal(props): React.ReactElement {
+export default function OTPModal(props): React.ReactElement<any> {
   const OTPErrorMessage = Object.freeze({
     invalid: 'The validation code entered is invalid. Please try again.',
   });
@@ -130,7 +130,8 @@ export default function OTPModal(props): React.ReactElement {
               value={otpEntryVal}
               onChange={handleOTPChange}
               numInputs={6}
-              separator={<span>-</span>}
+              renderSeparator={<span>-</span>}
+              renderInput={(props) => <input {...props} />}
             />
           </div>
         </ModalBody>

@@ -22,13 +22,18 @@ import {
   Text,
   useClipboard
 } from '@chakra-ui/react';
-
-import PropTypes       from 'prop-types';
 import React, { memo } from 'react';
 import styles          from './Item.module.scss';
 import { decode }      from 'pluscodes';
 
-const Item = ({ data, markComplete, portions, unmarkComplete }) => {
+interface ItemProps {
+  data: object
+  markComplete(...args: unknown[]): unknown
+  portions: string
+  unmarkComplete(...args: unknown[]): unknown
+}
+
+const Item = ({ data, markComplete, portions, unmarkComplete }: ItemProps) => {
   const encodedGoogleMapsUrl = `https://www.google.com/maps/place/${ encodeURIComponent(
     data.plusCode
   ) }`;
@@ -221,13 +226,6 @@ const Item = ({ data, markComplete, portions, unmarkComplete }) => {
       <Divider />
     </>
   );
-};
-
-Item.propTypes = {
-  data           : PropTypes.object.isRequired,
-  markComplete   : PropTypes.func.isRequired,
-  portions       : PropTypes.string.isRequired,
-  unmarkComplete : PropTypes.func.isRequired,
 };
 
 export default memo(Item);

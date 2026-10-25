@@ -14,7 +14,7 @@ import styles                  from './Splash.module.scss';
  *
  * @returns {React.ReactElement} The splash screen react component
  */
-export default function Splash(props): React.ReactElement {
+export default function Splash(props): React.ReactElement<any> {
   const [ isVisible, setVisible ] = useState(true);
 
   useEffect(() => {

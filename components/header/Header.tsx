@@ -6,12 +6,12 @@ const Header = () => (
   <div>
     <Box display="flex" alignItems="center" justifyContent="center" mx="4" my="6">
       <Image
-        margin="auto"
         alt="CCK Logo"
         src="/logo.png"
         height={50}
         width={50}
         style={{
+          margin: "auto",
           maxWidth: "100%",
           height: "auto"
         }} />

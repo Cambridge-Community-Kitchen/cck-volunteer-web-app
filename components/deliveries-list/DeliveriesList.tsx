@@ -14,13 +14,7 @@ import { FaCarAlt, FaBiking, FaWpforms } from 'react-icons/fa';
 
 dayjs.extend(customParseFormat);
 
-/**
- *
- * @param {string} originalCode
- * @returns {string}
- */
-
-const addPlusCodePrefix = (originalCode) => {
+const addPlusCodePrefix = (originalCode: string): string => {
   if (originalCode.length <= 13 && originalCode.includes('+')) { // then it's a PlusCode
     if (originalCode.indexOf('+') === 4) {
       return `9f42${ originalCode }`;
@@ -30,10 +24,33 @@ const addPlusCodePrefix = (originalCode) => {
   return originalCode;
 };
 
+type RouteData = {
+  result: string
+  event: {
+    start_date: string
+    addl_info: {
+      dishOfTheDay: string
+      alternateDish: string
+    }
+  }
+  name: string
+  deliveries: {
+    portions: number
+    plus_code: string,
+    when_not_home: string
+    completed: boolean
+    phone: string
+    name: string
+    address: string
+    notes: string
+    allergies: string
+  }[]
+}
+
 const DeliveriesList = ({ date, id_ref: idRef, passcode, mode, basePath }) => {
   const [ displayDish, setDisplayDish ] = useState(false);
   const [ isLoading, setIsLoading ]     = useState(null);
-  const [ routeData, setRouteData ]     = useState();
+  const [ routeData, setRouteData ]     = useState<RouteData>();
 
   const dishes = [
     {
@@ -90,6 +107,7 @@ const DeliveriesList = ({ date, id_ref: idRef, passcode, mode, basePath }) => {
   const formattedDate = `${ (rDate.getDate() > 9) ? rDate.getDate() : (`0${  rDate.getDate() }`)  }/${  (rDate.getMonth() > 8) ? (rDate.getMonth() + 1) : (`0${  rDate.getMonth() + 1 }`)  }/${  rDate.getFullYear() }`;
 
   const googleRouteBaseUrl = 'https://www.google.com/maps/dir';
+  /* @ts-expect-error ...new Set() not recognised */
   const plusCodes          = [ ...new Set(routeData.deliveries.map(item => addPlusCodePrefix(item.plus_code))) ];
   const originForUrl       = encodeURIComponent('The Lockon, Fair Street, Cambridge');
   const googleRouteUrl     = `${ googleRouteBaseUrl }/?api=1&origin=${

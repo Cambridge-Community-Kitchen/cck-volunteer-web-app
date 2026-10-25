@@ -76,7 +76,7 @@ export default function OTPModal(props): React.ReactElement<any> {
         router.push('/');
       }
     } catch (error) {
-      console.log(error); // eslint-disable-line no-console
+      console.log(error);
       // Our request failed for some reason.  Tell the user to try again later?
       setIsLoading(false);
     } finally {
@@ -89,9 +89,10 @@ export default function OTPModal(props): React.ReactElement<any> {
       <AlertIcon />
       <AlertDescription>{errorMessage}</AlertDescription>
     </Alert>
-    :      (props.debug
-      ? <Text>We&apos;re in debug mode! Check the console for your OTP</Text>
-      :        <Text>
+    : (
+      props.debug
+        ? <Text>We&apos;re in debug mode! Check the console for your OTP</Text>
+        : <Text>
           An email has been dispatched to <b>{maskEmail(props.email)}</b> with a verification code. Please enter that code below:
         </Text>
     );
@@ -126,7 +127,6 @@ export default function OTPModal(props): React.ReactElement<any> {
           <div className={styles.otpContainer}>
             <OtpInput
               inputStyle={styles.inputStyle}
-              isInputNum={true}
               value={otpEntryVal}
               onChange={handleOTPChange}
               numInputs={6}

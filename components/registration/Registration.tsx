@@ -28,7 +28,7 @@ import styles           from './Registration.module.scss';
  *
  * @returns {React.ReactElement} The registration screen react component
  */
-export default function Registration(): React.ReactElement {
+export default function Registration(): React.ReactElement<any> {
   const RegistrationErrorMessage = Object.freeze({
     duplicate: 'A volunteer with this email or nickname already exists. Please try again.',
   });
@@ -68,7 +68,7 @@ export default function Registration(): React.ReactElement {
     </Alert>
     :    null;
 
-  const cancelRef = React.useRef();
+  const cancelRef = React.useRef(undefined);
 
   return (
     <div className={styles.fullScreenPage}>

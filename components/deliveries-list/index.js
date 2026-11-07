@@ -1,1 +1,1 @@
-export { default } from './DeliveriesList.jsx';
+export { default } from './DeliveriesList.tsx';

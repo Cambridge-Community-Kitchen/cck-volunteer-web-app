@@ -27,7 +27,7 @@ const requestMatches = (
 /**
  *
  */
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const rateLimited = [
     { path: /^\/api\/auth\/totp\/request/ },
     { path: /^\/api\/auth\/register/ },

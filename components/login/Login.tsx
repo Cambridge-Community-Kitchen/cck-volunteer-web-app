@@ -25,7 +25,7 @@ import OTPModal       from './OTPModal';
  *
  * @returns {React.ReactElement} The login screen react component
  */
-export default function Login(): React.ReactElement {
+export default function Login(): React.ReactElement<any> {
   const UserIdErrorMessage = Object.freeze({
     notFound     : 'Volunteer not found. Please try again or register below.',
     generalError : 'We are experiencing technical difficulties. Please try again later.',

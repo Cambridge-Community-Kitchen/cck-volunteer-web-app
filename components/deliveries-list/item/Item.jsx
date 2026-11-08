@@ -22,27 +22,13 @@ import {
   Text,
   useClipboard
 } from '@chakra-ui/react';
+
+import PropTypes       from 'prop-types';
 import React, { memo } from 'react';
 import styles          from './Item.module.scss';
 import { decode }      from 'pluscodes';
 
-interface ItemProps {
-  data: {
-    plusCode: string
-    whenNotHome: string
-    completed: boolean
-    phone: string
-    name: string
-    address: string
-    notes: string
-    allergies: string
-  }
-  markComplete(...args: unknown[]): unknown
-  portions: string
-  unmarkComplete(...args: unknown[]): unknown
-}
-
-const Item = ({ data, markComplete, portions, unmarkComplete }: ItemProps) => {
+const Item = ({ data, markComplete, portions, unmarkComplete }) => {
   const encodedGoogleMapsUrl = `https://www.google.com/maps/place/${ encodeURIComponent(
     data.plusCode
   ) }`;
@@ -50,7 +36,7 @@ const Item = ({ data, markComplete, portions, unmarkComplete }: ItemProps) => {
   const { latitude, longitude } = decode(String(data.plusCode).toUpperCase()) ?? {};
   const encodedOpenStreetMapUrl = `https://www.openstreetmap.org/directions?to=${latitude},${longitude}#map=19/${latitude}/${longitude}`;
 
-  const portionsString = Number(portions) > 1 ? 'portions' : 'portion';
+  const portionsString = portions > 1 ? 'portions' : 'portion';
   const { onCopy, hasCopied } = useClipboard(data.phone);
 
   if (data?.completed) {
@@ -133,7 +119,7 @@ const Item = ({ data, markComplete, portions, unmarkComplete }: ItemProps) => {
 
           <Stack direction="row" mt="4" spacing={3}>
             {data.plusCode && (
-              <Menu isLazy colorScheme="teal">
+              <Menu isLazy>
                 <MenuButton
                   colorScheme="teal"
                   as={Button}
@@ -141,7 +127,7 @@ const Item = ({ data, markComplete, portions, unmarkComplete }: ItemProps) => {
                 >
                   Find front door
                 </MenuButton>
-                <MenuList lineHeight={1.2}>
+                <MenuList colorScheme="teal" lineHeight={1.2}>
                   <MenuItem
                     as="a"
                     href={`geo:${ latitude },${ longitude }`}
@@ -172,7 +158,7 @@ const Item = ({ data, markComplete, portions, unmarkComplete }: ItemProps) => {
               </Menu>
             )}
             {data.phone && (
-              <Menu isLazy colorScheme="teal">
+              <Menu isLazy>
                 <MenuButton
                   colorScheme="teal"
                   as={Button}
@@ -180,7 +166,7 @@ const Item = ({ data, markComplete, portions, unmarkComplete }: ItemProps) => {
                 >
                   Call
                 </MenuButton>
-                <MenuList>
+                <MenuList colorScheme="teal">
                   <Box px={2} py={0.5} fontWeight="bold" color="gray.800">
                     {data.phone}
                   </Box>
@@ -208,9 +194,9 @@ const Item = ({ data, markComplete, portions, unmarkComplete }: ItemProps) => {
                       Text Message
                     </MenuItem>
                   )}
-                  <MenuItem
+                  <MenuItem 
                     onClick={onCopy}
-                    closeOnSelect={false}
+                    closeOnSelect={false} 
                     color={hasCopied ? "green.500" : "inherit"}
                     fontWeight={hasCopied ? "semibold" : "normal"}
                     icon={<CopyIcon h="3" w="3" />}
@@ -235,6 +221,13 @@ const Item = ({ data, markComplete, portions, unmarkComplete }: ItemProps) => {
       <Divider />
     </>
   );
+};
+
+Item.propTypes = {
+  data           : PropTypes.object.isRequired,
+  markComplete   : PropTypes.func.isRequired,
+  portions       : PropTypes.string.isRequired,
+  unmarkComplete : PropTypes.func.isRequired,
 };
 
 export default memo(Item);

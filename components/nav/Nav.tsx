@@ -96,7 +96,6 @@ export default function Nav() {
         </Button>
       </Flex>
 
-      { /* @ts-expect-error children seem to be missing from chakra ui container typings */ }
       <Collapse in={isOpen} animateOpacity>
         <MobileNav />
       </Collapse>
@@ -176,7 +175,6 @@ const MobileNavItem = ({ label, children, href }) => {
         )}
       </Flex>
 
-      { /* @ts-expect-error children seem to be missing from chakra ui container typings */ }
       <Collapse in={isOpen} animateOpacity style={{ marginTop: '0!important' }}>
         <Stack
           mt={2}

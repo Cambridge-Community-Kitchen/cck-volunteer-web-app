@@ -1,1 +1,1 @@
-export { default } from './BackToLockon.tsx';
+export { default } from './BackToLockon.jsx';

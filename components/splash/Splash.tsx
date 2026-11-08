@@ -14,7 +14,7 @@ import styles                  from './Splash.module.scss';
  *
  * @returns {React.ReactElement} The splash screen react component
  */
-export default function Splash(props): React.ReactElement<any> {
+export default function Splash(props): React.ReactElement {
   const [ isVisible, setVisible ] = useState(true);
 
   useEffect(() => {
@@ -29,9 +29,7 @@ export default function Splash(props): React.ReactElement<any> {
     return () => clearTimeout(timeout);
   }, [ props ]);
 
-  return isVisible
-    ? <div className={styles.splash}>
-      { /* @ts-expect-error children seem to be missing from chakra ui container typings */ }
+  return isVisible ? <div className={styles.splash}>
       <SlideFade className={styles.logoFade} offsetY='80vh' in>
         <Image
           maxHeight="50vh"
@@ -44,14 +42,12 @@ export default function Splash(props): React.ReactElement<any> {
         />
         <Box paddingTop="5" height='20vh'>
         <Heading
-          lineHeight={1.1}
-          fontWeight={600}
-          fontSize={{ base: '4xl', lg: '6xl' }}
-        >
-          <Text>Volunteer App</Text>
-        </Heading>
+            lineHeight={1.1}
+            fontWeight={600}
+            fontSize={{ base: '4xl', lg: '6xl' }}
+          ><Text>Volunteer App</Text>
+          </Heading>
         </Box>
       </SlideFade>
-    </div>
-    : null;
+    </div> : null;
 }

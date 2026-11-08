@@ -17,7 +17,7 @@ import { setCookie }   from 'cookies-next';
 import { useRouter }   from 'next/router';
 import { useState }    from 'react';
 import type React      from 'react';
-import OtpInput        from 'react-otp-input';
+import OtpInput        from 'react18-otp-input';
 import { validateOTP } from '@/components/api';
 import styles          from './Login.module.scss';
 
@@ -26,7 +26,7 @@ import styles          from './Login.module.scss';
  *
  * @returns {React.ReactElement} The OTP modal react component
  */
-export default function OTPModal(props): React.ReactElement<any> {
+export default function OTPModal(props): React.ReactElement {
   const OTPErrorMessage = Object.freeze({
     invalid: 'The validation code entered is invalid. Please try again.',
   });
@@ -76,7 +76,7 @@ export default function OTPModal(props): React.ReactElement<any> {
         router.push('/');
       }
     } catch (error) {
-      console.log(error);
+      console.log(error); // eslint-disable-line no-console
       // Our request failed for some reason.  Tell the user to try again later?
       setIsLoading(false);
     } finally {
@@ -89,10 +89,9 @@ export default function OTPModal(props): React.ReactElement<any> {
       <AlertIcon />
       <AlertDescription>{errorMessage}</AlertDescription>
     </Alert>
-    : (
-      props.debug
-        ? <Text>We&apos;re in debug mode! Check the console for your OTP</Text>
-        : <Text>
+    :      (props.debug
+      ? <Text>We&apos;re in debug mode! Check the console for your OTP</Text>
+      :        <Text>
           An email has been dispatched to <b>{maskEmail(props.email)}</b> with a verification code. Please enter that code below:
         </Text>
     );
@@ -127,11 +126,11 @@ export default function OTPModal(props): React.ReactElement<any> {
           <div className={styles.otpContainer}>
             <OtpInput
               inputStyle={styles.inputStyle}
+              isInputNum={true}
               value={otpEntryVal}
               onChange={handleOTPChange}
               numInputs={6}
-              renderSeparator={<span>-</span>}
-              renderInput={(props) => <input {...props} />}
+              separator={<span>-</span>}
             />
           </div>
         </ModalBody>

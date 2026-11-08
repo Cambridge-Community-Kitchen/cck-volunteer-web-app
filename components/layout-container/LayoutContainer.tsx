@@ -6,7 +6,6 @@ import Nav    from '@/components/nav';
 const LayoutContainer = ({ children }) => (
   <>
     <Nav />
-    { /* @ts-expect-error children seem to be missing from chakra ui container typings */ }
     <SlideFade in>
       <Box
         mt="1rem"

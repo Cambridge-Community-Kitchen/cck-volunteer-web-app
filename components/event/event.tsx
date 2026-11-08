@@ -55,7 +55,7 @@ const SimpleRouteMap = ({ routes }) => {
     const fill = getFill(routeIndex);
 
     return <g
-      onClick={() => selectRoute(routeIndex)}
+      onClick={() =>selectRoute(routeIndex)}
       transform={`translate(0,${(routeIndex - routes.length) * HEIGHT/40 })`}
     >
       <rect
@@ -65,7 +65,7 @@ const SimpleRouteMap = ({ routes }) => {
         height={HEIGHT/40}
         fill={fill}
         opacity="0.5"
-        onClick={() => selectRoute(routeIndex)}
+        onClick={()=>selectRoute(routeIndex)}
       />
       <rect
         x={WIDTH/30}

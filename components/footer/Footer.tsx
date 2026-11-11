@@ -9,7 +9,7 @@ import {
   VisuallyHidden,
 } from '@chakra-ui/react';
 import Image                                  from 'next/image';
-import { FaInstagram, FaTwitter, FaFacebook } from 'react-icons/fa';
+import { FaInstagram, FaFacebook }            from 'react-icons/fa';
 
 const Footer = () => (
   <Box
@@ -32,9 +32,6 @@ const Footer = () => (
           href="https://www.instagram.com/cambridgecommunitykitchen/"
         >
           <FaInstagram />
-        </SocialButton>
-        <SocialButton label="Twitter" href="https://twitter.com/camcommunity">
-          <FaTwitter />
         </SocialButton>
         <SocialButton
           label="Facebook"

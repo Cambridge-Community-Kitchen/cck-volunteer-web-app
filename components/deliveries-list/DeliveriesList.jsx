@@ -14,6 +14,8 @@ import { FaCarAlt, FaBiking, FaWpforms } from 'react-icons/fa';
 
 dayjs.extend(customParseFormat);
 
+const MAX_DROPS_PER_GOOGLE_MAPS_ROUTE = 9;
+
 /**
  *
  * @param {string} originalCode
@@ -134,7 +136,7 @@ const DeliveriesList = ({ date, id_ref: idRef, passcode, mode, basePath }) => {
           colorScheme="blue"
           target="_blank"
         >
-          Cycle route - overview
+          {routeData.deliveries.length > MAX_DROPS_PER_GOOGLE_MAPS_ROUTE && '10 first drop'} Cycle route - overview
         </Button>
       </Flex>
       <Flex direction="row" px={2} py={2}>
@@ -147,7 +149,7 @@ const DeliveriesList = ({ date, id_ref: idRef, passcode, mode, basePath }) => {
           colorScheme="blue"
           target="_blank"
         >
-          Driving route - overview
+          {routeData.deliveries.length > MAX_DROPS_PER_GOOGLE_MAPS_ROUTE && '10 first drop'} Driving route - overview
         </Button>
       </Flex>
       {/* This now fails with error: You must enable Billing on the Google Cloud Project...

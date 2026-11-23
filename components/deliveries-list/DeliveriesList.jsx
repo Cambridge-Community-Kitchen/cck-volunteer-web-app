@@ -1,5 +1,5 @@
-import { ArrowForwardIcon, ChevronDownIcon }       from '@chakra-ui/icons';
-import { Box, Button, Text, Flex, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
+import { Box, Button, Text, Flex }                 from '@chakra-ui/react';
+import { FaWpforms }                               from '@chakra-ui/icons';
 import dayjs                                       from 'dayjs';
 import customParseFormat                           from 'dayjs/plugin/customParseFormat';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -9,8 +9,7 @@ import LoadingSpinner                              from '../loading-spinner';
 import styles                                      from './DeliveriesList.module.scss';
 import Dish                                        from './Dish';
 import Item                                        from './item';
-import { FaCarAlt, FaBiking, FaWpforms } from 'react-icons/fa';
-
+import RoutePreviewButton                          from './RoutePreviewButton';
 
 dayjs.extend(customParseFormat);
 
@@ -138,56 +137,14 @@ const DeliveriesList = ({ date, id_ref: idRef, passcode, mode, basePath }) => {
         )
       )}
       <Flex direction="row" px={2} py={2}>
-        {googleRouteUrls.length === 1
-        ? <Button
-          as="a"
-          mx="auto"
-          href={`${ googleRouteUrls[0] }&travelmode=bicycling`}
-          leftIcon={<FaBiking />}
-          rightIcon={<ArrowForwardIcon />}
-          colorScheme="blue"
-          target="_blank"
-        >
-          {routeData.deliveries.length > MAX_DROPS_PER_GOOGLE_MAPS_ROUTE && '10 first drop'} Cycle route - overview
-        </Button>
-        : <Menu>
-          <MenuButton colorScheme="blue" as={Button} rightIcon={<ChevronDownIcon h="3" w="3" />}>
-            Cycle route overview
-          </MenuButton>
-          <MenuList colorScheme="blue">
-            {googleRouteUrls.map((url, index) => (
-              <MenuItem as="a" href={`${ url }&travelmode=bicycling`} rightIcon={<ArrowForwardIcon />} target="_blank">
-                Preview part {index + 1}
-              </MenuItem>
-            ))}
-          </MenuList>
-        </Menu>}
+        <RoutePreviewButton googleRouteUrls={googleRouteUrls} travelmode="bicycling">
+          Cycle route overview
+        </RoutePreviewButton>
       </Flex>
       <Flex direction="row" px={2} py={2}>
-        {googleRouteUrls.length === 1
-        ? <Button
-          as="a"
-          mx="auto"
-          href={`${ googleRouteUrls[0] }&travelmode=driving`}
-          leftIcon={<FaCarAlt />}
-          rightIcon={<ArrowForwardIcon />}
-          colorScheme="blue"
-          target="_blank"
-        >
-          {routeData.deliveries.length > MAX_DROPS_PER_GOOGLE_MAPS_ROUTE && '10 first drop'} Driving route - overview
-        </Button>
-        : <Menu>
-          <MenuButton colorScheme="blue" as={Button} rightIcon={<ChevronDownIcon h="3" w="3" />}>
-            Cycle route overview
-          </MenuButton>
-          <MenuList colorScheme="blue">
-            {googleRouteUrls.map((url, index) => (
-              <MenuItem as="a" href={`${ url }&travelmode=driving`} rightIcon={<ArrowForwardIcon />} target="_blank">
-                Preview part {index + 1}
-              </MenuItem>
-            ))}
-          </MenuList>
-        </Menu>}
+        <RoutePreviewButton googleRouteUrls={googleRouteUrls} travelmode="driving">
+          Driving route overview
+        </RoutePreviewButton>
       </Flex>
       {/* This now fails with error: You must enable Billing on the Google Cloud Project...
       <Flex direction="row" px={2} py={2}>

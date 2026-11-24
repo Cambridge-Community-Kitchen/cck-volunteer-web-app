@@ -141,12 +141,12 @@ const DeliveriesList = ({ date, id_ref: idRef, passcode, mode, basePath }) => {
           />
         )
       )}
-      <Flex direction="row" px={2} py={2}>
+      <Flex direction="row" px={2} py={2} justifyContent="center">
         <RoutePreviewButton googleRouteUrls={googleRouteUrls} travelmode="bicycling">
           Cycle route overview
         </RoutePreviewButton>
       </Flex>
-      <Flex direction="row" px={2} py={2}>
+      <Flex direction="row" px={2} py={2} justifyContent="center">
         <RoutePreviewButton googleRouteUrls={googleRouteUrls} travelmode="driving">
           Driving route overview
         </RoutePreviewButton>

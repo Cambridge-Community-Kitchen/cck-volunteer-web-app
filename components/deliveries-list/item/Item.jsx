@@ -60,9 +60,9 @@ const Item = ({ data, markComplete, portions, unmarkComplete, dropNumber }) => {
               <Box
                 display="flex"
                 alignItems="center"
-                gap="12px"
+                gap="8px"
               >
-                <Text size="small" color="gray.500">drop {dropNumber}</Text>
+                <Text size="xs" color="gray.500" whiteSpace="nowrap">#{dropNumber}</Text>
                 <Button
                   colorScheme="green"
                   mr={2}
@@ -218,9 +218,9 @@ const Item = ({ data, markComplete, portions, unmarkComplete, dropNumber }) => {
             <Box
               display="flex"
               alignItems="center"
-              gap="12px"
+              gap="8px"
             >
-              <Text size="small" color="gray.500">drop {dropNumber}</Text>
+              <Text size="xs" color="gray.500" whiteSpace="nowrap">#{dropNumber}</Text>
               <Button
                 colorScheme="green"
                 mr={2}

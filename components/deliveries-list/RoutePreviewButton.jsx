@@ -9,7 +9,7 @@ const RoutePreviewButton = ({ googleRouteUrls, travelmode, children }) => {
       <Button
         as="a"
         mx="auto"
-        href={`${googleRouteUrls[0]}&travelmode=${travelmode}`}
+        href={`${googleRouteUrls[0].url}&travelmode=${travelmode}`}
         rightIcon={<ArrowForwardIcon />}
         leftIcon={travelmode == 'bicycling' ? <FaBiking /> : <FaCarAlt />}
         colorScheme="blue"

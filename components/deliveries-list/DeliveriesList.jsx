@@ -2,7 +2,7 @@ import { Box, Button, Text, Flex }                 from '@chakra-ui/react';
 import { FaWpforms }                               from 'react-icons/fa';
 import dayjs                                       from 'dayjs';
 import customParseFormat                           from 'dayjs/plugin/customParseFormat';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import { getRouteData }                            from '@/components/api';
 import BackToLockon                                from '../back-to-lockon';
 import LoadingSpinner                              from '../loading-spinner';
@@ -13,7 +13,7 @@ import RoutePreviewButton                          from './RoutePreviewButton';
 
 dayjs.extend(customParseFormat);
 
-const MAX_DROPS_PER_GOOGLE_MAPS_ROUTE = 12;
+const MAX_DROPS_PER_GOOGLE_MAPS_ROUTE = 11;
 
 /**
  *
@@ -35,22 +35,40 @@ const buildRoutePreviewLinks = (routeData) => {
   const googleRouteBaseUrl = 'https://www.google.com/maps/dir';
 
   const originForUrl       = 'The Lockon, Fair Street, Cambridge';
-  const plusCodes          =[ originForUrl, ...new Set(routeData.deliveries.map(item => addPlusCodePrefix(item.plus_code))), originForUrl ].map(encodeURIComponent);
+  console.log(`routeData.deliveries.length`, routeData.deliveries.length)
+  const uniquePlusCodesAndLockonStartAndFinish = [ originForUrl, ...new Set(routeData.deliveries.map(item => addPlusCodePrefix(item.plus_code))), originForUrl ].map(encodeURIComponent);
+
+  console.log(`uniquePlusCodesAndLockonStartAndFinish.length`, uniquePlusCodesAndLockonStartAndFinish.length)
 
   const googleRouteUrls    = [];
-  const chunkSize          = MAX_DROPS_PER_GOOGLE_MAPS_ROUTE - 1;
+  const chunkSize          = MAX_DROPS_PER_GOOGLE_MAPS_ROUTE;
 
-  for (let index = 0; index < plusCodes.length; index += chunkSize - 1) {
-    const selectedPlusCodes = plusCodes.slice(index, index + chunkSize);
+  for (let index = 0; index < uniquePlusCodesAndLockonStartAndFinish.length; index += chunkSize - 1) {
+    const selectedPlusCodes = uniquePlusCodesAndLockonStartAndFinish.slice(index, index + chunkSize);
+    console.log(`selectedPlusCodes`, selectedPlusCodes);
+
     const origin = selectedPlusCodes.at(0);
     const destination = selectedPlusCodes.at(-1);
     const waypoints = selectedPlusCodes.slice(1, selectedPlusCodes.length - 1);
 
-    const startplace = index == 0 ? 'Lockon' : 'drop ' + index;
+    //  NOTE: this for loop can only ever loop twice, so I'm using index===0 to mean "first loop"
+    const startplaceText = index === 0 ? 'From Lockon' : `From drop ${index}`;
+    const firstDrop = index === 0 ? index + 1 : index;
+    const lastDrop = index === 0 ? index + selectedPlusCodes.length - 1 : index + selectedPlusCodes.length - 2;
+
+    let toText = `drops ${firstDrop} - ${lastDrop}`;
+    if (firstDrop === uniquePlusCodesAndLockonStartAndFinish.length - 2) {
+      // pluscodes is unique
+      toText = ``;
+    } else if (lastDrop - firstDrop === 1) {
+      toText = `drop ${lastDrop}`;
+    }
+    const endText =  index !== 0 ? `back to Lockon` : undefined;
+
     googleRouteUrls.push(
       {
         url: `${ googleRouteBaseUrl }/?api=1&origin=${ origin }&waypoints=${ waypoints.join('|') }&destination=${ destination }`,
-        dropsDetails: `From ${startplace}, then drops ${index + 1} - ${index + selectedPlusCodes.length - 1}` 
+        dropsDetails: [startplaceText, toText, endText].filter(Boolean).join(", ")
       }
     )
   }
@@ -118,6 +136,19 @@ const DeliveriesList = ({ date, id_ref: idRef, passcode, mode, basePath }) => {
   const formattedDate = `${ (rDate.getDate() > 9) ? rDate.getDate() : (`0${  rDate.getDate() }`)  }/${  (rDate.getMonth() > 8) ? (rDate.getMonth() + 1) : (`0${  rDate.getMonth() + 1 }`)  }/${  rDate.getFullYear() }`;
   const googleRouteUrls = buildRoutePreviewLinks(routeData);
 
+  let uniquePluscodeIndex = 0;
+  let prevPluscode = '';
+  const deliveries = routeData.deliveries.map((drop) => {
+    if (drop.plus_code !== prevPluscode) {
+      uniquePluscodeIndex++
+    }
+    prevPluscode = drop.plus_code
+    return {
+      ...drop,
+      uniquePluscodeIndex
+    }
+  });
+
   return (
     <div className={styles.root}>
       <Box display="flex" justifyContent="space-between">
@@ -151,31 +182,6 @@ const DeliveriesList = ({ date, id_ref: idRef, passcode, mode, basePath }) => {
           Driving route overview
         </RoutePreviewButton>
       </Flex>
-      {/* This now fails with error: You must enable Billing on the Google Cloud Project...
-      <Flex direction="row" px={2} py={2}>
-        <Button
-          as="a"
-          mx="auto"
-          onClick={() => {
-            router.push({
-              pathname : '/api/cck/route.gpx',
-              query    : {
-                date     : date,
-                ref      : idRef,
-                passcode : passcode,
-                mode     : mode,
-              },
-            });
-          }}
-          rightIcon={<ArrowForwardIcon />}
-          colorScheme="blue"
-          target="_blank"
-          tabindex={0}
-        >
-          Download route as GPX
-        </Button>
-      </Flex>
-      */}
       <Flex direction="row" px={2} py={2}>
         <Button
           as="a"
@@ -189,7 +195,7 @@ const DeliveriesList = ({ date, id_ref: idRef, passcode, mode, basePath }) => {
         </Button>
       </Flex>
       <ul className={styles.list}>
-        {routeData.deliveries.map((item, index) => {
+        {deliveries.map((item, index) => {
           const portions         = item.portions;
           const itemForRendering = {
             ...item,
@@ -204,7 +210,6 @@ const DeliveriesList = ({ date, id_ref: idRef, passcode, mode, basePath }) => {
               markComplete={() => markItemComplete(index)}
               portions={portions.toString()}
               unmarkComplete={() => unmarkItemComplete(index)}
-              dropNumber={index + 1}
             />
           );
         })}

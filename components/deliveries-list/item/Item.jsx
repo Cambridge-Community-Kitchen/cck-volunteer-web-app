@@ -28,7 +28,7 @@ import React, { memo } from 'react';
 import styles          from './Item.module.scss';
 import { decode }      from 'pluscodes';
 
-const Item = ({ data, markComplete, portions, unmarkComplete, dropNumber }) => {
+const Item = ({ data, markComplete, portions, unmarkComplete }) => {
   const encodedGoogleMapsUrl = `https://www.google.com/maps/place/${ encodeURIComponent(
     data.plusCode
   ) }`;
@@ -62,7 +62,7 @@ const Item = ({ data, markComplete, portions, unmarkComplete, dropNumber }) => {
                 alignItems="center"
                 gap="8px"
               >
-                <Text size="xs" color="gray.500" whiteSpace="nowrap">#{dropNumber}</Text>
+                <Text size="xs" color="gray.500" whiteSpace="nowrap">#{data.uniquePluscodeIndex}</Text>
                 <Button
                   colorScheme="green"
                   mr={2}
@@ -220,7 +220,7 @@ const Item = ({ data, markComplete, portions, unmarkComplete, dropNumber }) => {
               alignItems="center"
               gap="8px"
             >
-              <Text size="xs" color="gray.500" whiteSpace="nowrap">#{dropNumber}</Text>
+              <Text size="xs" color="gray.500" whiteSpace="nowrap">#{data.uniquePluscodeIndex}</Text>
               <Button
                 colorScheme="green"
                 mr={2}

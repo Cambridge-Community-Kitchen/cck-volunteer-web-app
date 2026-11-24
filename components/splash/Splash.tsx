@@ -1,6 +1,6 @@
 import {
   Image,
-  SlideFade,
+  Fade,
   Box,
   Text,
   Heading,
@@ -24,13 +24,13 @@ export default function Splash(props): React.ReactElement {
       if (props.onComplete !== null && typeof props.onComplete === 'function') {
         props.onComplete();
       }
-    }, 1100);
+    }, 500);
 
     return () => clearTimeout(timeout);
   }, [ props ]);
 
   return isVisible ? <div className={styles.splash}>
-      <SlideFade className={styles.logoFade} offsetY='80vh' in>
+      <Fade className={styles.logoFade} in>
         <Image
           maxHeight="50vh"
           maxWidth="80vw"
@@ -48,6 +48,6 @@ export default function Splash(props): React.ReactElement {
           ><Text>Volunteer App</Text>
           </Heading>
         </Box>
-      </SlideFade>
+      </Fade>
     </div> : null;
 }

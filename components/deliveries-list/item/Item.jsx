@@ -28,7 +28,7 @@ import React, { memo } from 'react';
 import styles          from './Item.module.scss';
 import { decode }      from 'pluscodes';
 
-const Item = ({ data, markComplete, portions, unmarkComplete }) => {
+const Item = ({ data, markComplete, portions, unmarkComplete, dropNumber }) => {
   const encodedGoogleMapsUrl = `https://www.google.com/maps/place/${ encodeURIComponent(
     data.plusCode
   ) }`;
@@ -56,13 +56,21 @@ const Item = ({ data, markComplete, portions, unmarkComplete }) => {
               >
                 {data.name}
               </Text>
-              <Button
-                colorScheme="green"
-                mr={2}
-                onClick={unmarkComplete}
+
+              <Box
+                display="flex"
+                alignItems="center"
+                gap="12px"
               >
-                <CheckIcon h="5" w="5" />
-              </Button>
+                <Text size="small" color="gray.500">drop {dropNumber}</Text>
+                <Button
+                  colorScheme="green"
+                  mr={2}
+                  onClick={unmarkComplete}
+                  >
+                  <CheckIcon h="5" w="5" />
+                </Button>
+              </Box>
             </Box>
           </Box>
         </li>
@@ -207,14 +215,21 @@ const Item = ({ data, markComplete, portions, unmarkComplete }) => {
               </Menu>
             )}
             <Spacer />
-            <Button
-              colorScheme="green"
-              mr={2}
-              onClick={markComplete}
-              variant="outline"
+            <Box
+              display="flex"
+              alignItems="center"
+              gap="12px"
             >
-              <CheckIcon h="5" w="5" />
-            </Button>
+              <Text size="small" color="gray.500">drop {dropNumber}</Text>
+              <Button
+                colorScheme="green"
+                mr={2}
+                onClick={markComplete}
+                variant="outline"
+              >
+                <CheckIcon h="5" w="5" />
+              </Button>
+            </Box>
           </Stack>
         </Box>
       </li>

@@ -1,5 +1,5 @@
 import { Box, Button, Text, Flex }                 from '@chakra-ui/react';
-import { FaWpforms }                               from '@chakra-ui/icons';
+import { FaWpforms }                               from 'react-icons/fa';
 import dayjs                                       from 'dayjs';
 import customParseFormat                           from 'dayjs/plugin/customParseFormat';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -38,15 +38,20 @@ const buildRoutePreviewLinks = (routeData) => {
   const plusCodes          =[ originForUrl, ...new Set(routeData.deliveries.map(item => addPlusCodePrefix(item.plus_code))), originForUrl ].map(encodeURIComponent);
 
   const googleRouteUrls    = [];
-  const chunckSize         = MAX_DROPS_PER_GOOGLE_MAPS_ROUTE - 1;
+  const chunkSize          = MAX_DROPS_PER_GOOGLE_MAPS_ROUTE - 1;
 
-  for (let index = 0; index < plusCodes.length; index += chunckSize) {
-    const selectedPlusCodes = plusCodes.slice(index, index + chunckSize);
+  for (let index = 0; index < plusCodes.length; index += chunkSize - 1) {
+    const selectedPlusCodes = plusCodes.slice(index, index + chunkSize);
     const origin = selectedPlusCodes.at(0);
     const destination = selectedPlusCodes.at(-1);
     const waypoints = selectedPlusCodes.slice(1, selectedPlusCodes.length - 1);
+
+    const startplace = index == 0 ? 'Lockon' : 'drop ' + index;
     googleRouteUrls.push(
-      `${ googleRouteBaseUrl }/?api=1&origin=${ origin }&waypoints=${ waypoints.join('|') }&destination=${ destination }`
+      {
+        url: `${ googleRouteBaseUrl }/?api=1&origin=${ origin }&waypoints=${ waypoints.join('|') }&destination=${ destination }`,
+        dropsDetails: `From ${startplace}, then drops ${index + 1} - ${index + selectedPlusCodes.length - 1}` 
+      }
     )
   }
 
@@ -199,6 +204,7 @@ const DeliveriesList = ({ date, id_ref: idRef, passcode, mode, basePath }) => {
               markComplete={() => markItemComplete(index)}
               portions={portions.toString()}
               unmarkComplete={() => unmarkItemComplete(index)}
+              dropNumber={index + 1}
             />
           );
         })}

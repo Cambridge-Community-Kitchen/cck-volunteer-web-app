@@ -20,5 +20,5 @@
 }
 
 .logoFade {
-  @include transition(transform 400ms ease-out);
+  @include transition(transform 100ms ease-out);
 }

@@ -1,18 +1,19 @@
-import { ArrowForwardIcon }                        from '@chakra-ui/icons';
 import { Box, Button, Text, Flex }                 from '@chakra-ui/react';
+import { FaWpforms }                               from 'react-icons/fa';
 import dayjs                                       from 'dayjs';
 import customParseFormat                           from 'dayjs/plugin/customParseFormat';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import { getRouteData }                            from '@/components/api';
 import BackToLockon                                from '../back-to-lockon';
 import LoadingSpinner                              from '../loading-spinner';
 import styles                                      from './DeliveriesList.module.scss';
 import Dish                                        from './Dish';
 import Item                                        from './item';
-import { FaCarAlt, FaBiking, FaWpforms } from 'react-icons/fa';
-
+import RoutePreviewButton                          from './RoutePreviewButton';
 
 dayjs.extend(customParseFormat);
+
+const MAX_DROPS_PER_GOOGLE_MAPS_ROUTE = 11;
 
 /**
  *
@@ -29,6 +30,51 @@ const addPlusCodePrefix = (originalCode) => {
 
   return originalCode;
 };
+
+const buildRoutePreviewLinks = (routeData) => {
+  const googleRouteBaseUrl = 'https://www.google.com/maps/dir';
+
+  const originForUrl       = 'The Lockon, Fair Street, Cambridge';
+  console.log(`routeData.deliveries.length`, routeData.deliveries.length)
+  const uniquePlusCodesAndLockonStartAndFinish = [ originForUrl, ...new Set(routeData.deliveries.map(item => addPlusCodePrefix(item.plus_code))), originForUrl ].map(encodeURIComponent);
+
+  console.log(`uniquePlusCodesAndLockonStartAndFinish.length`, uniquePlusCodesAndLockonStartAndFinish.length)
+
+  const googleRouteUrls    = [];
+  const chunkSize          = MAX_DROPS_PER_GOOGLE_MAPS_ROUTE;
+
+  for (let index = 0; index < uniquePlusCodesAndLockonStartAndFinish.length; index += chunkSize - 1) {
+    const selectedPlusCodes = uniquePlusCodesAndLockonStartAndFinish.slice(index, index + chunkSize);
+    console.log(`selectedPlusCodes`, selectedPlusCodes);
+
+    const origin = selectedPlusCodes.at(0);
+    const destination = selectedPlusCodes.at(-1);
+    const waypoints = selectedPlusCodes.slice(1, selectedPlusCodes.length - 1);
+
+    //  NOTE: this for loop can only ever loop twice, so I'm using index===0 to mean "first loop"
+    const startplaceText = index === 0 ? 'From Lockon' : `From drop ${index}`;
+    const firstDrop = index === 0 ? index + 1 : index;
+    const lastDrop = index === 0 ? index + selectedPlusCodes.length - 1 : index + selectedPlusCodes.length - 2;
+
+    let toText = `drops ${firstDrop} - ${lastDrop}`;
+    if (firstDrop === uniquePlusCodesAndLockonStartAndFinish.length - 2) {
+      // pluscodes is unique
+      toText = ``;
+    } else if (lastDrop - firstDrop === 1) {
+      toText = `drop ${lastDrop}`;
+    }
+    const endText =  index !== 0 ? `back to Lockon` : undefined;
+
+    googleRouteUrls.push(
+      {
+        url: `${ googleRouteBaseUrl }/?api=1&origin=${ origin }&waypoints=${ waypoints.join('|') }&destination=${ destination }`,
+        dropsDetails: [startplaceText, toText, endText].filter(Boolean).join(", ")
+      }
+    )
+  }
+
+  return googleRouteUrls;
+}
 
 const DeliveriesList = ({ date, id_ref: idRef, passcode, mode, basePath }) => {
   const [ displayDish, setDisplayDish ] = useState(false);
@@ -88,18 +134,20 @@ const DeliveriesList = ({ date, id_ref: idRef, passcode, mode, basePath }) => {
 
   const rDate         = new Date(routeData.event.start_date);
   const formattedDate = `${ (rDate.getDate() > 9) ? rDate.getDate() : (`0${  rDate.getDate() }`)  }/${  (rDate.getMonth() > 8) ? (rDate.getMonth() + 1) : (`0${  rDate.getMonth() + 1 }`)  }/${  rDate.getFullYear() }`;
+  const googleRouteUrls = buildRoutePreviewLinks(routeData);
 
-  const googleRouteBaseUrl = 'https://www.google.com/maps/dir';
-  const plusCodes          = [ ...new Set(routeData.deliveries.map(item => addPlusCodePrefix(item.plus_code))) ];
-  const originForUrl       = encodeURIComponent('The Lockon, Fair Street, Cambridge');
-  const googleRouteUrl     = `${ googleRouteBaseUrl }/?api=1&origin=${
-    originForUrl
-  }&waypoints=${
-    plusCodes.map(encodeURIComponent).join('|')
-  }&destination=${
-    originForUrl
-  }`;
-  // We could also set `&travelmode=${mode}` but mode is never actually passed in.
+  let uniquePluscodeIndex = 0;
+  let prevPluscode = '';
+  const deliveries = routeData.deliveries.map((drop) => {
+    if (drop.plus_code !== prevPluscode) {
+      uniquePluscodeIndex++
+    }
+    prevPluscode = drop.plus_code
+    return {
+      ...drop,
+      uniquePluscodeIndex
+    }
+  });
 
   return (
     <div className={styles.root}>
@@ -124,57 +172,16 @@ const DeliveriesList = ({ date, id_ref: idRef, passcode, mode, basePath }) => {
           />
         )
       )}
-      <Flex direction="row" px={2} py={2}>
-        <Button
-          as="a"
-          mx="auto"
-          href={`${ googleRouteUrl }&travelmode=bicycling`}
-          leftIcon={<FaBiking />}
-          rightIcon={<ArrowForwardIcon />}
-          colorScheme="blue"
-          target="_blank"
-        >
-          Cycle route - overview
-        </Button>
+      <Flex direction="row" px={2} py={2} justifyContent="center">
+        <RoutePreviewButton googleRouteUrls={googleRouteUrls} travelmode="bicycling">
+          Cycle route overview
+        </RoutePreviewButton>
       </Flex>
-      <Flex direction="row" px={2} py={2}>
-        <Button
-          as="a"
-          mx="auto"
-          href={`${ googleRouteUrl }&travelmode=driving`}
-          leftIcon={<FaCarAlt />}
-          rightIcon={<ArrowForwardIcon />}
-          colorScheme="blue"
-          target="_blank"
-        >
-          Driving route - overview
-        </Button>
+      <Flex direction="row" px={2} py={2} justifyContent="center">
+        <RoutePreviewButton googleRouteUrls={googleRouteUrls} travelmode="driving">
+          Driving route overview
+        </RoutePreviewButton>
       </Flex>
-      {/* This now fails with error: You must enable Billing on the Google Cloud Project...
-      <Flex direction="row" px={2} py={2}>
-        <Button
-          as="a"
-          mx="auto"
-          onClick={() => {
-            router.push({
-              pathname : '/api/cck/route.gpx',
-              query    : {
-                date     : date,
-                ref      : idRef,
-                passcode : passcode,
-                mode     : mode,
-              },
-            });
-          }}
-          rightIcon={<ArrowForwardIcon />}
-          colorScheme="blue"
-          target="_blank"
-          tabindex={0}
-        >
-          Download route as GPX
-        </Button>
-      </Flex>
-      */}
       <Flex direction="row" px={2} py={2}>
         <Button
           as="a"
@@ -188,7 +195,7 @@ const DeliveriesList = ({ date, id_ref: idRef, passcode, mode, basePath }) => {
         </Button>
       </Flex>
       <ul className={styles.list}>
-        {routeData.deliveries.map((item, index) => {
+        {deliveries.map((item, index) => {
           const portions         = item.portions;
           const itemForRendering = {
             ...item,

@@ -56,13 +56,21 @@ const Item = ({ data, markComplete, portions, unmarkComplete }) => {
               >
                 {data.name}
               </Text>
-              <Button
-                colorScheme="green"
-                mr={2}
-                onClick={unmarkComplete}
+
+              <Box
+                display="flex"
+                alignItems="center"
+                gap="8px"
               >
-                <CheckIcon h="5" w="5" />
-              </Button>
+                <Text size="xs" color="gray.500" whiteSpace="nowrap">#{data.uniquePluscodeIndex}</Text>
+                <Button
+                  colorScheme="green"
+                  mr={2}
+                  onClick={unmarkComplete}
+                  >
+                  <CheckIcon h="5" w="5" />
+                </Button>
+              </Box>
             </Box>
           </Box>
         </li>
@@ -207,14 +215,21 @@ const Item = ({ data, markComplete, portions, unmarkComplete }) => {
               </Menu>
             )}
             <Spacer />
-            <Button
-              colorScheme="green"
-              mr={2}
-              onClick={markComplete}
-              variant="outline"
+            <Box
+              display="flex"
+              alignItems="center"
+              gap="8px"
             >
-              <CheckIcon h="5" w="5" />
-            </Button>
+              <Text size="xs" color="gray.500" whiteSpace="nowrap">#{data.uniquePluscodeIndex}</Text>
+              <Button
+                colorScheme="green"
+                mr={2}
+                onClick={markComplete}
+                variant="outline"
+              >
+                <CheckIcon h="5" w="5" />
+              </Button>
+            </Box>
           </Stack>
         </Box>
       </li>
